@@ -1,0 +1,65 @@
+﻿@model isriding.Web.Models.Authen.RoleModel
+
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+
+<div class="tabbable tabbable-custom tabbable-full-width">
+    @*<ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#tab_1" data-toggle="tab">基本信息</a>
+            </li>
+        </ul>*@
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="control-label col-md-3">角色名称</label>
+                    <div class="col-md-6">
+                        
+                        @Html.TextBoxFor(t => t.Name, new { @class = "form-control" })
+                        
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Name)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">角色描述</label>
+                    <div class="col-md-6">
+                        @Html.TextAreaFor(t => t.Description, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Description)
+                        </span>
+                    </div>
+                </div>
+                @*<div class="form-group">
+                    <label class="control-label col-md-3">校园</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.School_id, Model.SchoolList, new { @class = "form-control" })
+                    </div>
+                </div>*@
+                <div class="form-group">
+                    <label class="control-label col-md-3">排序</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.OrderSort, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.OrderSort)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">启用</label>
+                    <div class="col-md-6">
+                        <div class="checkbox-list">
+                            <label class="checkbox-inline">
+
+                                @Html.CheckBoxFor(t => t.Enabled)
+
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+﻿
+@model isriding.Web.Models.School.BikeSearchModel
+<div class="fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span><i class="fa fa-search"></i></span>&nbsp;
+                    <span style="font-weight: bold;">
+                        查询条件
+                    </span>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" id="search_form" style="margin: 0 auto; width: 100%;">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="col-xs-5 text-center">
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.Ble_name)</label>
+                                </div>
+                                <div class="col-xs-7">
+                                    @Html.TextBoxFor(s => s.Ble_name, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="col-xs-5 text-center">
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.Ble_type)</label>
+                                </div>
+                                <div class="col-xs-7">
+                                    @Html.DropDownListFor(s => s.Ble_type, Model.TypeList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="col-xs-5 text-center">
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.Vlock_status)</label>
+                                </div>
+                                <div class="col-xs-7">
+                                    @Html.DropDownListFor(s => s.Vlock_status, Model.VlockStatusList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>*@
+                    </form>
+                </div>
+                <div class="panel-footer" style="padding: 3px 15px">
+                    <div class="text-right ">
+                        <button type="button" class="btn btn-danger" onclick="TableManaged.reset($('#search_form'))">
+                            <span class="fa fa-ticket"></span> 清空
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="TableManaged.search('@Url.Action("InitDataTable")')">
+                            <span class="fa fa-search"></span> 搜索
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

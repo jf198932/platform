@@ -1,0 +1,58 @@
+﻿@model isriding.Web.Models.School.VersionUpdateModel
+
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+
+<div class="tabbable tabbable-custom tabbable-full-width">
+    @*<ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#tab_1" data-toggle="tab">基本信息</a>
+            </li>
+        </ul>*@
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="control-label col-md-3">设备类型</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.device_os, Model.DeviceList, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">版本号</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.versionCode, new {@class = "form-control disabled"})
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.versionCode)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">版本名称</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.versionName, new {@class = "form-control"})
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.versionName)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">URL</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.versionUrl, new {@class = "form-control"})
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.versionUrl)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">升级模式</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.upgrade, Model.UpgradeList, new {@class = "form-control"})
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

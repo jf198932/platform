@@ -1,0 +1,186 @@
+﻿
+@model isriding.Web.Models.Authen.RoleSelectedModuleModel
+@{
+    int sortOrder = 1;
+}
+@Html.HiddenFor(t => t.RoleId)
+@Html.HiddenFor(t => t.RoleName)
+<div class="tabbable tabbable-custom tabbable-full-width">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#tab_1" data-toggle="tab">模块菜单</a>
+        </li>
+        <li>
+            <a href="@Url.Action("GetPermission")" data-target="#tab_2" data-toggle="tab">按钮权限</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <table class="table datatable table-striped table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th width="80">
+                        序号
+                    </th>
+                    <th>
+                        <input type="checkbox" onclick="CheckAllModule(this.checked)"/>
+                    </th>
+                    <th>
+                        模块(菜单)名称
+                    </th>
+                    <th>
+                        模块编码
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.ModuleDataList)
+                {
+                    <tr>
+                        <td>@(sortOrder++)</td>
+
+                        @if (item.ParentId != null)
+                        {
+                            <td>@Html.CheckBox("modulecheck", item.Selected, new {@class = "modulecheck childmodulecheck-" + item.ParentId, @value = item.ModuleId, onclick = "CheckChild(" + item.ParentId + ")"})</td>
+                            <td style="text-align: right;">[ @item.ModuleName ]</td>
+                        }
+                        else
+                        {
+                            <td>@Html.CheckBox("modulecheck", item.Selected, new {@class = "modulecheck parentmodulecheck-" + item.ModuleId, @value = item.ModuleId, onclick = "CheckParent(this.checked, " + item.ModuleId + ")"})</td>
+                            <td>@item.ModuleName</td>
+                        }
+                        <td>@item.Code</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="tab_2">
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function() {
+        $('[data-toggle="tab"]').click(function (e) {
+            e.preventDefault();
+            var loadurl = $(this).attr('href');
+            var targ = $(this).attr('data-target');
+            if (targ === "#tab_2") {
+                //Set Permission
+                $("input[name='isSet']").val(1);
+
+                //Role Id
+                var roleId = $("#RoleId").val();
+
+                //Module Id
+                var newModuleIds = new Array();
+                $(".modulecheck").each(function () {
+                    if (this.checked) {
+                        newModuleIds.push($(this).val());
+                    }
+                });
+
+                //Data
+                var data = { RoleId: roleId, selectedModules: newModuleIds.join(",") };
+
+                //Get Permission
+                $.get(loadurl, data, function (result) {
+                    $(targ).html(result);
+                });
+            } else {
+                $("#tab_2").html();
+            }
+            $(this).tab('show');
+        });
+    });
+
+    //模块 全选/反选
+    function CheckAllModule(val) {
+        $("input[name='modulecheck']").each(function () {
+            this.checked = val;
+        });
+    }
+
+    //父模块 选中
+    function CheckParent(val, id) {
+        $(".childmodulecheck-" + id).each(function () {
+            this.checked = val;
+        });
+    }
+
+    //子模块 选中
+    function CheckChild(id) {
+        var checkedCount = 0;
+        $(".childmodulecheck-" + id).each(function () {
+            if (this.checked) {
+                checkedCount = checkedCount + 1;
+            }
+        });
+        if (checkedCount !== 0) {
+            $(".parentmodulecheck-" + id).attr("checked", true);
+        } else {
+            $(".parentmodulecheck-" + id).attr("checked", false);
+        }
+    }
+
+    //权限 全选/反选
+    function CheckAllPermission(val) {
+        $("input[name='permissioncheck'],input[name='modulectx']").each(function () {
+            this.checked = val;
+        });
+    }
+
+    //父模块 选中
+    function CheckParentModulePermission(val, id) {
+        $(".module-" + id).each(function () {
+            this.checked = val;
+        });
+    }
+
+    //TODO 父权限 选中 
+    function CheckParentPermission(val, id, pId) {
+        var checkedCount = 0;
+        $(".childpermissioncheck-" + id).each(function () {
+            this.checked = val;
+        });
+        $(".module-" + pId).each(function () {
+            if (this.checked) {
+                checkedCount = checkedCount + 1;
+            }
+        });
+        if (checkedCount !== 1) {
+            $(".parentallpermissioncheck-" + pId).attr("checked", true);
+        } else {
+            $(".parentallpermissioncheck-" + pId).attr("checked", false);
+        }
+    }
+
+    //子权限 选中
+    function CheckChildPermission(id, pId) {
+        var checkedCount = 0;
+        $(".childpermissioncheck-" + id).each(function () {
+            if (this.checked) {
+                checkedCount = checkedCount + 1;
+            }
+        });
+        if (checkedCount !== 0) {
+            $(".parentpermissioncheck-" + id).attr("checked", true);
+        } else {
+            $(".parentpermissioncheck-" + id).attr("checked", false);
+        }
+
+        var checkedParentCount = 0;
+        $(".module-" + pId).each(function () {
+            if (this.checked) {
+                checkedParentCount = checkedParentCount + 1;
+            }
+        });
+        if (checkedParentCount !== 1) {
+            $(".parentallpermissioncheck-" + pId).attr("checked", true);
+        } else {
+            $(".parentallpermissioncheck-" + pId).attr("checked", false);
+        }
+    }
+</script>

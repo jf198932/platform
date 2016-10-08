@@ -1,0 +1,92 @@
+﻿@model isriding.Web.Models.School.VersionUpdateModel
+@{
+    ViewBag.Title = "版本管理";
+}
+
+@Html.Partial("_Search", Model.Search)
+@Html.Partial("_List")
+
+@Html.Partial("Modal")
+
+@section scripts{
+    <script>
+        var oTable = null;
+
+        $(function() {
+            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
+            var aoColumns = [
+                { "sName": "sort" },
+                {
+                    "sName": "device_os",
+                    "fnRender": function (oObj) {
+                        var render;
+                        var t = oObj.aData[1];
+                        if (t === "1") {
+                            render = 'iOS';
+                        } else if (t === "2") {
+                            render = 'Android';
+                        } else {
+                            render = '未知';
+                        }
+
+                        return render;
+                    }
+                },
+                { "sName": "versionCode" },
+                { "sName": "versionName" },
+                { "sName": "versionUrl" },
+                {
+                    "sName": "upgrade",
+                    "fnRender": function (oObj) {
+                        var render;
+                        var t = oObj.aData[oObj.aData.length-2];
+                        if (t === "1") {
+                            render = '不可升级';
+                        } else if (t === "2") {
+                            render = '可升级';
+                        } else if (t === "3") {
+                            render = '强制升级';
+                        } else {
+                            render = '未知';
+                        }
+
+                        return render;
+                    }
+                },
+                {
+                    "sName": "action",
+                    "fnRender": function(oObj) {
+                        var editUrl = '@Url.Action("Edit")';
+                        var deleteUrl = '@Url.Action("Delete")';
+                        return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
+                    }
+                }
+            ];
+
+            oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+
+            $('#search_form').keypress(function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();//取消回车原事件
+                    TableManaged.search('@Url.Action("InitDataTable")');
+                }
+            });
+        });
+
+        //新增
+        function Create(actionUrl) {
+            ShowModal(actionUrl, {}, "新增版本升级");
+        }
+
+        //编辑
+        function Edit(actionUrl, id) {
+            var param = { id: id };
+            ShowModal(actionUrl, param, "编辑版本升级");
+        }
+
+        //保存
+        function Save() {
+            SaveModal(oTable);
+        }
+    </script>
+}

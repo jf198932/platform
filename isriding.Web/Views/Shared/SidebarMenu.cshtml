@@ -1,0 +1,119 @@
+﻿@using isriding.Web.Models.Common
+@model IEnumerable<isriding.Web.Models.Common.SideBarMenuModel>
+
+<div class="page-sidebar-wrapper">
+    <div class="page-sidebar navbar-collapse collapse">
+        <ul class="page-sidebar-menu">
+            <li class="sidebar-toggler-wrapper">
+                <div class="sidebar-toggler hidden-phone">
+                </div>
+            </li>
+            <!-- 搜索 -->
+            <li class="sidebar-search-wrapper">
+                <form class="sidebar-search">
+                    <div class="form-container">
+                        <div class="input-box">
+                            <a href="javascript:;" class="remove"></a>
+                            <input type="text" placeholder="搜索..." />
+                            <input type="button" class="submit" />
+                        </div>
+                    </div>
+                </form>
+            </li>
+
+            <!-- 菜单 -->
+            <li class="start">
+                <a href="@Url.Action("Index", "Home")" title="首页" key="home">
+                    <i class="fa fa-home"></i>
+                    <span class="title">首页</span>
+                </a>
+            </li>
+
+            @*<li>
+                    <a href="javascript:void(0);" title="学校管理">
+                        <i class="fa fa-cloud"></i>
+                        <span class="title">学校管理</span>
+                        <span class="arrow">
+                        </span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="@Url.Action("List", "School")" title="校园列表" key="school">
+                                <i class="fa"></i>
+                                校园列表
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("List", "User")" title="会员列表" key="user">
+                                <i class="fa"></i>
+                                会员列表
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("List", "Bikesite")" title="桩点列表" key="bikesite">
+                                <i class="fa"></i>
+                                桩点列表
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("List", "Bike")" title="追踪器列表" key="bike">
+                                <i class="fa"></i>
+                                追踪器列表
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" title="xxxxx">
+                                <i class="fa fa-apple"></i>
+                                <span class="title">xxxxx</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="@Url.Action("List", "User")" title="会员列表" key="user">
+                                        <i class="fa fa-cut"></i>
+                                        会员列表
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>*@
+
+            @foreach (var menu in Model)
+            {
+                @RenderMenu(menu, 1);
+            }
+
+            @helper RenderMenu(SideBarMenuModel menu, int level)
+            {
+            <li>
+                @if (menu.ChildMenus.Count > 0)
+                {
+                    <a href="javascript:void(0)" title="@menu.Name">
+                        <i class="@menu.Icon"></i>
+                        <span class="title">
+                            @menu.Name
+                        </span>
+                        <span class="arrow">
+                        </span>
+                    </a>
+
+                    <ul class="sub-menu">
+                        @foreach (var cm in menu.ChildMenus)
+                        {
+                            @RenderMenu(cm, level + 1);
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <a href="@Url.Action(menu.Action, menu.Controller)" title="@menu.Name" key="@(menu.Controller.ToLower()+'/'+menu.Action.ToLower())">
+                        <i class="@menu.Icon"></i>
+                        @menu.Name
+                    </a>
+                }
+            </li>
+}
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+﻿@using isriding.Web.Models.Common
+@model isriding.Web.Models.Authen.ButtonModel
+
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.ModuleId)
+
+<div class="tabbable tabbable-custom tabbable-full-width">
+    @*<ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#tab_1" data-toggle="tab">基本信息</a>
+        </li>
+        <li>
+            <a href="#tab_2" data-toggle="tab">角色</a>
+        </li>
+    </ul>*@
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_2">
+            @Html.CheckBoxListFor(t => t.SelectedButtonList, DisplayDirection.Horizon, new { style = "display:inline-block;width:500px;margin:0 10px;" }, new { style = "display:inline-block;width:120px;" })
+        </div>
+    </div>
+</div>

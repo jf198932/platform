@@ -1,0 +1,105 @@
+﻿@model isriding.Web.Models.School.BikeModel
+
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+
+<div class="tabbable tabbable-custom tabbable-full-width">
+    @*<ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#tab_1" data-toggle="tab">基本信息</a>
+            </li>
+        </ul>*@
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="control-label col-md-3">追踪器序号</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Ble_serial, new {@class = "form-control"})
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Ble_serial)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">追踪器名称</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Ble_name, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Ble_name)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">设备类型</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.Ble_type, Model.TypeList, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">会员</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.User_id, Model.UserList, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">桩点</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.Bikesite_id, Model.BikesiteList, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">状态</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.Vlock_status, Model.VlockStatusList, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">位置</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Position, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Position)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">电池电量</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Battery, new {@class = "form-control"})
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Battery)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">密码锁</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Lock_pwd, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Lock_pwd)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">图片</label>
+                    <div class="col-md-6">
+                        <img src="@Model.Bike_img"/>
+                    </div>
+                </div>
+                @*<div class="form-group">
+                        <label class="control-label col-md-2">已启用</label>
+                        <div class="col-md-6">
+                            <div class="checkbox-list">
+                                <label class="checkbox-inline">
+
+                                    @Html.CheckBoxFor(t => t.Active)
+
+                                </label>
+                            </div>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+</div>

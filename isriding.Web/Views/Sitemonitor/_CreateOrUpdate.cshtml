@@ -1,0 +1,40 @@
+﻿@model isriding.Web.Models.School.SitemonitorModel
+
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+
+<div class="tabbable tabbable-custom tabbable-full-width">
+    @*<ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#tab_1" data-toggle="tab">基本信息</a>
+            </li>
+        </ul>*@
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="control-label col-md-3">用户名</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Name, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Name)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">桩点</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.Bikesite_id, Model.BikesiteList, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">状态</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.Status, Model.StatusList, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

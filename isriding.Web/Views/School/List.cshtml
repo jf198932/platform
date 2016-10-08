@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewBag.Title = "租户(学校)管理";
+}
+
+<div class="fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="table-toolbar">
+                <div class="btn-group">
+                    <a href="javascript:void(0);" class="btn blue" onclick="Create('@Url.Action("Create")')"><i class="fa fa-plus"></i> 添加</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table datatable table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th width="80">
+                    序号
+                </th>
+                <th>
+                    名称
+                </th>
+                <th>
+                    城市区号
+                </th>
+                <th>
+                    GPS
+                </th>
+                <th>
+                    停车港数量
+                </th>
+                <th>
+                    操作
+                </th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+@Html.Partial("Modal")
+
+@section scripts{
+    <script>
+        var oTable = null;
+
+        $(function() {
+            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
+            var aoColumns = [
+                { "sName": "sort" },
+                { "sName": "name" },
+                { "sName": "areacode" },
+                {
+                    "sName": "gps_point"
+                    //"fnRender": function (oObj) {
+                    //    var render;
+                    //    if (oObj.aData[oObj.aData.length - 3] == "True") {
+                    //        render = '<i class="fa fa-check "></i>';
+                    //    } else {
+                    //        render = '<i class="fa fa-lock"></i>';
+                    //    }
+                    //    return render;
+                    //}
+                },
+                { "sName": "site_count" },
+                {
+                    "sName": "action",
+                    "fnRender": function(oObj) {
+                        var editUrl = '@Url.Action("Edit")';
+                        var deleteUrl = '@Url.Action("Delete")';
+                        return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
+                    }
+                }
+            ];
+
+            oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+        });
+
+        //新增
+        function Create(actionUrl) {
+            ShowModal(actionUrl, {}, "新增租户(学校)");
+        }
+
+        //编辑
+        function Edit(actionUrl, id) {
+            var param = { id: id };
+            ShowModal(actionUrl, param, "编辑租户(学校)");
+        }
+
+        //保存
+        function Save() {
+            SaveModal(oTable);
+        }
+    </script>
+}

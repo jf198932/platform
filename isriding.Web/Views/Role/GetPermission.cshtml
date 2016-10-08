@@ -1,0 +1,77 @@
+﻿@model isriding.Web.Models.Authen.RoleSelectedPermissionModel
+@{
+    int sortOrder = 1;
+}
+    
+<table class="table datatable table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th width="80">
+                序号
+            </th>
+            <th>
+                模块(菜单)名称
+            </th>
+            <th>
+                <input type="checkbox" onclick="CheckAllPermission(this.checked)"/>
+            </th>
+            @foreach (var permission in Model.HeaderPermissionList)
+            {
+                <th>@permission.PermissionName</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var modulePermissionData in Model.ModulePermissionDataList)
+        {
+            <tr>
+                <td>@(sortOrder++)</td>
+                @if (modulePermissionData.LinkUrl != "")
+                {
+                    <td style="text-align: right;">[ @modulePermissionData.ModuleName ]</td>
+                }
+                else
+                {
+                    <td>@modulePermissionData.ModuleName</td>
+                }
+                <td>
+                    @if (modulePermissionData.ParentId != null)
+                    {
+                        @Html.CheckBox("modulectx", modulePermissionData.Selected, new { @class = "parentpermissioncheck-" + modulePermissionData.ModuleId + " module-" + modulePermissionData.ParentId + " permission-" + modulePermissionData.ModuleId, @value = modulePermissionData.ModuleId, onclick = "CheckParentPermission(this.checked, " + modulePermissionData.ModuleId + ", " + modulePermissionData.ParentId + ")" })
+                    }
+                    else
+                    {
+                        if (modulePermissionData.LinkUrl != "")
+                        {
+                            @Html.CheckBox("modulectx", modulePermissionData.Selected, new { @class = "parentpermissioncheck-" + modulePermissionData.ModuleId + " module-" + modulePermissionData.ModuleId + " permission-" + modulePermissionData.ModuleId, @value = modulePermissionData.ModuleId, onclick = "CheckParentPermission(this.checked, " + modulePermissionData.ModuleId + ", " + modulePermissionData.ModuleId + ")" })
+                        }
+                        else
+                        {
+                            @Html.CheckBox("modulectx", modulePermissionData.Selected, new { @class = "parentallpermissioncheck-" + modulePermissionData.ModuleId + " module-" + modulePermissionData.ModuleId + " permission-" + modulePermissionData.ModuleId, @value = modulePermissionData.ModuleId, onclick = "CheckParentModulePermission(this.checked, " + modulePermissionData.ModuleId + ")" })
+                        }
+                    }
+                </td>
+                @if (modulePermissionData.LinkUrl != "")
+                {
+                    foreach (var item in modulePermissionData.PermissionDataList)
+                    {
+                        <td>
+                            @if (item.Enabled)
+                            {
+                                @Html.CheckBox("permissioncheck", item.Selected, new { @class = "childpermissioncheck-" + @modulePermissionData.ModuleId + " module-" + modulePermissionData.ParentId + " permission-" + modulePermissionData.ModuleId, @value = item.PermissionId, onclick = "CheckChildPermission(" + modulePermissionData.ModuleId + ", " + modulePermissionData.ParentId + ")" })
+                            }
+                        </td>
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < Model.HeaderPermissionList.Count; i++)
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+        

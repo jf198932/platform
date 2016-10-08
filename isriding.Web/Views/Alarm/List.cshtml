@@ -1,0 +1,124 @@
+﻿@model isriding.Web.Models.School.BikeModel
+
+@{
+    ViewBag.Title = "车辆管理";
+}
+
+@Html.Partial("_Search", Model.Search)
+@Html.Partial("_List")
+@Html.Partial("Modal")
+@section scripts{
+    <script>
+        var oTable = null;
+
+        $(function() {
+            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
+            var aoColumns = [
+                { "sName": "sort" },
+                { "sName": "ble_name" },
+                {
+                    "sName": "ble_type",
+                    "fnRender": function (oObj) {
+                        var render;
+                        var t = oObj.aData[2];
+                        if (t === "1") {
+                            render = '追踪器';
+                        } else if (t === "2") {
+                            render = '智能锁';
+                        } else {
+                            render = '异常';
+                        }
+
+                        return render;
+                    }
+                },
+                {
+                    "sName": "vlock_status",
+                    "fnRender": function (oObj) {
+                        var render;
+                        var t = oObj.aData[3];
+                        if (t === "0") {
+                            render = '初始';
+                        } else if (t === "1") {
+                            render = '锁闭';
+                        } else if (t === "2") {
+                            render = '锁开';
+                        } else if (t === "3") {
+                            render = '异常';
+                        } else if (t === "4") {
+                            render = '异常(已推送)';
+                        } else if (t === "5") {
+                            render = '报警';
+                        } else {
+                            render = '未知';
+                        }
+
+                        return render;
+                    }
+                },
+                { "sName": "alarmtime" },
+                { "sName": "alarmbikesitename" },
+                { "sName": "user_name" },
+                { "sName": "phone" },
+                {
+                    "sName": "bike_img",
+                    "fnRender": function (oObj) {
+                        var t = oObj.aData[oObj.aData.length - 2];
+                        var render = "";
+                        //var render = "<img src='" + t + "' bigimg='" + t + "' class='imgtip' onmousemove='mmove(this)' onmouseover='mover(this)' onmouseout='mout()' />";
+                        if (t !== "") {
+                            render = "<a href='" + t + "' target='_blank'>点击查看图片</a>";
+                        } else {
+                            render = "暂无";
+                        }
+                          
+                        return render;
+                    }
+                }
+            ];
+
+            oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+
+            $('#search_form').keypress(function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();//取消回车原事件
+                    TableManaged.search('@Url.Action("InitDataTable")');
+                }
+            });
+        });
+
+        function mover(obj) {
+            var imgtip = "<div id='imgtip'><img src='" + $(obj).attr("bigimg") + "' alt='预览图'/><\/div>"; //创建 div 元素
+            $("body").append(imgtip); //把它追加到文档中
+            $("#imgtip")
+                .css({
+                    "top": (event.clientY + document.body.scrollTop + 10) + "px",
+                    "left": (event.clientX + document.body.scrollLeft + 15) + "px",
+                    "position": "absolute"
+                }).show("fast");   //设置x坐标和y坐标，并且显示
+        }
+        function mout() {
+            $("#imgtip").remove();  //移除
+        }
+
+        function mmove(obj) {
+            $("#imgtip")
+                .css({
+                    "top": (event.clientY + document.body.scrollTop + 10) + "px",
+                    "left": (event.clientX + document.body.scrollLeft + 15) + "px",
+                    "position": "absolute"
+                });
+        }
+        setInterval("TableManaged.search('@Url.Action("InitDataTable")')", 10000);
+    </script>
+}
+
+@section css{
+    <style>
+        .imgtip {
+            position:relative;
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+}

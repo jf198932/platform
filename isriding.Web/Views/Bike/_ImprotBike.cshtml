@@ -1,0 +1,40 @@
+﻿<div id="modal-form-importexcel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="CloseImportExcelModal()" aria-hidden="true">&times;</button>
+                <h4 class="modal-title-importexcel"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="modal-content-importexcel" class="form-horizontal" enctype="multipart/form-data">
+                    <!--Content-->
+                    <div class="form-group">
+                        <label class="control-label col-md-3">导入追踪器</label>
+                        <div class="col-md-6">
+                            <div class="upload clearfix">
+                                <div class="uploadbtnBox clearfix">
+                                    <a href="javascript:;" class="a-upload">
+                                        <input type="file" name="files" data-url='@Url.Action("ImportExcel","Bike")' value="" id="files"/>点击上传
+                                    </a>
+                                </div>
+                                <div class="filestate">
+                                    文件名
+                                </div>
+                                <div class="progresspercent">
+
+                                </div>
+                                <div class="progress" style="height: 4px;">
+                                    <div class="bar" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-primary" onclick="SavePermission()">保存</button>*@
+                <button type="button" class="btn btn-default" onclick="CloseImportExcelModal()">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

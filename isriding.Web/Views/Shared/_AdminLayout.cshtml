@@ -1,0 +1,117 @@
+﻿@using System.Threading
+@using System.Web.Optimization
+@using Abp.Timing
+@{
+    SetAntiForgeryCookie();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="shortcut icon" href="~/favicon.ico">
+
+    <title>isriding</title>
+
+    @Styles.Render("~/Bundles/vendor/css")
+    @*@Styles.Render("~/Bundles/css")*@
+    @Styles.Render("~/Bundles/admin/css")
+
+    <link href="~/Content/assets/css/themes/default.css" rel="stylesheet" id="style_color" />
+
+    @Styles.Render("~/Bundles/admin/grid/css")
+
+    @RenderSection("css", required: false)
+
+    <script type="text/javascript">
+        //This is used to get the application's root path from javascript. It's useful if you're running application in a virtual directory under IIS.
+        var abp = abp || {}; abp.appPath = '@ApplicationPath';
+    </script>
+
+    @Scripts.Render("~/Bundles/vendor/js/top")
+
+</head>
+<body class="page-header-fixed">
+    <!-- 顶部 -->
+    <div class="header navbar navbar-inverse navbar-fixed-top">
+        <!-- 导航 -->
+        <div class="header-inner">
+            <!-- logo -->
+            <a class="navbar-brand" href="javascript:;">
+                <img src="~/Content/assets/img/logo-as86x14 a.png" alt="logo" class="img-responsive" />
+            </a>
+
+            <!-- 响应式切换按钮 -->
+            <a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <img src="~/Content/assets/img/menu-toggler.png" alt="" />
+            </a>
+
+            <!-- 导航菜单 -->
+            @Html.Partial("HeaderMenu")
+
+        </div>
+    </div>
+    <div class="clearfix">
+    </div>
+
+    <div class="page-container">
+
+        <!-- 侧边栏菜单 -->
+        @*@Html.Partial("SidebarMenu")*@
+        @Html.Action("SidebarMenu", "Common")
+
+        <div class="page-content-wrapper">
+            <div class="page-content">
+
+                <!-- Modal 弹出窗口 -->
+                @Html.Partial("Modal")
+
+                <!-- 主题设置 -->
+                @*@Html.Partial("ThemeSetting")*@
+
+                <!-- 面包屑 -->
+                @Html.Partial("Breadcrumb")
+
+                <!-- 消息通知 -->
+                @*@Html.Partial("Notifications")*@
+
+                <!-- 正文开始 -->
+                @RenderBody()
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部开始 -->
+    @Html.Partial("Footer")
+
+    @*@Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")*@
+
+    @Scripts.Render("~/Bundles/vendor/js/bottom")
+    @Scripts.Render("~/Bundles/js")
+    
+    @Scripts.Render("~/bundles/admin/js")
+    @Scripts.Render("~/bundles/admin/grid/js")
+    
+    <script>
+        abp.localization.defaultSourceName = '@LocalizationSourceName';
+        @*moment.locale('@Thread.CurrentThread.CurrentUICulture.Name'); //Localizing momentjs*@
+    </script>
+
+    <!-- Dynamic scripts of ABP system (They are created on runtime and can not be bundled) -->
+    <script src="~/api/AbpServiceProxies/GetAll?v=@(Clock.Now.Ticks)"></script>
+    <script src="~/AbpScripts/GetScripts?v=@(Clock.Now.Ticks)" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function() {
+           App.init(); // initlayout and core plugins
+        });
+    </script>
+    <!-- View specific scripts -->
+    @RenderSection("scripts", required: false)
+</body>
+</html>
