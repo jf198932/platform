@@ -99,7 +99,7 @@ namespace isriding.Web.Controllers.Authen
             {
                 Mapper.Initialize(t=> t.CreateMap<RoleModel, Role>());
                 var role = Mapper.Map<Role>(model);
-                role.School_id = 1;
+                //role.School_id = 1;
                 _roleRepository.Insert(role);
 
                 //SuccessNotification("添加成功");
@@ -167,7 +167,7 @@ namespace isriding.Web.Controllers.Authen
             //菜单列表
             model.ModuleDataList =
                 _moduleRepository.GetAll()
-                    .Where(m => m.IsMenu && m.Enabled && m.School_id == 1)
+                    .Where(m => m.IsMenu && m.Enabled)
                     .Select(m => new ModuleModel1
                     {
                         ModuleId = m.Id,
@@ -217,7 +217,7 @@ namespace isriding.Web.Controllers.Authen
             //table头
             model.HeaderPermissionList =
                 _permissionRepository.GetAll()
-                .Where(p => p.Enabled && p.School_id == 1)
+                .Where(p => p.Enabled)
                 .Select(p => new PermissionModel1
                 {
                     PermissionId = p.Id,

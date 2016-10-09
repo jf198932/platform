@@ -275,7 +275,7 @@ namespace isriding.Web.Controllers.Authen
             //var schoolid = CommonHelper.GetSchoolId();
             model.ButtonList =
                 _permissionRepository.GetAll()
-                    .Where(r => r.Enabled && r.School_id == 1)
+                    .Where(r => r.Enabled)
                     .OrderBy(r => r.OrderSort)
                     .Select(r => new KeyValueModel { Text = r.Name, Value = r.Id.ToString() })
                     .ToList();

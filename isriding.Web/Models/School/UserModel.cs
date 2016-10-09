@@ -51,6 +51,7 @@ namespace isriding.Web.Models.School
                 new SelectListItem {Text = "已认证", Value = "3"},
                 new SelectListItem {Text = "认证失败", Value = "4"}
             };
+            SchoolList = new List<SelectListItem>();
         }
         [Display(Name = "手机号")]
         public string Phone { get; set; }
@@ -60,7 +61,10 @@ namespace isriding.Web.Models.School
         public string Nickname { get; set; }
         [Display(Name = "认证状态")]
         public int? Certification { get; set; }
+        [Display(Name = "学校")]
+        public int School_id { get; set; }
 
         public List<SelectListItem> CertificationList { get; set; }
+        public List<SelectListItem> SchoolList { get; set; }
     }
 }

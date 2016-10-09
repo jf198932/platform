@@ -50,6 +50,7 @@ namespace isriding.Web.Models.School
                 new SelectListItem {Text = "防盗", Value = "2"},
                 new SelectListItem {Text = "租车", Value = "3"}
             };
+            SchoolList = new List<SelectListItem>();
         }
 
         [Display(Name = "类型")]
@@ -58,6 +59,11 @@ namespace isriding.Web.Models.School
         [Display(Name = "名称")]
         public string Name { get; set; }
 
+        [Display(Name = "学校")]
+        public int School_id { get; set; }
+
         public List<SelectListItem> TypeList { get; set; }
+
+        public List<SelectListItem> SchoolList { get; set; }
     }
 }

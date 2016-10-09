@@ -64,6 +64,7 @@ namespace isriding.Web.Controllers.School
                                 t.Areacode,
                                 t.Gps_point,
                                 t.Site_count.ToString(),
+                                t.Time_charge.ToString(),
                                 t.Id.ToString()
                             };
 

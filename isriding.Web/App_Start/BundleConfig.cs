@@ -7,7 +7,7 @@ namespace isriding.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.IgnoreList.Clear();
-
+            BundleTable.EnableOptimizations = false;
             //VENDOR RESOURCES
 
             //~/Bundles/vendor/css

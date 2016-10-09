@@ -38,6 +38,7 @@ namespace isriding.Web.Controllers.School
         public ActionResult List()
         {
             var model = new BikesiteModel();
+            PrepareAllBikesiteModel(model);
             return View(model);
         }
 
@@ -129,7 +130,7 @@ namespace isriding.Web.Controllers.School
                 bikesite.Available_count = model.Available_count;
                 bikesite.Gps_point = model.Gps_point;
                 bikesite.Type = model.Type;
-                //bikesite.School_id = model.School_id;
+                bikesite.School_id = model.School_id;
                 bikesite.Radius = model.Radius;
                 bikesite.Updated_at = DateTime.Now;
                 
@@ -170,6 +171,19 @@ namespace isriding.Web.Controllers.School
                 new SelectListItem {Text = "防盗", Value = "2"},
                 new SelectListItem {Text = "租车", Value = "3"}
             });
+
+            var list = _schoolRepository.GetAll();
+
+            var sessionschoolids = Session["SchoolIds"] as List<int>;
+            if (sessionschoolids != null && sessionschoolids.Count > 0)
+            {
+                list = list.Where(t => sessionschoolids.Contains(t.Id));
+            }
+            var schoollist = list.Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() });
+            model.SchoolList.AddRange(schoollist);
+            model.SchoolList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
+            model.Search.SchoolList.AddRange(schoollist);
+            model.Search.SchoolList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
         }
 
         #region 构建查询表达式
@@ -193,11 +207,23 @@ namespace isriding.Web.Controllers.School
                 Expression<Func<Entities.Bikesite, Boolean>> tmp = t => t.Type == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
-            var sessionschoolids = Session["SchoolIds"] as List<int>;
-            if (sessionschoolids != null && sessionschoolids.Count > 0)
+            if (!string.IsNullOrEmpty(Request["School_id"]))
             {
-                Expression<Func<Entities.Bikesite, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
-                expr = bulider.BuildQueryAnd(expr, tmp);
+                var data = Convert.ToInt32(Request["School_id"].Trim());
+                if (data > 0)
+                {
+                    Expression<Func<Entities.Bikesite, Boolean>> tmp = t => t.School_id == data;
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+                else
+                {
+                    var sessionschoolids = Session["SchoolIds"] as List<int>;
+                    if (sessionschoolids != null && sessionschoolids.Count > 0)
+                    {
+                        Expression<Func<Entities.Bikesite, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
+                        expr = bulider.BuildQueryAnd(expr, tmp);
+                    }
+                }
             }
             //var id = CommonHelper.GetSchoolId();
             //if (id > 1)

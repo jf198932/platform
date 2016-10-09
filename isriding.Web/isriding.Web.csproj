@@ -2237,6 +2237,7 @@
     <Content Include="Content\assets\plugins\select2\select2_locale_en.js.template" />
     <Content Include="Content\assets\plugins\uniform\css\uniform.default.scss" />
     <Content Include="Content\assets\plugins\uniform\README.textile" />
+    <None Include="Properties\PublishProfiles\isridingplatform.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2291,6 +2292,7 @@
     <Compile Include="Controllers\Authen\RoleController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SchoolManage\BikesitemanageController.cs" />
     <Compile Include="Controllers\SchoolManage\TrackController.cs" />
     <Compile Include="Controllers\School\AlarmController.cs" />
     <Compile Include="Controllers\School\BikeController.cs" />
@@ -2456,6 +2458,7 @@
     <Folder Include="Content\assets\plugins\bootstrap-datetimepicker\build\" />
     <Folder Include="Content\assets\plugins\jquery-file-upload\server\node\public\files\thumbnail\" />
     <Folder Include="Content\assets\plugins\jquery-validation\dist\" />
+    <Folder Include="Views\Bikesitemanage\" />
     <Folder Include="Views\Common\" />
   </ItemGroup>
   <PropertyGroup>

@@ -57,6 +57,15 @@
                         </span>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">收费(分/分钟)</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Time_charge, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Time_charge)
+                        </span>
+                    </div>
+                </div>
                 @*<div class="form-group">
                         <label class="control-label col-md-2">已启用</label>
                         <div class="col-md-6">

@@ -51,7 +51,15 @@
                                     <label class="control-label">@Html.DisplayNameFor(t => t.End_site_name)</label>
                                 </div>
                                 <div class="col-xs-7">
-                                    @Html.TextBoxFor(s => s.End_site_name, new { @class = "form-control" })
+                                    @Html.TextBoxFor(s => s.End_site_name, new {@class = "form-control"})
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="col-xs-5 text-center">
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.School_id)</label>
+                                </div>
+                                <div class="col-xs-7">
+                                    @Html.DropDownListFor(s => s.School_id, Model.SchoolList, new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>

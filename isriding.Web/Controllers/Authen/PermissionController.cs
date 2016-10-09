@@ -92,7 +92,7 @@ namespace isriding.Web.Controllers.Authen
             {
                 Mapper.Initialize(t=> t.CreateMap<PermissionModel, Permission>());
                 var permission = Mapper.Map<Permission>(model);
-                permission.School_id = 1;
+                //permission.School_id = 1;
                 _permissionRepository.Insert(permission);
 
                 //SuccessNotification("添加成功");

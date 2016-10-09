@@ -16,10 +16,12 @@ namespace isriding.Web.Controllers.SchoolManage
     public class TrackController : isridingControllerBase
     {
         private readonly IRepository<Track> _trackRepository;
+        private readonly IRepository<Entities.School> _schoolRepository; 
 
-        public TrackController(IRepository<Track> trackRepository)
+        public TrackController(IRepository<Track> trackRepository, IRepository<Entities.School> schoolRepository)
         {
             _trackRepository = trackRepository;
+            _schoolRepository = schoolRepository;
         }
 
         // GET: Track
@@ -31,6 +33,7 @@ namespace isriding.Web.Controllers.SchoolManage
         public ActionResult List()
         {
             var model = new TrackModel();
+            PrepareTrackModel(model);
             return View(model);
         }
 
@@ -65,6 +68,8 @@ namespace isriding.Web.Controllers.SchoolManage
                 Pay_method = t.Pay_method,
                 Remark = t.Remark,
                 Trade_no = t.Trade_no,
+                Payment = t.Payment,
+                School_name = t.Bike.School.Name
             }).ToList();
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -72,6 +77,7 @@ namespace isriding.Web.Controllers.SchoolManage
                              {
                                 sortId++.ToString(),
                                 t.Pay_docno,
+                                t.School_name,
                                 t.User_Name,
                                 t.Ble_name,
                                 t.Start_site_name,
@@ -140,8 +146,11 @@ namespace isriding.Web.Controllers.SchoolManage
             if (!string.IsNullOrEmpty(Request["Pay_status"]))
             {
                 var data = Convert.ToInt32(Request["Pay_status"].Trim());
-                Expression<Func<Entities.Track, Boolean>> tmp = t => t.Pay_status == data;
-                expr = bulider.BuildQueryAnd(expr, tmp);
+                if (data > 0)
+                {
+                    Expression<Func<Entities.Track, Boolean>> tmp = t => t.Pay_status == data;
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
             }
             if (!string.IsNullOrEmpty(Request["Start_site_name"]))
             {
@@ -155,13 +164,25 @@ namespace isriding.Web.Controllers.SchoolManage
                 Expression<Func<Entities.Track, Boolean>> tmp = t => t.Bikesiteend.Name.Contains(data);
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
-            
-            var sessionschoolids = Session["SchoolIds"] as List<int>;
-            if (sessionschoolids != null && sessionschoolids.Count > 0)
+            if (!string.IsNullOrEmpty(Request["School_id"]))
             {
-                Expression<Func<Entities.Track, Boolean>> tmp = t => sessionschoolids.Contains((int)t.Bike.School_id);
-                expr = bulider.BuildQueryAnd(expr, tmp);
+                var data = Convert.ToInt32(Request["School_id"].Trim());
+                if (data > 0)
+                {
+                    Expression<Func<Entities.Track, Boolean>> tmp = t => t.Bike.School_id == data;
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+                else
+                {
+                    var sessionschoolids = Session["SchoolIds"] as List<int>;
+                    if (sessionschoolids != null && sessionschoolids.Count > 0)
+                    {
+                        Expression<Func<Entities.Track, Boolean>> tmp = t => sessionschoolids.Contains((int)t.Bike.School_id);
+                        expr = bulider.BuildQueryAnd(expr, tmp);
+                    }
+                }
             }
+            
             //var id = CommonHelper.GetSchoolId();
             //if (id > 1)
             //{
@@ -169,6 +190,24 @@ namespace isriding.Web.Controllers.SchoolManage
             //    expr = bulider.BuildQueryAnd(expr, tmpSolid);
             //}
             return expr;
+        }
+
+        [NonAction, UnitOfWork]
+        protected virtual void PrepareTrackModel(TrackModel model)
+        {
+            if (model == null)
+                throw new ArgumentNullException("model");
+
+            var list = _schoolRepository.GetAll();
+
+            var sessionschoolids = Session["SchoolIds"] as List<int>;
+            if (sessionschoolids != null && sessionschoolids.Count > 0)
+            {
+                list = list.Where(t => sessionschoolids.Contains(t.Id));
+            }
+            var schoollist = list.Select(b => new SelectListItem {Text = b.Name, Value = b.Id.ToString()});
+            model.Search.SchoolList.AddRange(schoollist);
+            model.Search.SchoolList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
         }
         #endregion
     }

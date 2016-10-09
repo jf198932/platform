@@ -36,6 +36,7 @@ namespace isriding.Web.Controllers.School
         public ActionResult ListU()
         {
             var model = new UserModel();
+            PrepareAllUserModel(model);
             return View("List", model);
         }
 
@@ -165,6 +166,15 @@ namespace isriding.Web.Controllers.School
                 new SelectListItem {Text = "已认证", Value = "3"},
                 new SelectListItem {Text = "认证失败", Value = "4"}
             });
+            var list = _schoolRepository.GetAll();
+            var sessionschoolids = Session["SchoolIds"] as List<int>;
+            if (sessionschoolids != null && sessionschoolids.Count > 0)
+            {
+                list = list.Where(t => sessionschoolids.Contains(t.Id));
+            }
+            var schoollist = list.Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() });
+            model.Search.SchoolList.AddRange(schoollist);
+            model.Search.SchoolList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
         }
         #region 构建查询表达式
         /// <summary>
@@ -199,11 +209,23 @@ namespace isriding.Web.Controllers.School
                 Expression<Func<Entities.User, Boolean>> tmp = t => t.Certification == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
-            var sessionschoolids = Session["SchoolIds"] as List<int>;
-            if (sessionschoolids != null && sessionschoolids.Count > 0)
+            if (!string.IsNullOrEmpty(Request["School_id"]))
             {
-                Expression<Func<Entities.User, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
-                expr = bulider.BuildQueryAnd(expr, tmp);
+                var data = Convert.ToInt32(Request["School_id"].Trim());
+                if (data > 0)
+                {
+                    Expression<Func<Entities.User, Boolean>> tmp = t => t.School_id == data;
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+                else
+                {
+                    var sessionschoolids = Session["SchoolIds"] as List<int>;
+                    if (sessionschoolids != null && sessionschoolids.Count > 0)
+                    {
+                        Expression<Func<Entities.User, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
+                        expr = bulider.BuildQueryAnd(expr, tmp);
+                    }
+                }
             }
             //var id = CommonHelper.GetSchoolId();
             //if (id > 1)
