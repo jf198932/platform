@@ -93,36 +93,6 @@
             </div>
         }
 
-        <!-- 找回密码 -->
-        @using (Html.BeginForm("SendRestPwdEmail", "Home", FormMethod.Post, new { @class = "forget-form" }))
-        {
-            <h3>忘记密码？</h3>
-            <p>
-                请在下面输入您的电子邮件地址来重设密码
-            </p>
-            <div class="form-group">
-                <div class="input-icon">
-                    <i class="fa fa-envelope"></i>
-                    @Html.TextBoxFor(t => t.Email, new { @class = "form-control placeholder-no-fix", autocomplete = "off", placeholder = "邮箱地址" })
-                </div>
-            </div>
-            <div class="alert alert-danger display-hide">
-                <button class="close" data-close="alert"></button>
-                <span>
-                    @Html.ValidationSummary(true)
-                </span>
-            </div>
-            <div class="form-actions">
-                <button type="button" id="back-btn" class="btn">
-                    <i class="m-icon-swapleft"></i> 返回
-                </button>
-                <button type="button" class="btn green pull-right">
-                    确定 <i class="m-icon-swapright m-icon-white"></i>
-                </button>
-            </div>
-        }
-
-
     </div>
 
     <div class="copyright">

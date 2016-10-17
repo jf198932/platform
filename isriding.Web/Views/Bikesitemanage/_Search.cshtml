@@ -1,4 +1,4 @@
-﻿@model isriding.Web.Models.SchoolManage.TrackSearchModel
+﻿@model isriding.Web.Models.SchoolManage.BikesitemanageSearchModel
 <div class="fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -17,49 +17,15 @@
                                     <label class="control-label">@Html.DisplayNameFor(t => t.School_id)</label>
                                 </div>
                                 <div class="col-xs-7">
-                                    @Html.DropDownListFor(s => s.School_id, Model.SchoolList, new { @class = "form-control" })
+                                    @Html.DropDownListFor(s => s.School_id, Model.SchoolList, new {@class = "form-control", id = "ddlSchool" })
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.User_Name)</label>
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.Name)</label>
                                 </div>
                                 <div class="col-xs-7">
-                                    @Html.TextBoxFor(s => s.User_Name, new {@class = "form-control"})
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.Ble_name)</label>
-                                </div>
-                                <div class="col-xs-7">
-                                    @Html.TextBoxFor(s => s.Ble_name, new {@class = "form-control"})
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.Pay_status)</label>
-                                </div>
-                                <div class="col-xs-7">
-                                    @Html.DropDownListFor(s => s.Pay_status, Model.PayStatusList, new { @class = "form-control" })
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.Start_site_name)</label>
-                                </div>
-                                <div class="col-xs-7">
-                                    @Html.TextBoxFor(s => s.Start_site_name, new {@class = "form-control"})
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.End_site_name)</label>
-                                </div>
-                                <div class="col-xs-7">
-                                    @Html.TextBoxFor(s => s.End_site_name, new {@class = "form-control"})
+                                    @Html.DropDownListFor(s => s.Name, Model.BikesiteList, new {@class = "form-control",id="ddlBikesite"})
                                 </div>
                             </div>
                         </div>
@@ -89,3 +55,4 @@
         </div>
     </div>
 </div>
+<input id="hidObj" type="hidden" value="@ViewData["Bikesite"]" />

@@ -227,6 +227,15 @@ namespace isriding.Web.Controllers.School
                     }
                 }
             }
+            else
+            {
+                var sessionschoolids = Session["SchoolIds"] as List<int>;
+                if (sessionschoolids != null && sessionschoolids.Count > 0)
+                {
+                    Expression<Func<Entities.User, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+            }
             //var id = CommonHelper.GetSchoolId();
             //if (id > 1)
             //{

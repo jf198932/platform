@@ -80,6 +80,7 @@ namespace isriding.Web.Controllers.School
                                 t.Type.ToString(),
                                 t.Gps_point,
                                 t.Radius.ToString(),
+                                t.Available_count.ToString(),
                                 t.Id.ToString()
                             };
 
@@ -223,6 +224,15 @@ namespace isriding.Web.Controllers.School
                         Expression<Func<Entities.Bikesite, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
                         expr = bulider.BuildQueryAnd(expr, tmp);
                     }
+                }
+            }
+            else
+            {
+                var sessionschoolids = Session["SchoolIds"] as List<int>;
+                if (sessionschoolids != null && sessionschoolids.Count > 0)
+                {
+                    Expression<Func<Entities.Bikesite, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
+                    expr = bulider.BuildQueryAnd(expr, tmp);
                 }
             }
             //var id = CommonHelper.GetSchoolId();

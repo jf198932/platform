@@ -19,7 +19,7 @@ namespace isriding.Web.Models.School
             InsiteStatusList = new List<SelectListItem>();
             UserList = new List<SelectListItem>();
             BikesiteList = new List<SelectListItem>();
-            
+            SchoolList = new List<SelectListItem>();
             Search = new BikeSearchModel();
         }
 
@@ -62,6 +62,7 @@ namespace isriding.Web.Models.School
         public List<SelectListItem> InsiteStatusList { get; set; }
         public List<SelectListItem> UserList { get; set; }
         public List<SelectListItem> BikesiteList { get; set; }
+        public List<SelectListItem> SchoolList { get; set; }
     }
 
     public class BikeSearchModel
@@ -84,6 +85,7 @@ namespace isriding.Web.Models.School
                 new SelectListItem {Text = "蓝牙锁", Value = "3"},
                 new SelectListItem {Text = "机械锁", Value = "4"}
             };
+            SchoolList = new List<SelectListItem>();
         }
         [Display(Name = "类型")]
         public int? Ble_type { get; set; }
@@ -93,11 +95,18 @@ namespace isriding.Web.Models.School
 
         [Display(Name = "序列号")]
         public string Ble_serial { get; set; }
+
         [Display(Name = "锁状态")]
         public int? Vlock_status { get; set; }
-        
+
+        [Display(Name = "学校")]
+        public int? School_id { get; set; }
+
+
         public List<SelectListItem> VlockStatusList { get; set; }
 
         public List<SelectListItem> TypeList { get; set; }
+
+        public List<SelectListItem> SchoolList { get; set; }
     }
 }

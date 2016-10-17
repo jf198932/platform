@@ -48,6 +48,10 @@
                     "fnRender": function (oObj) {
                         var btnArray = "";
                         btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"OpenTrack('@Url.Action("GetTrackInfo")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 详细信息</a>";
+                        var t = oObj.aData[oObj.aData.length - 4];
+                        if (t === "使用中" || t === "还车未支付" || t === "异常") {
+                            btnArray += " <a href=\"javascript:void(0);\" class=\"btn btn-xs red\" onclick=\"FinishTrack('@Url.Action("SetTrackStatus")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-times\"></i> 结束订单</a>";
+                        }
                         return btnArray;
                     }
                 }
@@ -76,6 +80,20 @@
                 $('#modal-form-track').modal('show');
                 RegisterForm();
             });
+        }
+
+        function FinishTrack(actionUrl, id) {
+            if(confirm("确定要结束该订单？")){
+                //表单初始化
+                $.post(actionUrl, { id: id }, function (data) {
+                    if (data != null) {
+                        alert("成功");
+                        //oTable.fnDraw();
+                        TableManaged.search('@Url.Action("InitDataTable")');
+                    }
+                });
+            }
+
         }
 
         function CloseTrackModal() {

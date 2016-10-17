@@ -251,7 +251,7 @@ namespace isriding.Web.Controllers.Authen
             //var schoolid = CommonHelper.GetSchoolId();
             model.ParentModuleItems.AddRange(
                 _moduleRepository.GetAll()
-                    .Where(m => m.Enabled && m.IsMenu && m.School_id == 1)
+                    .Where(m => m.Enabled && m.IsMenu)
                     .OrderBy(m => m.OrderSort)
                     .Select(m => new SelectListItem {Text = m.Name, Value = m.Id.ToString()}));
             model.ParentModuleItems.Insert(0, new SelectListItem {Text = "--根模块--", Value = ""});

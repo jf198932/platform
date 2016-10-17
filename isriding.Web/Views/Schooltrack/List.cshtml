@@ -1,0 +1,86 @@
+﻿@model isriding.Web.Models.SchoolManage.BikesitemanageModel
+
+@{
+    ViewBag.Title = "车辆使用状况";
+}
+
+@Html.Partial("_Search", Model.Search)
+@Html.Partial("_List")
+@Html.Partial("_ModalSchooltrackInfo")
+@section scripts{
+    <script>
+        var oTable = null;
+        var oTable2 = null;
+
+        $(function() {
+            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
+            var aoColumns = [
+                { "sName": "sort" },
+                { "sName": "schoolname" },
+                { "sName": "rentcount" },
+                { "sName": "readycount" },
+                { "sName": "errorcount" },
+                {
+                    "sName": "action",
+                    "fnRender": function(oObj) {
+                        var btnArray = "";
+                        btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"OpenSchooltrack('@Url.Action("GetSchooltrackInfo")','" + oObj.aData[oObj.aData.length - 2] + "')\"><i class=\"fa fa-gears\"></i> 详细信息</a>";
+                        return btnArray;
+                    }
+                }
+            ];
+
+            oTable = TableManaged.init($("#table1"), actionUrl, aoColumns);
+
+            $('#search_form').keypress(function(e) {
+                if (e.which === 13) {
+                    e.preventDefault(); //取消回车原事件
+                    oTable = TableManaged.init($("#table1"), actionUrl, aoColumns);
+                    TableManaged.search('@Url.Action("InitDataTable")');
+                }
+            });
+        });
+
+        function OpenSchooltrack(actionUrl, id) {
+            $('#modal-form-trackxxx').modal('show');
+            actionUrl += "?rand=" + Math.random() + "&id=" + id;
+            $("#modal-form-trackxxx").draggable({
+                cursor: "move",
+                handle: ".modal-header"
+            });
+            var aoColumns = [
+                { "sName": "sort" },
+                { "sName": "schoolname" },
+                { "sName": "bikename" },
+                { "sName": "username" },
+                { "sName": "starttime" },
+                { "sName": "endtime" },
+                { "sName": "startsite" },
+                { "sName": "endsite" },
+                { "sName": "status" },
+                { "sName": "errorcause" }
+            ];
+            if (oTable2 == null) {
+                oTable2 = TableManaged.init($("#tblDetail"), actionUrl, aoColumns);
+            } else {
+                this.oTable2.fnReloadAjax(actionUrl);
+            }
+        }
+
+        function CloseSchooltrackModal() {
+            $('#modal-form-trackxxx').modal('hide');
+            TableManaged.reset($("#modal-content-track"));
+        }
+
+        function Search(searchUrl,obj) {
+            var filterdata = $("#search_form").serialize();
+            var actionUrl = searchUrl + "?rand=" + Math.random() + "&" + filterdata;
+            if (obj == null) {
+                this.oTable.fnReloadAjax(actionUrl);
+            } else {
+                obj.fnReloadAjax(actionUrl);
+            }
+        }
+    </script>
+
+}

@@ -32,6 +32,7 @@ namespace isriding.Web.Models.School
         public int? Balance { get; set; }
         public int? School_id { get; set; }
         public string School_name { get; set; }
+        public string Img { get; set; }
 
         public UserSearchModel Search { get; set; }
 

@@ -10,6 +10,9 @@ namespace isriding.Web.Models.School
         {
             Created_at = DateTime.Now;
             Updated_at = DateTime.Now;
+            Bike_count = 0;
+            Site_count = 0;
+            Time_charge = 1;
         }
         public int Id { get; set; }
         public DateTime? Created_at { get; set; }

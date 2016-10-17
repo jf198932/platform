@@ -14,10 +14,18 @@
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="col-xs-5 text-center">
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.School_id)</label>
+                                </div>
+                                <div class="col-xs-7">
+                                    @Html.DropDownListFor(s => s.School_id, Model.SchoolList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="col-xs-5 text-center">
                                     <label class="control-label">@Html.DisplayNameFor(t => t.Name)</label>
                                 </div>
                                 <div class="col-xs-7">
-                                    @Html.TextBoxFor(s => s.Name, new { @class = "form-control" })
+                                    @Html.TextBoxFor(s => s.Name, new {@class = "form-control"})
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
@@ -28,20 +36,13 @@
                                     @Html.DropDownListFor(s => s.Type, Model.TypeList, new {@class = "form-control"})
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.School_id)</label>
-                                </div>
-                                <div class="col-xs-7">
-                                    @Html.DropDownListFor(s => s.School_id, Model.SchoolList, new { @class = "form-control" })
-                                </div>
-                            </div>
+
                         </div>
                     </form>
                 </div>
                 <div class="panel-footer" style="padding: 3px 15px">
                     <div class="text-right ">
-                        <button type="button" class="btn btn-danger" onclick="TableManaged.reset($('#search_form'))">
+                        <button type="button" class="btn btn-danger" onclick='TableManaged.reset($("#search_form"))'>
                             <span class="fa fa-ticket"></span> 清空
                         </button>
                         <button type="button" class="btn btn-success" onclick="TableManaged.search('@Url.Action("InitDataTable")')">

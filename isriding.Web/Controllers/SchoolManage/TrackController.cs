@@ -6,8 +6,10 @@ using System.Web;
 using System.Web.Mvc;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
+using Abp.UI;
 using Abp.Web.Models;
 using isriding.Entities;
+using isriding.Web.Extension.Fliter;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.SchoolManage;
 
@@ -16,11 +18,15 @@ namespace isriding.Web.Controllers.SchoolManage
     public class TrackController : isridingControllerBase
     {
         private readonly IRepository<Track> _trackRepository;
+        private readonly IRepository<Bike> _bikeRepository;
+        private readonly IRepository<Bikesite> _bikesiteRepository;
         private readonly IRepository<Entities.School> _schoolRepository; 
 
-        public TrackController(IRepository<Track> trackRepository, IRepository<Entities.School> schoolRepository)
+        public TrackController(IRepository<Track> trackRepository, IRepository<Bike> bikeRepository, IRepository<Bikesite> bikesiteRepository, IRepository<Entities.School> schoolRepository)
         {
             _trackRepository = trackRepository;
+            _bikeRepository = bikeRepository;
+            _bikesiteRepository = bikesiteRepository;
             _schoolRepository = schoolRepository;
         }
 
@@ -29,7 +35,7 @@ namespace isriding.Web.Controllers.SchoolManage
         {
             return RedirectToAction("List");
         }
-
+        [AdminLayout]
         public ActionResult List()
         {
             var model = new TrackModel();
@@ -121,6 +127,28 @@ namespace isriding.Web.Controllers.SchoolManage
             return PartialView(track);
         }
 
+        [UnitOfWork, HttpPost, DontWrapResult]
+        public virtual ActionResult SetTrackStatus(int id)
+        {
+            var track = _trackRepository.Get(id);
+            if(track == null)
+                throw new UserFriendlyException("！错误");
+            if (track.Pay_status < 2)
+            {
+                var bike = _bikeRepository.Get((int) track.Bike_id);
+                bike.Bike_status = 1;
+                _bikeRepository.Update(bike);
+                var bikesite = _bikesiteRepository.Get((int) track.Start_site_id);
+                bikesite.Available_count = bikesite.Available_count + 1;
+                _bikesiteRepository.Update(bikesite);
+            }
+            track.Pay_status = 3;
+            track.Payment = 0;
+            track.Pay_method = "异常结束";
+            _trackRepository.Update(track);
+            return Json(new {result = "成功"});
+        }
+
 
         #region 构建查询表达式
         /// <summary>
@@ -180,6 +208,15 @@ namespace isriding.Web.Controllers.SchoolManage
                         Expression<Func<Entities.Track, Boolean>> tmp = t => sessionschoolids.Contains((int)t.Bike.School_id);
                         expr = bulider.BuildQueryAnd(expr, tmp);
                     }
+                }
+            }
+            else
+            {
+                var sessionschoolids = Session["SchoolIds"] as List<int>;
+                if (sessionschoolids != null && sessionschoolids.Count > 0)
+                {
+                    Expression<Func<Entities.Track, Boolean>> tmp = t => sessionschoolids.Contains((int)t.Bike.School_id);
+                    expr = bulider.BuildQueryAnd(expr, tmp);
                 }
             }
             

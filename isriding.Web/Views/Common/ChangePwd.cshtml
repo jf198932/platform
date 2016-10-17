@@ -1,0 +1,85 @@
+﻿@model isriding.Web.Models.Common.ChangePwdModel
+@{
+    ViewBag.Title = "修改密码";
+}
+
+<div class="fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    @*<span><i class="fa fa-p fa-fw"></i></span>&nbsp;*@
+                    <span style="font-weight: bold;">
+                        修改密码
+                    </span>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <form id="modal-changepwd" class="form-horizontal" action="">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">原来密码</label>
+                                    <div class="col-md-6">
+
+                                        @Html.TextBoxFor(t => t.OldLoginPwd, new {@class = "form-control"})
+
+                                        <span class="help-block">
+                                            @Html.ValidationMessageFor(t => t.OldLoginPwd)
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">新密码</label>
+                                    <div class="col-md-6">
+                                        @Html.TextAreaFor(t => t.NewLoginPwd, new {@class = "form-control"})
+                                        <span class="help-block">
+                                            @Html.ValidationMessageFor(t => t.NewLoginPwd)
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">重复新密码</label>
+                                    <div class="col-md-6">
+                                        @Html.TextBoxFor(t => t.NewLoginPwdConfirm, new {@class = "form-control"})
+                                        <span class="help-block">
+                                            @Html.ValidationMessageFor(t => t.NewLoginPwdConfirm)
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button id="Save" type="button" class="btn btn-primary" onclick="SaveChangePwd()">保存</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(function() {
+            $("#Save").click(function () {
+                if ($('#modal-changepwd').validate().form()) {
+                    var actionUrl = "@Url.Action("ChangePwd", "Common")";
+                    var formData = $("#modal-changepwd").serialize();
+                    $.ajax({
+                        type: 'post',
+                        url: actionUrl,
+                        data: formData,
+                        success: function (result) {
+                            if (result.result === false) {
+                                alert("两次输入密码不一致");
+                            } else {
+                                location.href = "Home/List";
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

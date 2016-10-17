@@ -57,7 +57,7 @@
                         <button type="button" class="btn btn-file" onclick="OpenImport()">
                             <span class="fa fa-warning"></span> 导入追踪器
                         </button>
-                        <button type="button" class="btn btn-danger" onclick="TableManaged.reset($('#search_form'))">
+                        <button type="button" class="btn btn-danger" onclick='TableManaged.reset($("#search_form"))'>
                             <span class="fa fa-ticket"></span> 清空
                         </button>
                         <button type="button" class="btn btn-success" onclick="TableManaged.search('@Url.Action("InitDataTable")')">

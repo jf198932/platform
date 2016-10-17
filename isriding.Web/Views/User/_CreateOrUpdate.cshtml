@@ -1,4 +1,5 @@
-﻿@model isriding.Web.Models.School.UserModel
+﻿@using Castle.Core.Internal
+@model isriding.Web.Models.School.UserModel
 
 @Html.ValidationSummary(false)
 @Html.HiddenFor(model => model.Id)
@@ -87,6 +88,15 @@
                         </span>
                     </div>
                 </div>
+                @if (!Model.Img.IsNullOrEmpty())
+                {
+                    <div class="form-group">
+                        <label class="control-label col-md-3">证件照</label>
+                        <div class="col-md-6">
+                            <img src="@Model.Img" alt="证件照" />
+                        </div>
+                    </div>
+                }
                 @*<div class="form-group">
                         <label class="control-label col-md-2">已启用</label>
                         <div class="col-md-4">

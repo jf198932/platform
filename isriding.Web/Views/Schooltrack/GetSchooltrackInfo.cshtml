@@ -1,0 +1,56 @@
+﻿@model isriding.Web.Models.SchoolManage.SchooltrackDetailModel
+
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+
+<div class="fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span><i class="fa fa-table fa-fw"></i></span>&nbsp;
+                    <span style="font-weight: bold;">
+                        车辆使用状况详情
+                    </span>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table id="tblDetail" class="table datatable table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th width="80">序号</th>
+                                <th>学校名称</th>
+                                <th>车辆编号</th>
+                                <th>状态</th>
+                                <th>异常原因</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var oTable2 = null;
+    function OpenSchooltrack(actionUrl, id) {
+        actionUrl += "?rand=" + Math.random() + "&id=" + id;
+        var aoColumns = [
+            { "sName": "sort" },
+            { "sName": "schoolname" },
+            { "sName": "bikename" },
+            { "sName": "status" },
+            { "sName": "errorcause" }
+        ];
+
+        oTable2 = TableManaged.init($("#tblDetail"), actionUrl, aoColumns);
+    }
+
+    function CloseSchooltrackModal() {
+        $('#modal-form-track').modal('hide');
+        TableManaged.reset($("#modal-content-track"));
+    }
+</script>
