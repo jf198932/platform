@@ -1,247 +1,257 @@
-﻿@model isriding.Web.Models.Chart.TrackChartSearchModel
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.Chart.TrackChartSearchModel
 @{
     ViewBag.Title = "订单交易量";
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
-<div class="fluid">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <span><i class="fa fa-search"></i></span>&nbsp;
-                    <span style="font-weight: bold;">
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
+{
+    <div class="fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span><i class="fa fa-search"></i></span>&nbsp;
+                        <span style="font-weight: bold;">
                         查询条件
                     </span>
-                </div>
-                <div class="panel-body">
-                    <form class="form-horizontal" id="search_form" style="margin: 0 auto; width: 100%;">
-                        <div class="form-group">
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.School_id)</label>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" id="search_form" style="margin: 0 auto; width: 100%;">
+                            <div class="form-group">
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="col-xs-5 text-center">
+                                        <label class="control-label">@Html.DisplayNameFor(t => t.School_id)</label>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        @Html.DropDownListFor(s => s.School_id, Model.SchoolList, new {@class = "form-control"})
+                                    </div>
                                 </div>
-                                <div class="col-xs-7">
-                                    @Html.DropDownListFor(s => s.School_id, Model.SchoolList, new { @class = "form-control" })
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="col-xs-5 text-center">
+                                        <label class="control-label">@Html.DisplayNameFor(t => t.Month)</label>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        @Html.DropDownListFor(s => s.Month, Model.MonthList, new {@class = "form-control"})
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.Month)</label>
-                                </div>
-                                <div class="col-xs-7">
-                                    @Html.DropDownListFor(s => s.Month, Model.MonthList, new { @class = "form-control" })
-                                </div>
-                            </div>
+                        </form>
+                    </div>
+                    <div class="panel-footer" style="padding: 3px 15px">
+                        <div class="text-right ">
+                            <button type="button" class="btn btn-danger" onclick='TableManaged.reset($("#search_form"))'>
+                                <span class="fa fa-ticket"></span> 清空
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="drawchart()">
+                                <span class="fa fa-search"></span> 搜索
+                            </button>
                         </div>
-                    </form>
-                </div>
-                <div class="panel-footer" style="padding: 3px 15px">
-                    <div class="text-right ">
-                        <button type="button" class="btn btn-danger" onclick='TableManaged.reset($("#search_form"))'>
-                            <span class="fa fa-ticket"></span> 清空
-                        </button>
-                        <button type="button" class="btn btn-success" onclick="drawchart()">
-                            <span class="fa fa-search"></span> 搜索
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="fluid">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <span><i class="fa fa-table fa-fw"></i></span>&nbsp;
-                    <span style="font-weight: bold;">
+    <div class="fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span><i class="fa fa-table fa-fw"></i></span>&nbsp;
+                        <span style="font-weight: bold;">
                         柱状图
                     </span>
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <canvas id="myChart" height="45"></canvas>
-                        <canvas id="myChart2" height="45"></canvas>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <canvas id="myChart" height="45"></canvas>
+                            <canvas id="myChart2" height="45"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 
-@section scripts{
-    <script src="~/Scripts/Chart.js"></script>
-    <script>
-        var myChart = null;
-        var myChart2 = null;
-        $(function () {
-            $('#search_form').keypress(function (e) {
-                if (e.which === 13) {
-                    e.preventDefault();//取消回车原事件
-                    drawchart();
-                }
+    @section scripts{
+        <script src="~/Scripts/Chart.js"></script>
+        <script>
+            var myChart = null;
+            var myChart2 = null;
+            $(function() {
+                $('#search_form').keypress(function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault(); //取消回车原事件
+                        drawchart();
+                    }
+                });
+                drawchart();
             });
-            drawchart();
-        });
 
-        function drawchart() {
+            function drawchart() {
 
-            var filterdata = $("#search_form").serialize();
-            var actionUrl = '@Url.Action("GetTrackChartData")' + "?rand=" + Math.random() + "&" + filterdata;
-            $.ajax({
-                url: actionUrl,
-                type: 'get',
-                data: {},
-                dataType: 'json',
-                success: function (response) {
-                    //Get context with jQuery - using jQuery's .get() method.
-                    var ctx = document.getElementById("myChart").getContext("2d");
-                    var ctx2 = document.getElementById("myChart2").getContext("2d");
-                    //This will get the first returned node in the jQuery collection.
-                    var data = {
-                        labels: response.months,
-                        datasets: [
-                            {
-                                label: "订单量",
-                                backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                                borderColor: 'rgba(255, 206, 86, 1)',
-                                borderWidth: 1,
-                                data: response.datars
-                            },
-                            //{
-                            //    label: "交易额",
-                            //    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            //    borderColor: 'rgba(75, 192, 192, 1)',
-                            //    borderWidth: 1,
-                            //    data: response.datacs
-                            //}
-                        ]
-                    }
-                    var data2 = {
-                        labels: response.months,
-                        datasets: [
-                            //{
-                            //    label: "订单量",
-                            //    backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                            //    borderColor: 'rgba(255, 206, 86, 1)',
-                            //    borderWidth: 1,
-                            //    data: response.datars
-                            //},
-                            {
-                                label: "交易额",
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 1,
-                                data: response.datacs
-                            }
-                        ]
-                    }
-
-                    var barChartData = {
-                        //type: 'horizontalBar',
-                        type: 'bar',
-                        data: data,
-                        options: {
-                            scales: {
-                                xAxes: [
+                var filterdata = $("#search_form").serialize();
+                var actionUrl = '@Url.Action("GetTrackChartData")' + "?rand=" + Math.random() + "&" + filterdata;
+                $.ajax({
+                    url: actionUrl,
+                    type: 'get',
+                    data: {},
+                    dataType: 'json',
+                    success: function(response) {
+                        //Get context with jQuery - using jQuery's .get() method.
+                        var ctx = document.getElementById("myChart").getContext("2d");
+                        var ctx2 = document.getElementById("myChart2").getContext("2d");
+                        //This will get the first returned node in the jQuery collection.
+                        var data = {
+                            labels: response.months,
+                            datasets: [
                                 {
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }],
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
-                            },
-                            animation: {
-                                onComplete: function () {
+                                    label: "订单量",
+                                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                                    borderColor: 'rgba(255, 206, 86, 1)',
+                                    borderWidth: 1,
+                                    data: response.datars
+                                },
+                                //{
+                                //    label: "交易额",
+                                //    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                //    borderColor: 'rgba(75, 192, 192, 1)',
+                                //    borderWidth: 1,
+                                //    data: response.datacs
+                                //}
+                            ]
+                        }
+                        var data2 = {
+                            labels: response.months,
+                            datasets: [
+                                //{
+                                //    label: "订单量",
+                                //    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                                //    borderColor: 'rgba(255, 206, 86, 1)',
+                                //    borderWidth: 1,
+                                //    data: response.datars
+                                //},
+                                {
+                                    label: "交易额",
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1,
+                                    data: response.datacs
+                                }
+                            ]
+                        }
 
-                                    var ctx = this.chart.ctx;
-                                    ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, 'normal', Chart.defaults.global.defaultFontFamily);
-                                    ctx.fillStyle = this.chart.config.options.defaultFontColor;
-                                    ctx.textAlign = 'center';
-                                    ctx.textBaseline = 'bottom';
-                                    this.data.datasets.forEach(function (dataset) {
-                                        for (var i = 0; i < dataset.data.length; i++) {
-                                            var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
-                                            ctx.fillText(dataset.data[i], model.x, model.y - 5);
+                        var barChartData = {
+                            //type: 'horizontalBar',
+                            type: 'bar',
+                            data: data,
+                            options: {
+                                scales: {
+                                    xAxes: [
+                                        {
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
                                         }
-                                    });
-                                    //this.data.datasets.forEach(function(dataset) {
-                                    //    dataset.bars.forEach(function(bar) {
-                                    //        ctx.fillText(bar.value, bar.x, bar.y - 5);
-                                    //    });
-                                    //});
+                                    ],
+                                    yAxes: [
+                                        {
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    ]
+                                },
+                                animation: {
+                                    onComplete: function() {
+
+                                        var ctx = this.chart.ctx;
+                                        ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, 'normal', Chart.defaults.global.defaultFontFamily);
+                                        ctx.fillStyle = this.chart.config.options.defaultFontColor;
+                                        ctx.textAlign = 'center';
+                                        ctx.textBaseline = 'bottom';
+                                        this.data.datasets.forEach(function(dataset) {
+                                            for (var i = 0; i < dataset.data.length; i++) {
+                                                var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
+                                                ctx.fillText(dataset.data[i], model.x, model.y - 5);
+                                            }
+                                        });
+                                        //this.data.datasets.forEach(function(dataset) {
+                                        //    dataset.bars.forEach(function(bar) {
+                                        //        ctx.fillText(bar.value, bar.x, bar.y - 5);
+                                        //    });
+                                        //});
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    var barChartData2 = {
-                        //type: 'horizontalBar',
-                        type: 'bar',
-                        data: data2,
-                        options: {
-                            scales: {
-                                xAxes: [
-                                {
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }],
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
-                            },
-                            animation: {
-                                onComplete: function () {
-
-                                    var ctx = this.chart.ctx;
-                                    ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, 'normal', Chart.defaults.global.defaultFontFamily);
-                                    ctx.fillStyle = this.chart.config.options.defaultFontColor;
-                                    ctx.textAlign = 'center';
-                                    ctx.textBaseline = 'bottom';
-                                    this.data.datasets.forEach(function (dataset) {
-                                        for (var i = 0; i < dataset.data.length; i++) {
-                                            var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
-                                            ctx.fillText(dataset.data[i], model.x, model.y - 5);
+                        var barChartData2 = {
+                            //type: 'horizontalBar',
+                            type: 'bar',
+                            data: data2,
+                            options: {
+                                scales: {
+                                    xAxes: [
+                                        {
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
                                         }
-                                    });
-                                    //this.data.datasets.forEach(function(dataset) {
-                                    //    dataset.bars.forEach(function(bar) {
-                                    //        ctx.fillText(bar.value, bar.x, bar.y - 5);
-                                    //    });
-                                    //});
+                                    ],
+                                    yAxes: [
+                                        {
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    ]
+                                },
+                                animation: {
+                                    onComplete: function() {
+
+                                        var ctx = this.chart.ctx;
+                                        ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, 'normal', Chart.defaults.global.defaultFontFamily);
+                                        ctx.fillStyle = this.chart.config.options.defaultFontColor;
+                                        ctx.textAlign = 'center';
+                                        ctx.textBaseline = 'bottom';
+                                        this.data.datasets.forEach(function(dataset) {
+                                            for (var i = 0; i < dataset.data.length; i++) {
+                                                var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
+                                                ctx.fillText(dataset.data[i], model.x, model.y - 5);
+                                            }
+                                        });
+                                        //this.data.datasets.forEach(function(dataset) {
+                                        //    dataset.bars.forEach(function(bar) {
+                                        //        ctx.fillText(bar.value, bar.x, bar.y - 5);
+                                        //    });
+                                        //});
+                                    }
                                 }
                             }
                         }
-                    }
 
 
-                    if (myChart == null) {
-                        myChart = new Chart(ctx, barChartData);
-                    } else {
-                        myChart.destroy();
-                        myChart = new Chart(ctx, barChartData);
-                    }
-                    if (myChart2 == null) {
-                        myChart2 = new Chart(ctx2, barChartData2);
-                    } else {
-                        myChart2.destroy();
-                        myChart2 = new Chart(ctx2, barChartData2);
-                    }
+                        if (myChart == null) {
+                            myChart = new Chart(ctx, barChartData);
+                        } else {
+                            myChart.destroy();
+                            myChart = new Chart(ctx, barChartData);
+                        }
+                        if (myChart2 == null) {
+                            myChart2 = new Chart(ctx2, barChartData2);
+                        } else {
+                            myChart2.destroy();
+                            myChart2 = new Chart(ctx2, barChartData2);
+                        }
 
-                }
-            });
-        }
-    </script>
+                    }
+                });
+            }
+        </script>
+    }
 }
-
 
 
 

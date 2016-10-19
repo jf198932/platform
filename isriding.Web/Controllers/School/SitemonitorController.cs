@@ -18,12 +18,14 @@ namespace isriding.Web.Controllers.School
     public class SitemonitorController : isridingControllerBase
     {
         private readonly IRepository<Entities.Sitemonitor> _sitemonitorRepository;
-        private readonly IRepository<Entities.Bikesite> _bikesiteRepository; 
+        private readonly IRepository<Entities.Bikesite> _bikesiteRepository;
+        private readonly IRepository<Entities.School> _schoolRepository;
 
-        public SitemonitorController(IRepository<Entities.Sitemonitor> sitemonitorRepository, IRepository<Entities.Bikesite> bikesiteRepository)
+        public SitemonitorController(IRepository<Entities.Sitemonitor> sitemonitorRepository, IRepository<Entities.Bikesite> bikesiteRepository, IRepository<Entities.School> schoolRepository)
         {
             _sitemonitorRepository = sitemonitorRepository;
             _bikesiteRepository = bikesiteRepository;
+            _schoolRepository = schoolRepository;
         }
 
         // GET: Sitemonitor
@@ -58,7 +60,8 @@ namespace isriding.Web.Controllers.School
                 Bikesite_id = t.Bikesite_id,
                 Bikesite_name = t.Bikesite == null? "": t.Bikesite.Name,
                 Status = t.Status??1,
-                Enabled = t.Enabled??1
+                Enabled = t.Enabled,
+                School_name = t.Bikesite.School.Name
             }).ToList();
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -67,6 +70,7 @@ namespace isriding.Web.Controllers.School
                                 sortId++.ToString(),
                                 t.Name,
                                 t.Bikesite_name,
+                                t.School_name,
                                 t.Status.ToString(),
                                 t.Enabled.ToString(),
                                 t.Id.ToString()
@@ -116,7 +120,7 @@ namespace isriding.Web.Controllers.School
                 sitemonitor.Name = model.Name;
                 sitemonitor.Bikesite_id = model.Bikesite_id;
                 sitemonitor.Status = model.Status;
-
+                sitemonitor.Enabled = model.Enabled;
                 _sitemonitorRepository.Update(sitemonitor);
                 //role = model.ToEntity(role);
                 //_roleService.UpdateRole(role);
@@ -151,6 +155,17 @@ namespace isriding.Web.Controllers.School
             model.BikesiteList.Insert(0, new SelectListItem {Text = "---请选择---", Value = "0"});
             model.Search.BikesiteList.AddRange(list);
             model.Search.BikesiteList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
+
+            var slist = _schoolRepository.GetAll();
+
+            var sessionschoolids = Session["SchoolIds"] as List<int>;
+            if (sessionschoolids != null && sessionschoolids.Count > 0)
+            {
+                slist = slist.Where(t => sessionschoolids.Contains(t.Id));
+            }
+            var schoollist = slist.ToList().Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() });
+            model.Search.SchoolList.AddRange(schoollist);
+            model.Search.SchoolList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
         }
         #region 构建查询表达式
         /// <summary>
@@ -181,9 +196,36 @@ namespace isriding.Web.Controllers.School
             }
             if (!string.IsNullOrEmpty(Request["Enabled"]) && Request["Enabled"].Trim() != "-1")
             {
-                var data = Convert.ToInt32(Request["Enabled"].Trim());
+                var data = Convert.ToInt32(Request["Enabled"].Trim()) == 1;
                 Expression<Func<Entities.Sitemonitor, Boolean>> tmp = t => t.Enabled == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
+            }
+            if (!string.IsNullOrEmpty(Request["School_id"]))
+            {
+                var data = Convert.ToInt32(Request["School_id"].Trim());
+                if (data > 0)
+                {
+                    Expression<Func<Entities.Sitemonitor, Boolean>> tmp = t => t.Bikesite.School_id == data;
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+                else
+                {
+                    var sessionschoolids = Session["SchoolIds"] as List<int>;
+                    if (sessionschoolids != null && sessionschoolids.Count > 0)
+                    {
+                        Expression<Func<Entities.Sitemonitor, Boolean>> tmp = t => sessionschoolids.Contains((int)t.Bikesite.School_id);
+                        expr = bulider.BuildQueryAnd(expr, tmp);
+                    }
+                }
+            }
+            else
+            {
+                var sessionschoolids = Session["SchoolIds"] as List<int>;
+                if (sessionschoolids != null && sessionschoolids.Count > 0)
+                {
+                    Expression<Func<Entities.Sitemonitor, Boolean>> tmp = t => sessionschoolids.Contains((int)t.Bikesite.School_id);
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
             }
             return expr;
         }

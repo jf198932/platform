@@ -1,18 +1,21 @@
-﻿@model isriding.Web.Models.Authen.BackUserModel
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.Authen.BackUserModel
 @{
     ViewBag.Title = "后台管理员管理";
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
+{
+    @Html.Partial("_Search", Model.Search)
+    @Html.Partial("_List")
+    @Html.Partial("Modal")
 
-@Html.Partial("_Search", Model.Search)
-@Html.Partial("_List")
-@Html.Partial("Modal")
-
-@section scripts{
-    <script>
+    @section scripts{
+        <script>
         var oTable = null;
 
         $(function() {
-            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
+            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random() + "&" + $("#search_form").serialize();
             var aoColumns = [
                 { "sName": "sort" },
                 { "sName": "loginname" },
@@ -38,7 +41,19 @@
                     "fnRender": function(oObj) {
                         var editUrl = '@Url.Action("Edit")';
                         var deleteUrl = '@Url.Action("Delete")';
-                        return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
+
+                        var render = "";
+                        @if (buttonList.Any(t => t.Name.ToLower() == "编辑"))
+                        {
+                            <text>render += TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ';</text>
+                        }
+                        @if (buttonList.Any(t => t.Name.ToLower() == "删除"))
+                        {
+                            <text>render += TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);</text>
+                        }
+                        return render;
+
+                        //return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
                     }
                 }
             ];
@@ -68,5 +83,6 @@
         function Save() {
             SaveModal(oTable);
         }
-    </script>
+        </script>
+    }
 }

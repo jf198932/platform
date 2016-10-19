@@ -1,4 +1,8 @@
-﻿@model isriding.Web.Models.School.UserSearchModel
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.School.UserSearchModel
+@{
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
+}
 <div class="fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -72,10 +76,12 @@
                         <button type="button" class="btn btn-success" onclick="TableManaged.search('@Url.Action("InitDataTable")')">
                             <span class="fa fa-search"></span> 搜索
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="Create('@Url.Action("Create")')">
-                            <span class="fa fa-plus"></span> 添加
-                        </button>
-
+                        @if (buttonList != null && buttonList.Any(t => t.Name == "新增"))
+                        {
+                            <button type="button" class="btn btn-primary" onclick="Create('@Url.Action("Create")')">
+                                <span class="fa fa-plus"></span> 添加
+                            </button>
+                        }
                     </div>
                 </div>
             </div>

@@ -14,7 +14,7 @@ namespace isriding.Entities
         public virtual string Name { get; set; }
         public virtual int? Bikesite_id { get; set; }
         public virtual int? Status { get; set; }
-        public virtual int? Enabled { get; set; }
+        public virtual bool Enabled { get; set; }
 
         [ForeignKey("Bikesite_id")]
         public virtual Bikesite Bikesite { get; set; }

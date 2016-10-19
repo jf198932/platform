@@ -21,6 +21,12 @@ namespace isriding.Web.Models.School
             BikesiteList = new List<SelectListItem>();
             SchoolList = new List<SelectListItem>();
             Search = new BikeSearchModel();
+            RentList = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "--- 请选择 ---", Value = "-1"},
+                new SelectListItem {Text = "不能", Value = "0", Selected = true},
+                new SelectListItem {Text = "能", Value = "1"}
+            };
         }
 
         public int Id { get; set; }
@@ -63,6 +69,7 @@ namespace isriding.Web.Models.School
         public List<SelectListItem> UserList { get; set; }
         public List<SelectListItem> BikesiteList { get; set; }
         public List<SelectListItem> SchoolList { get; set; }
+        public List<SelectListItem> RentList { get; set; } 
     }
 
     public class BikeSearchModel
@@ -78,12 +85,18 @@ namespace isriding.Web.Models.School
                 new SelectListItem {Text = "异常(已推送)", Value = "4"},
                 new SelectListItem {Text = "报警", Value = "5"}
             };
-            TypeList = new List<SelectListItem>() {
+            TypeList = new List<SelectListItem> {
                 new SelectListItem { Text = "--- 请选择 ---", Value = "0", Selected = true},
                 new SelectListItem {Text = "追踪器", Value = "1"},
                 new SelectListItem {Text = "智能锁", Value = "2"},
                 new SelectListItem {Text = "蓝牙锁", Value = "3"},
                 new SelectListItem {Text = "机械锁", Value = "4"}
+            };
+            RentList = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "--- 请选择 ---", Value = "-1", Selected = true},
+                new SelectListItem {Text = "不能", Value = "0"},
+                new SelectListItem {Text = "能", Value = "1"}
             };
             SchoolList = new List<SelectListItem>();
         }
@@ -102,11 +115,16 @@ namespace isriding.Web.Models.School
         [Display(Name = "学校")]
         public int? School_id { get; set; }
 
+        [Display(Name = "租车")]
+        public int? Rent_type { get; set; }
+
 
         public List<SelectListItem> VlockStatusList { get; set; }
 
         public List<SelectListItem> TypeList { get; set; }
 
         public List<SelectListItem> SchoolList { get; set; }
+
+        public List<SelectListItem> RentList { get; set; }
     }
 }

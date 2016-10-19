@@ -1,104 +1,111 @@
-﻿@model isriding.Web.Models.SchoolManage.TrackModel
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.SchoolManage.TrackModel
 
 @{
     ViewBag.Title = "租车记录";
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
+{
+    @Html.Partial("_Search", Model.Search)
+    @Html.Partial("_List")
+    @Html.Partial("_ModalTrackInfo")
+    @section scripts{
+        <script>
+            var oTable = null;
 
-@Html.Partial("_Search", Model.Search)
-@Html.Partial("_List")
-@Html.Partial("_ModalTrackInfo")
-@section scripts{
-    <script>
-        var oTable = null;
+            $(function() {
+                var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random() + "&" + $("#search_form").serialize();
+                var aoColumns = [
+                    { "sName": "sort" },
+                    { "sName": "school_name" },
+                    { "sName": "pay_docno" },
+                    { "sName": "user_name" },
+                    { "sName": "ble_name" },
+                    { "sName": "start_site_name" },
+                    { "sName": "start_time" },
+                    { "sName": "end_site_name" },
+                    { "sName": "end_time" },
+                    {
+                        "sName": "pay_status",
+                        "fnRender": function(oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 4];
+                            if (t === "1") {
+                                render = '使用中';
+                            } else if (t === "2") {
+                                render = '还车未支付';
+                            } else if (t === "3") {
+                                render = '已支付';
+                            } else {
+                                render = '异常';
+                            }
 
-        $(function() {
-            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
-            var aoColumns = [
-                { "sName": "sort" },
-                { "sName": "school_name" },
-                { "sName": "pay_docno" },
-                { "sName": "user_name" },
-                { "sName": "ble_name" },
-                { "sName": "start_site_name" },
-                { "sName": "start_time" },
-                { "sName": "end_site_name" },
-                { "sName": "end_time" },
-                {
-                    "sName": "pay_status",
-                    "fnRender": function (oObj) {
-                        var render;
-                        var t = oObj.aData[oObj.aData.length-4];
-                        if (t === "1") {
-                            render = '使用中';
-                        } else if (t === "2") {
-                            render = '还车未支付';
-                        } else if (t === "3") {
-                            render = '已支付';
-                        } else {
-                            render = '异常';
+                            return render;
                         }
-
-                        return render;
-                    }
-                },
-                { "sName": "pay_method" },
-                { "sName": "payment" },
-                {
-                    "sName": "action",
-                    "fnRender": function (oObj) {
-                        var btnArray = "";
-                        btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"OpenTrack('@Url.Action("GetTrackInfo")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 详细信息</a>";
-                        var t = oObj.aData[oObj.aData.length - 4];
-                        if (t === "使用中" || t === "还车未支付" || t === "异常") {
-                            btnArray += " <a href=\"javascript:void(0);\" class=\"btn btn-xs red\" onclick=\"FinishTrack('@Url.Action("SetTrackStatus")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-times\"></i> 结束订单</a>";
+                    },
+                    { "sName": "pay_method" },
+                    { "sName": "payment" },
+                    {
+                        "sName": "action",
+                        "fnRender": function(oObj) {
+                            var btnArray = "";
+                            btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"OpenTrack('@Url.Action("GetTrackInfo")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 详细信息</a>";
+                            var t = oObj.aData[oObj.aData.length - 4];
+                            if (t === "使用中" || t === "还车未支付" || t === "异常") {
+                                @if (buttonList.Any(t => t.Name.ToLower() == "删除"))
+                                {
+                                    <text>btnArray += " <a href=\"javascript:void(0);\" class=\"btn btn-xs red\" onclick=\"FinishTrack('@Url.Action("SetTrackStatus")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-times\"></i> 结束订单</a>";</text>
+                                }
+                            }
+                            return btnArray;
                         }
-                        return btnArray;
                     }
-                }
-            ];
+                ];
 
-            oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+                oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
 
-            $('#search_form').keypress(function (e) {
-                if (e.which === 13) {
-                    e.preventDefault();//取消回车原事件
-                    TableManaged.search('@Url.Action("InitDataTable")');
-                }
-            });
-        });
-
-        function OpenTrack(actionUrl, id) {
-            var url = actionUrl + "/" + id;
-            //表单初始化
-            $.get(url, function (data) {
-                $("#modal-form-track").draggable({
-                    cursor: "move",
-                    handle: ".modal-header"
-                });
-                $("#modal-content-track").html(data);
-                $(".modal-title-track").html("订单详情");
-                $('#modal-form-track').modal('show');
-                RegisterForm();
-            });
-        }
-
-        function FinishTrack(actionUrl, id) {
-            if(confirm("确定要结束该订单？")){
-                //表单初始化
-                $.post(actionUrl, { id: id }, function (data) {
-                    if (data != null) {
-                        alert("成功");
-                        //oTable.fnDraw();
+                $('#search_form').keypress(function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault(); //取消回车原事件
                         TableManaged.search('@Url.Action("InitDataTable")');
                     }
                 });
+            });
+
+            function OpenTrack(actionUrl, id) {
+                var url = actionUrl + "/" + id;
+                //表单初始化
+                $.get(url, function(data) {
+                    $("#modal-form-track").draggable({
+                        cursor: "move",
+                        handle: ".modal-header"
+                    });
+                    $("#modal-content-track").html(data);
+                    $(".modal-title-track").html("订单详情");
+                    $('#modal-form-track').modal('show');
+                    RegisterForm();
+                });
             }
 
-        }
+            function FinishTrack(actionUrl, id) {
+                if (confirm("确定要结束该订单？")) {
+                    //表单初始化
+                    $.post(actionUrl, { id: id }, function(data) {
+                        if (data != null) {
+                            alert("成功");
+                            //oTable.fnDraw();
+                            TableManaged.search('@Url.Action("InitDataTable")');
+                        }
+                    });
+                }
 
-        function CloseTrackModal() {
-            $('#modal-form-track').modal('hide');
-            TableManaged.reset($("#modal-content-track"));
-        }
-    </script>
+            }
+
+            function CloseTrackModal() {
+                $('#modal-form-track').modal('hide');
+                TableManaged.reset($("#modal-content-track"));
+            }
+        </script>
+    }
 }

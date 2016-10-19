@@ -68,7 +68,8 @@ namespace isriding.Web.Controllers.School
                 Radius = t.Radius,
                 Bike_count = t.Bike_count,
                 Available_count = t.Available_count,
-                School_name = t.School.Name
+                School_name = t.School.Name,
+                Enable = t.Enable
             }).ToList();
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -81,6 +82,7 @@ namespace isriding.Web.Controllers.School
                                 t.Gps_point,
                                 t.Radius.ToString(),
                                 t.Available_count.ToString(),
+                                t.Enable.ToString(),
                                 t.Id.ToString()
                             };
 
@@ -133,6 +135,7 @@ namespace isriding.Web.Controllers.School
                 bikesite.Type = model.Type;
                 bikesite.School_id = model.School_id;
                 bikesite.Radius = model.Radius;
+                bikesite.Enable = model.Enable;
                 bikesite.Updated_at = DateTime.Now;
                 
                 bikesite = _bikesiteRepository.Update(bikesite);
@@ -180,7 +183,7 @@ namespace isriding.Web.Controllers.School
             {
                 list = list.Where(t => sessionschoolids.Contains(t.Id));
             }
-            var schoollist = list.Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() });
+            var schoollist = list.ToList().Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() });
             model.SchoolList.AddRange(schoollist);
             model.SchoolList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
             model.Search.SchoolList.AddRange(schoollist);
@@ -206,6 +209,12 @@ namespace isriding.Web.Controllers.School
             {
                 var data = Convert.ToInt32(Request["Type"].Trim());
                 Expression<Func<Entities.Bikesite, Boolean>> tmp = t => t.Type == data;
+                expr = bulider.BuildQueryAnd(expr, tmp);
+            }
+            if (!string.IsNullOrEmpty(Request["Enable"]) && Request["Enable"].Trim() != "-1")
+            {
+                var data = Convert.ToInt32(Request["Enable"].Trim()) == 1;
+                Expression<Func<Entities.Bikesite, Boolean>> tmp = t => t.Enable == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
             if (!string.IsNullOrEmpty(Request["School_id"]))

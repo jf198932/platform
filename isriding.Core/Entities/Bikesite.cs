@@ -34,6 +34,7 @@ namespace isriding.Entities
         public virtual int? Radius { get; set; }
         public virtual int? Bike_count { get; set; }
         public virtual int? Available_count { get; set; }
+        public virtual bool Enable { get; set; }
 
         public virtual int? School_id { get; set; }
         [ForeignKey("School_id")]

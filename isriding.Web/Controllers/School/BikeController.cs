@@ -24,12 +24,14 @@ namespace isriding.Web.Controllers.School
         private readonly IRepository<Bike> _bikeRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<Bikesite> _bikesiteRepository;
+        private readonly IRepository<Entities.School> _schoolRepository;
 
-        public BikeController(IRepository<Bike> bikeRepository, IRepository<User> userRepository, IRepository<Bikesite> bikesiteRepository)
+        public BikeController(IRepository<Bike> bikeRepository, IRepository<User> userRepository, IRepository<Bikesite> bikesiteRepository,IRepository<Entities.School> schoolRepository)
         {
             _bikeRepository = bikeRepository;
             _userRepository = userRepository;
             _bikesiteRepository = bikesiteRepository;
+            _schoolRepository = schoolRepository;
         }
 
         // GET: Bike
@@ -44,6 +46,7 @@ namespace isriding.Web.Controllers.School
         public ActionResult List()
         {
             BikeModel model = new BikeModel();
+            PrepareAllBikeModel(model);
             return View(model);
         }
 
@@ -79,7 +82,8 @@ namespace isriding.Web.Controllers.School
                 User_name = t.User == null ? "" : t.User.Name,
                 Phone = t.User == null ? "" : t.User.Phone,
                 School_id = t.School_id,
-                School_name = t.School.Name
+                School_name = t.School.Name,
+                Rent_type = t.rent_type
             }).ToList();
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -94,7 +98,7 @@ namespace isriding.Web.Controllers.School
                                 t.Bikesite_name,
                                 t.Phone,
                                 t.Position,
-                                t.Battery.ToString(),
+                                t.Rent_type.ToString(),
                                 t.Insite_status.ToString(),
                                 t.Id.ToString()
                             };
@@ -303,6 +307,19 @@ namespace isriding.Web.Controllers.School
                 new SelectListItem {Text = "在桩", Value = "1"},
                 new SelectListItem {Text = "离桩", Value = "2"}
             });
+
+            var list = _schoolRepository.GetAll();
+
+            var sessionschoolids = Session["SchoolIds"] as List<int>;
+            if (sessionschoolids != null && sessionschoolids.Count > 0)
+            {
+                list = list.Where(t => sessionschoolids.Contains(t.Id));
+            }
+            var schoollist = list.Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() });
+            model.SchoolList.AddRange(schoollist);
+            model.SchoolList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
+            model.Search.SchoolList.AddRange(schoollist);
+            model.Search.SchoolList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
         }
 
         public bool CheckTemplate(DataTable dt)
@@ -376,18 +393,51 @@ namespace isriding.Web.Controllers.School
                 Expression<Func<Entities.Bike, Boolean>> tmp = t => t.Ble_type >= data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
-            var sessionschoolids = Session["SchoolIds"] as List<int>;
-            if (sessionschoolids != null && sessionschoolids.Count > 0)
+            if (!string.IsNullOrEmpty(Request["Rent_type"]) && Request["Rent_type"].Trim() != "-1")
             {
-                Expression<Func<Entities.Bike, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
+                var data = Convert.ToInt32(Request["Rent_type"].Trim());
+                Expression<Func<Entities.Bike, Boolean>> tmp = t => t.rent_type == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
-                //var id = CommonHelper.GetSchoolId();
-                //if (id > 1)
-                //{
-                //    Expression<Func<Entities.Bike, Boolean>> tmpSolid = t => t.School_id == id;
-                //    expr = bulider.BuildQueryAnd(expr, tmpSolid);
-                //}
+            if (!string.IsNullOrEmpty(Request["School_id"]))
+            {
+                var data = Convert.ToInt32(Request["School_id"].Trim());
+                if (data > 0)
+                {
+                    Expression<Func<Entities.Bike, Boolean>> tmp = t => t.School_id == data;
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+                else
+                {
+                    var sessionschoolids = Session["SchoolIds"] as List<int>;
+                    if (sessionschoolids != null && sessionschoolids.Count > 0)
+                    {
+                        Expression<Func<Entities.Bike, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
+                        expr = bulider.BuildQueryAnd(expr, tmp);
+                    }
+                }
+            }
+            else
+            {
+                var sessionschoolids = Session["SchoolIds"] as List<int>;
+                if (sessionschoolids != null && sessionschoolids.Count > 0)
+                {
+                    Expression<Func<Entities.Bike, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+            }
+            //var sessionschoolids = Session["SchoolIds"] as List<int>;
+            //if (sessionschoolids != null && sessionschoolids.Count > 0)
+            //{
+            //    Expression<Func<Entities.Bike, Boolean>> tmp = t => sessionschoolids.Contains((int)t.School_id);
+            //    expr = bulider.BuildQueryAnd(expr, tmp);
+            //}
+            //var id = CommonHelper.GetSchoolId();
+            //if (id > 1)
+            //{
+            //    Expression<Func<Entities.Bike, Boolean>> tmpSolid = t => t.School_id == id;
+            //    expr = bulider.BuildQueryAnd(expr, tmpSolid);
+            //}
             return expr;
         }
 

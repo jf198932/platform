@@ -11,6 +11,7 @@ using isriding.Web.Helper;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.School;
 using AutoMapper;
+using isriding.Web.Extension.Fliter;
 
 namespace isriding.Web.Controllers.School
 {
@@ -28,7 +29,7 @@ namespace isriding.Web.Controllers.School
         {
             return RedirectToAction("List");
         }
-
+        [AdminLayout]
         public ActionResult List()
         {
             var model = new VersionUpdateModel();

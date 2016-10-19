@@ -1,78 +1,93 @@
-﻿@model isriding.Web.Models.School.UserModel
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.School.UserModel
 @{
     ViewBag.Title = "会员管理";
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
+{
+    @Html.Partial("_Search", Model.Search)
+    @Html.Partial("_List")
 
-@Html.Partial("_Search", Model.Search)
-@Html.Partial("_List")
+    @Html.Partial("Modal")
 
-@Html.Partial("Modal")
+    @section scripts{
+        <script>
+            var oTable = null;
 
-@section scripts{
-    <script>
-        var oTable = null;
+            $(function () {
+                var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random() + "&" + $("#search_form").serialize();
+                var aoColumns = [
+                    { "sName": "sort" },
+                    { "sName": "phone" },
+                    { "sName": "name" },
+                    { "sName": "nickname" },
+                    { "sName": "school_name" },
+                    { "sName": "remember_token" },
+                    {
+                        "sName": "Certification",
+                        "fnRender": function (oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 2];
+                            if (t === "1") {
+                                render = '未申请';
+                            } else if (t === "2") {
+                                render = '已申请';
+                            } else if (t === "3") {
+                                render = '已认证';
+                            } else {
+                                render = '认证失败';
+                            }
 
-        $(function() {
-            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
-            var aoColumns = [
-                { "sName": "sort" },
-                { "sName": "phone" },
-                { "sName": "name" },
-                { "sName": "nickname" },
-                { "sName": "school_name" },
-                { "sName": "remember_token" },
-                {
-                    "sName": "Certification",
-                    "fnRender": function (oObj) {
-                        var render;
-                        var t = oObj.aData[oObj.aData.length-2];
-                        if (t === "1") {
-                            render = '未申请';
-                        } else if (t === "2") {
-                            render = '已申请';
-                        } else if (t === "3") {
-                            render = '已认证';
-                        } else {
-                            render = '认证失败';
+                            return render;
                         }
-
-                        return render;
+                    },
+                    {
+                        "sName": "action",
+                        "fnRender": function (oObj) {
+                            var editUrl = '@Url.Action("Edit")';
+                            var deleteUrl = '@Url.Action("Delete")';
+                            var render = "";
+                            @if (buttonList.Any(t => t.Name.ToLower() == "编辑"))
+                            {
+                                <text>render += TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ';</text>
+                            }
+                            @if (buttonList.Any(t => t.Name.ToLower() == "删除"))
+                            {
+                                <text>render += TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);</text>
+                            }
+                            return render;
+                        }
                     }
-                },
-                {
-                    "sName": "action",
-                    "fnRender": function(oObj) {
-                        var editUrl = '@Url.Action("Edit")';
-                        var deleteUrl = '@Url.Action("Delete")';
-                        return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
+                ];
+
+                oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+
+                $('#search_form').keypress(function (e) {
+                    if (e.which === 13) {
+                        e.preventDefault();//取消回车原事件
+                        TableManaged.search('@Url.Action("InitDataTable")');
                     }
-                }
-            ];
-
-            oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
-
-            $('#search_form').keypress(function (e) {
-                if (e.which === 13) {
-                    e.preventDefault();//取消回车原事件
-                    TableManaged.search('@Url.Action("InitDataTable")');
-                }
+                });
             });
-        });
 
-        //新增
-        function Create(actionUrl) {
-            ShowModal(actionUrl, {}, "新增会员");
-        }
+            //新增
+            function Create(actionUrl) {
+                ShowModal(actionUrl, {}, "新增会员");
+            }
 
-        //编辑
-        function Edit(actionUrl, id) {
-            var param = { id: id };
-            ShowModal(actionUrl, param, "编辑会员");
-        }
+            //编辑
+            function Edit(actionUrl, id) {
+                var param = { id: id };
+                ShowModal(actionUrl, param, "编辑会员");
+            }
 
-        //保存
-        function Save() {
-            SaveModal(oTable);
-        }
-    </script>
+            //保存
+            function Save() {
+                SaveModal(oTable);
+            }
+        </script>
+    }
 }
+
+

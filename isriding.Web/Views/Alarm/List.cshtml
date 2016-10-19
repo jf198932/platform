@@ -1,18 +1,21 @@
-﻿@model isriding.Web.Models.School.BikeModel
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.School.BikeModel
 
 @{
     ViewBag.Title = "车辆管理";
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
-
-@Html.Partial("_Search", Model.Search)
-@Html.Partial("_List")
-@Html.Partial("Modal")
-@section scripts{
-    <script>
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
+{
+    @Html.Partial("_Search", Model.Search)
+    @Html.Partial("_List")
+    @Html.Partial("Modal")
+    @section scripts{
+        <script>
         var oTable = null;
 
         $(function() {
-            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
+            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random() + "&" + $("#search_form").serialize();
             var aoColumns = [
                 { "sName": "sort" },
                 { "sName": "school_name" },
@@ -76,7 +79,7 @@
                         } else {
                             render = "暂无";
                         }
-                          
+
                         return render;
                     }
                 }
@@ -115,15 +118,17 @@
                 });
         }
         setInterval("TableManaged.search('@Url.Action("InitDataTable")')", 10000);
-    </script>
+        </script>
+    }
+
+    @section css{
+        <style>
+            .imgtip {
+                position: relative;
+                width: 100px;
+                height: 100px;
+            }
+        </style>
+    }
 }
 
-@section css{
-    <style>
-        .imgtip {
-            position:relative;
-            width: 100px;
-            height: 100px;
-        }
-    </style>
-}

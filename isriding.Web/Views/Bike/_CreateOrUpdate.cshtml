@@ -51,7 +51,19 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">状态</label>
                     <div class="col-md-6">
-                        @Html.DropDownListFor(model => model.Vlock_status, Model.VlockStatusList, new { @class = "form-control" })
+                        @Html.DropDownListFor(model => model.Vlock_status, Model.VlockStatusList, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">学校</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.School_id, Model.SchoolList, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">租车</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.Rent_type, Model.RentList, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
@@ -84,11 +96,11 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">图片</label>
                     <div class="col-md-6">
-                        <img src="@Model.Bike_img"/>
+                        <img src="@Model.Bike_img" width="420"/>
                     </div>
                 </div>
                 @*<div class="form-group">
-                        <label class="control-label col-md-2">已启用</label>
+                        <label class="control-label col-md-2">启用</label>
                         <div class="col-md-6">
                             <div class="checkbox-list">
                                 <label class="checkbox-inline">

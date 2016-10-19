@@ -15,6 +15,7 @@ using isriding.Web.Models.Authen;
 using isriding.Web.Models.Common;
 using Abp.Extensions;
 using Abp.Runtime.Caching;
+using Microsoft.Ajax.Utilities;
 
 namespace isriding.Web.Controllers
 {
@@ -89,7 +90,8 @@ namespace isriding.Web.Controllers
                         .Distinct()
                         .ToList();
 
-                currentUser.Buttons.AddRange(_roleModulePermissionRepository.GetAll().Where(t => roleIds.Contains(t.RoleId) && (t.PermissionId != null || t.PermissionId > 0))
+                var buttons = _roleModulePermissionRepository.GetAll()
+                    .Where(t => roleIds.Contains(t.RoleId) && (t.PermissionId != null || t.PermissionId > 0))
                     .Select(
                         t =>
                             new PermissionButtonModel
@@ -99,7 +101,10 @@ namespace isriding.Web.Controllers
                                 Code = t.Permission == null ? "" : t.Permission.Code,
                                 Name = t.Permission == null ? "" : t.Permission.Name,
                                 Icon = t.Permission == null ? "" : t.Permission.Icon
-                            }));
+                            });
+                currentUser.Buttons.AddRange(buttons);
+
+                //Logger.Info(System.Web.Helpers.Json.Encode(buttons));
 
                 var moduleList = _moduleUserRepository.GetAll().ToList();
                 //菜单列表

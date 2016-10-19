@@ -15,6 +15,8 @@ namespace isriding.Web.Models.School
             TypeList = new List<SelectListItem>();
 
             Search = new BikesiteSearchModel();
+
+            Enable = true;
         }
         public int Id { get; set; }
         public DateTime? Created_at { get; set; }
@@ -30,6 +32,7 @@ namespace isriding.Web.Models.School
         public int? Radius { get; set; }
         public int? Bike_count { get; set; }
         public int? Available_count { get; set; }
+        public bool Enable { get; set; }
 
         public int? School_id { get; set; }
         public string School_name { get; set; }
@@ -51,6 +54,11 @@ namespace isriding.Web.Models.School
                 new SelectListItem {Text = "租车", Value = "3"}
             };
             SchoolList = new List<SelectListItem>();
+            EnableList = new List<SelectListItem>{
+                new SelectListItem { Text = "--- 请选择 ---", Value = "-1"},
+                new SelectListItem {Text = "否", Value = "0"},
+                new SelectListItem {Text = "是", Value = "1", Selected = true}
+            };
         }
 
         [Display(Name = "类型")]
@@ -62,8 +70,13 @@ namespace isriding.Web.Models.School
         [Display(Name = "学校")]
         public int School_id { get; set; }
 
+        [Display(Name = "启用")]
+        public int? Enable { get; set; }
+
         public List<SelectListItem> TypeList { get; set; }
 
         public List<SelectListItem> SchoolList { get; set; }
+
+        public List<SelectListItem> EnableList { get; set; }
     }
 }

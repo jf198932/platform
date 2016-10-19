@@ -1,103 +1,107 @@
-﻿@model isriding.Web.Models.SchoolManage.BikesitemanageModel
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.SchoolManage.BikesitemanageModel
 
 @{
     ViewBag.Title = "停车港车辆管理";
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
-
-@Html.Partial("_Search", Model.Search)
-@Html.Partial("_List")
-@Html.Partial("_ModalBikesiteManageInfo")
-@section scripts{
-    <script>
-        var oTable = null;
-        $(function () {
-            $("#ddlSchool").change(function () {
-                BindBikesite();
-            });
-        });
-        $(function() {
-            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
-            var aoColumns = [
-                { "sName": "sort" },
-                { "sName": "school" },
-                { "sName": "name" },
-                {
-                    "sName": "type",
-                    "fnRender": function(oObj) {
-                        var render;
-                        var t = oObj.aData[oObj.aData.length - 4];
-                        if (t === "1") {
-                            render = '普通';
-                        } else if (t === "2") {
-                            render = '防盗';
-                        } else if (t === "3") {
-                            render = '租车';
-                        } else {
-                            render = '异常';
-                        }
-
-                        return render;
-                    }
-                },
-                { "sName": "bike_count" },
-                { "sName": "available_count" },
-                {
-                    "sName": "action",
-                    "fnRender": function (oObj) {
-                        var btnArray = "";
-                        btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"OpenBikesiteManage('@Url.Action("GetBikesitemanageInfo")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 详细信息</a>";
-                        return btnArray;
-                    }
-                }
-            ];
-
-            oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
-
-            $('#search_form').keypress(function(e) {
-                if (e.which === 13) {
-                    e.preventDefault(); //取消回车原事件
-                    TableManaged.search('@Url.Action("InitDataTable")');
-                }
-            });
-        });
-
-        function OpenBikesiteManage(actionUrl, id) {
-            var url = actionUrl + "/" + id;
-            //表单初始化
-            $.get(url, function(data) {
-                $("#modal-form-track").draggable({
-                    cursor: "move",
-                    handle: ".modal-header"
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
+{
+    @Html.Partial("_Search", Model.Search)
+    @Html.Partial("_List")
+    @Html.Partial("_ModalBikesiteManageInfo")
+    @section scripts{
+        <script>
+            var oTable = null;
+            $(function() {
+                $("#ddlSchool").change(function() {
+                    BindBikesite();
                 });
-                $("#modal-content-track").html(data);
-                $(".modal-title-track").html("停车港详情");
-                $('#modal-form-track').modal('show');
-                RegisterForm();
             });
-        }
+            $(function() {
+                var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random() + "&" + $("#search_form").serialize();
+                var aoColumns = [
+                    { "sName": "sort" },
+                    { "sName": "school" },
+                    { "sName": "name" },
+                    {
+                        "sName": "type",
+                        "fnRender": function(oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 4];
+                            if (t === "1") {
+                                render = '普通';
+                            } else if (t === "2") {
+                                render = '防盗';
+                            } else if (t === "3") {
+                                render = '租车';
+                            } else {
+                                render = '异常';
+                            }
 
-        function CloseBikesiteManageModal() {
-            $('#modal-form-track').modal('hide');
-            TableManaged.reset($("#modal-content-track"));
-        }
+                            return render;
+                        }
+                    },
+                    { "sName": "bike_count" },
+                    { "sName": "available_count" },
+                    {
+                        "sName": "action",
+                        "fnRender": function(oObj) {
+                            var btnArray = "";
+                            btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"OpenBikesiteManage('@Url.Action("GetBikesitemanageInfo")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 详细信息</a>";
+                            return btnArray;
+                        }
+                    }
+                ];
 
-        function BindBikesite() {
-            var obj = $("#hidObj").val();
-            var str = eval(obj);
-            $("#ddlBikesite").empty();
-            $("<option></option>").val(0).text("---请选择---").appendTo($("#ddlBikesite"));
-            $.each(str, function() {
-                if (this.School_id == $("#ddlSchool").val()) {
-                    $("<option></option>").val(this.Id).text(this.Name).appendTo($("#ddlBikesite"));
-                }
+                oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+
+                $('#search_form').keypress(function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault(); //取消回车原事件
+                        TableManaged.search('@Url.Action("InitDataTable")');
+                    }
+                });
             });
-        }
 
-        function clearn() {
-            var ctrl2 = $('ddlBikesite');
-            for (var i = 0; i < ctrl2.length;) {
-                ctrl2.removeChild(ctrl2.options[i]);
+            function OpenBikesiteManage(actionUrl, id) {
+                var url = actionUrl + "/" + id;
+                //表单初始化
+                $.get(url, function(data) {
+                    $("#modal-form-track").draggable({
+                        cursor: "move",
+                        handle: ".modal-header"
+                    });
+                    $("#modal-content-track").html(data);
+                    $(".modal-title-track").html("停车港详情");
+                    $('#modal-form-track').modal('show');
+                    RegisterForm();
+                });
             }
-        }
-    </script>
+
+            function CloseBikesiteManageModal() {
+                $('#modal-form-track').modal('hide');
+                TableManaged.reset($("#modal-content-track"));
+            }
+
+            function BindBikesite() {
+                var obj = $("#hidObj").val();
+                var str = eval(obj);
+                $("#ddlBikesite").empty();
+                $("<option></option>").val(0).text("---请选择---").appendTo($("#ddlBikesite"));
+                $.each(str, function() {
+                    if (this.School_id == $("#ddlSchool").val()) {
+                        $("<option></option>").val(this.Id).text(this.Name).appendTo($("#ddlBikesite"));
+                    }
+                });
+            }
+
+            function clearn() {
+                var ctrl2 = $('ddlBikesite');
+                for (var i = 0; i < ctrl2.length;) {
+                    ctrl2.removeChild(ctrl2.options[i]);
+                }
+            }
+        </script>
+    }
 }

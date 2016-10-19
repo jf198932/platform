@@ -30,7 +30,9 @@ namespace isriding.Web.Models.School
         public int? Bikesite_id { get; set; }
         public string Bikesite_name { get; set; }
         public int? Status { get; set; }
-        public int? Enabled { get; set; }
+        public bool Enabled { get; set; }
+
+        public string School_name { get; set; }
 
         public List<SelectListItem> BikesiteList { get; set; }
         public List<SelectListItem> StatusList { get; set; }
@@ -44,6 +46,7 @@ namespace isriding.Web.Models.School
         public SitemonitorSearchModel()
         {
             BikesiteList = new List<SelectListItem>();
+            SchoolList = new List<SelectListItem>();
             StatusList = new List<SelectListItem>
             {
                 new SelectListItem { Text = "--- 请选择 ---", Value = "-1", Selected = true },
@@ -57,6 +60,8 @@ namespace isriding.Web.Models.School
                 new SelectListItem {Text = "启用", Value = "1"}
             };
         }
+        [Display(Name = "学校")]
+        public int? School_id { get; set; }
         [Display(Name = "名称")]
         public string Name { get; set; }
         [Display(Name = "桩点")]
@@ -69,5 +74,6 @@ namespace isriding.Web.Models.School
         public List<SelectListItem> BikesiteList { get; set; }
         public List<SelectListItem> StatusList { get; set; }
         public List<SelectListItem> EnabledList { get; set; }
+        public List<SelectListItem> SchoolList { get; set; } 
     }
 }

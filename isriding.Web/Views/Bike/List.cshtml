@@ -1,274 +1,290 @@
-﻿@model isriding.Web.Models.School.BikeModel
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.School.BikeModel
 
 @{
     ViewBag.Title = "车辆管理";
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
 
-@*<div class="fluid">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="table-toolbar">
-                <div class="btn-group">
-                    <a href="javascript:void(0);" class="btn blue" onclick="Create('@Url.Action("Create")')"><i class="fa fa-plus"></i> 添加</a>
-                    <a href="@Url.Action("TemplateBike", "Bike")" class="btn warning"><i class="fa fa-warning"></i> 模板</a>
-                    <a href="javascript:void(0);" class="btn green" onclick="OpenImport()"><i class="fa fa-warning"></i> 导入追踪器</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>*@
-@Html.Partial("_Search", Model.Search)
-@Html.Partial("_List")
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
+{
+    @Html.Partial("_Search", Model.Search)
+    @Html.Partial("_List")
 
-@Html.Partial("Modal")
-@Html.Partial("_ImprotBike")
+    @Html.Partial("Modal")
+    @Html.Partial("_ImprotBike")
 
-@section scripts{
-    <script src="~/Scripts/jqueryfileupload/jquery.iframe-transport.js"></script>
-    <script src="~/Scripts/jqueryfileupload/jquery.ui.widget.js"></script>
-    <script src="~/Scripts/jqueryfileupload/jquery.xdr-transport.js"></script>
-    <script src="~/Scripts/jqueryfileupload/jquery.fileupload.js"></script>
-    <script>
-        var oTable = null;
+    @section scripts{
+        <script src="~/Scripts/jqueryfileupload/jquery.iframe-transport.js"></script>
+        <script src="~/Scripts/jqueryfileupload/jquery.ui.widget.js"></script>
+        <script src="~/Scripts/jqueryfileupload/jquery.xdr-transport.js"></script>
+        <script src="~/Scripts/jqueryfileupload/jquery.fileupload.js"></script>
+        <script>
+            var oTable = null;
 
-        $(function() {
-            var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random();
-            var aoColumns = [
-                { "sName": "sort" },
-                { "sName": "ble_serial" },
-                { "sName": "ble_name" },
-                {
-                    "sName": "ble_type",
-                    "fnRender": function (oObj) {
-                        var render;
-                        var t = oObj.aData[3];
-                        if (t === "1") {
-                            render = '追踪器';
-                        } else if (t === "2") {
-                            render = '智能锁';
-                        } else if (t === "3"){
-                            render = '蓝牙锁';
-                        } else if (t === "4") {
-                            render = "机械锁";
-                        } else {
-                            render = "未知";
+            $(function() {
+                var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random() + "&" + $("#search_form").serialize();
+                var aoColumns = [
+                    { "sName": "sort" },
+                    { "sName": "ble_serial" },
+                    { "sName": "ble_name" },
+                    {
+                        "sName": "ble_type",
+                        "fnRender": function(oObj) {
+                            var render;
+                            var t = oObj.aData[3];
+                            if (t === "1") {
+                                render = '追踪器';
+                            } else if (t === "2") {
+                                render = '智能锁';
+                            } else if (t === "3") {
+                                render = '蓝牙锁';
+                            } else if (t === "4") {
+                                render = "机械锁";
+                            } else {
+                                render = "未知";
+                            }
+
+                            return render;
                         }
+                    },
+                    { "sName": "school_name" },
+                    {
+                        "sName": "vlock_status",
+                        "fnRender": function(oObj) {
+                            var render;
+                            var t = oObj.aData[5];
+                            if (t === "0") {
+                                render = '初始';
+                            } else if (t === "1") {
+                                render = '锁闭';
+                            } else if (t === "2") {
+                                render = '锁开';
+                            } else if (t === "3") {
+                                render = '异常';
+                            } else if (t === "4") {
+                                render = '异常(已推送)';
+                            } else if (t === "5") {
+                                render = '报警';
+                            } else {
+                                render = '未知';
+                            }
 
-                        return render;
-                    }
-                },
-                { "sName": "school_name" },
-                {
-                    "sName": "vlock_status",
-                    "fnRender": function (oObj) {
-                        var render;
-                        var t = oObj.aData[4];
-                        if (t === "0") {
-                            render = '初始';
-                        } else if (t === "1") {
-                            render = '锁闭';
-                        } else if (t === "2") {
-                            render = '锁开';
-                        } else if (t === "3") {
-                            render = '异常';
-                        } else if (t === "4") {
-                            render = '异常(已推送)';
-                        } else if (t === "5") {
-                            render = '报警';
-                        } else {
-                            render = '未知';
+                            return render;
                         }
+                    },
+                    { "sName": "bikesite_name" },
+                    { "sName": "phone" },
+                    { "sName": "position" },
+                    {
+                        "sName": "rent_type",
+                        "fnRender": function(oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 3];
+                            if (t === "0") {
+                                render = '不能';
+                            } else if (t === "1") {
+                                render = '能';
+                            } else {
+                                render = '未知';
+                            }
 
-                        return render;
-                    }
-                },
-                { "sName": "bikesite_name" },
-                { "sName": "phone" },
-                { "sName": "position" },
-                { "sName": "battery" },
-                {
-                    "sName": "insite_status",
-                    "fnRender": function (oObj) {
-                        var render;
-                        var t = oObj.aData[oObj.aData.length-2];
-                        if (t === "1") {
-                            render = '在桩';
-                        } else if (t === "2") {
-                            render = '离桩';
-                        } else {
-                            render = '未知';
+                            return render;
                         }
+                    },
+                    {
+                        "sName": "insite_status",
+                        "fnRender": function(oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 2];
+                            if (t === "1") {
+                                render = '在桩';
+                            } else if (t === "2") {
+                                render = '离桩';
+                            } else {
+                                render = '未知';
+                            }
 
-                        return render;
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "action",
+                        "fnRender": function(oObj) {
+                            var editUrl = '@Url.Action("Edit")';
+                            var deleteUrl = '@Url.Action("Delete")';
+                            var render = "";
+                            @if (buttonList.Any(t => t.Name.ToLower() == "编辑"))
+                            {
+                                <text>render += TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ';</text>
+                            }
+                            @if (buttonList.Any(t => t.Name.ToLower() == "删除"))
+                            {
+                                <text>render += TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);</text>
+                            }
+                            return render;
+                            //return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
+                        }
                     }
-                },
-                {
-                    "sName": "action",
-                    "fnRender": function(oObj) {
-                        var editUrl = '@Url.Action("Edit")';
-                        var deleteUrl = '@Url.Action("Delete")';
-                        return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
-                    }
-                }
-            ];
+                ];
 
-            oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+                oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
 
-            $("input[type=file]").fileupload({
-                done: function (e, response) {
-                    //done方法就是上传完毕的回调函数，其他回调函数可以自行查看api
-                    //注意result要和jquery的ajax的data参数区分，这个对象包含了整个请求信息
-                    //返回的数据在result.result中，假设我们服务器返回了一个json对象
-                    //但是由于IE10以下存在bug，会将XHR的内容识别错误，所以第一需要返回Content-Type: text/plain
-                    //其次，及时转成text/plain还存在取不到result.result的内容，取到的是其他的东西
-                    //需要用这个方法来接值，var jmsg = result.result[0].body ? result.result[0].body.innerHTML : result.result;
-                    //最后接到值后，发现还有<pre></pre>包着需要通过字符串处理去掉这个东西
-                    //json对象{"newName": "sss", "oldName": "sdf"}
-                    var resultJson = response.result;
-                    //var jmsg = result.result[0].body ? result.result[0].body.innerHTML : result.result;
-                    //var startIndex = jmsg.indexOf("{");
-                    //var lastIndex = jmsg.lastIndexOf("}");
-                    //jmsg = jmsg.substring(startIndex, lastIndex + 1);
-                    //try {
-                    //    resultJson = $.parseJSON(jmsg);
-                    //} catch (e) {
-                    //    resultJson = jmsg;
-                    //}
-                    var uploadDiv = $(e.target).parent().parent().parent();
-                    uploadDiv.find(".filehidden").val(resultJson.newName);
-                    uploadDiv.find(".filestate").show().text(resultJson.oldName);
-                    //$("#PackageUrl").val(resultJson.url);
-                    //if (resultJson.type == 0) {
+                $("input[type=file]").fileupload({
+                    done: function(e, response) {
+                        //done方法就是上传完毕的回调函数，其他回调函数可以自行查看api
+                        //注意result要和jquery的ajax的data参数区分，这个对象包含了整个请求信息
+                        //返回的数据在result.result中，假设我们服务器返回了一个json对象
+                        //但是由于IE10以下存在bug，会将XHR的内容识别错误，所以第一需要返回Content-Type: text/plain
+                        //其次，及时转成text/plain还存在取不到result.result的内容，取到的是其他的东西
+                        //需要用这个方法来接值，var jmsg = result.result[0].body ? result.result[0].body.innerHTML : result.result;
+                        //最后接到值后，发现还有<pre></pre>包着需要通过字符串处理去掉这个东西
+                        //json对象{"newName": "sss", "oldName": "sdf"}
+                        var resultJson = response.result;
+                        //var jmsg = result.result[0].body ? result.result[0].body.innerHTML : result.result;
+                        //var startIndex = jmsg.indexOf("{");
+                        //var lastIndex = jmsg.lastIndexOf("}");
+                        //jmsg = jmsg.substring(startIndex, lastIndex + 1);
+                        //try {
+                        //    resultJson = $.parseJSON(jmsg);
+                        //} catch (e) {
+                        //    resultJson = jmsg;
+                        //}
+                        var uploadDiv = $(e.target).parent().parent().parent();
+                        uploadDiv.find(".filehidden").val(resultJson.newName);
+                        uploadDiv.find(".filestate").show().text(resultJson.oldName);
+                        //$("#PackageUrl").val(resultJson.url);
+                        //if (resultJson.type == 0) {
                         uploadDiv.find(".progresspercent").show().text("100%");
                         uploadDiv.find(".progress").show();
                         uploadDiv.find(".bar").css("width", 400);
-                    //} else {
+                        //} else {
 
-                    //}
-                },
-                progressall: function (e, data) {
-                    var maxWidth = 400;
-                    var percent = (data.loaded / data.total * 100).toFixed(0);
-                    //if (percent <= 100 && percent >= 85) {
-                    //    percent = 90;
-                    //}
+                        //}
+                    },
+                    progressall: function(e, data) {
+                        var maxWidth = 400;
+                        var percent = (data.loaded / data.total * 100).toFixed(0);
+                        //if (percent <= 100 && percent >= 85) {
+                        //    percent = 90;
+                        //}
 
-                    var progress = parseInt(data.loaded / data.total * maxWidth, 10);
-                    //if (progress <= 400 && progress >= 340) {
-                    //    progress = 360;
-                    //}
-                    var uploadDiv = $(e.target).parent().parent().parent();
-                    uploadDiv.find(".progress").show();
-                    uploadDiv.find(".bar").css("width", progress);
-                    uploadDiv.find(".progresspercent").show().text(percent + "%");
+                        var progress = parseInt(data.loaded / data.total * maxWidth, 10);
+                        //if (progress <= 400 && progress >= 340) {
+                        //    progress = 360;
+                        //}
+                        var uploadDiv = $(e.target).parent().parent().parent();
+                        uploadDiv.find(".progress").show();
+                        uploadDiv.find(".bar").css("width", progress);
+                        uploadDiv.find(".progresspercent").show().text(percent + "%");
 
-                },
-                add: function (e, data) {
-                    if (data.files.length === 0) {
-                        alert("请选择上传文件");
-                    }
-                    var uploadDiv = $(e.target).parent().parent().parent();
-                    var array = new Array('xls', 'xlsx'); //可以上传的文件类型
-                    var file = data.files[0];
-                    var fileContentType = file.name.match(/^(.*)(\.)(.{1,8})$/)[3]; //这个文件类型正则很有用：）
-                    var isExists = false;
-                    for (var i in array) {
-                        if (fileContentType.toLowerCase() === array[i].toLowerCase()) {
-                            isExists = true;
+                    },
+                    add: function(e, data) {
+                        if (data.files.length === 0) {
+                            alert("请选择上传文件");
                         }
-                    }
-                    if (isExists === false) {
-                        alert("上传文件式错误!");
+                        var uploadDiv = $(e.target).parent().parent().parent();
+                        var array = new Array('xls', 'xlsx'); //可以上传的文件类型
+                        var file = data.files[0];
+                        var fileContentType = file.name.match(/^(.*)(\.)(.{1,8})$/)[3]; //这个文件类型正则很有用：）
+                        var isExists = false;
+                        for (var i in array) {
+                            if (fileContentType.toLowerCase() === array[i].toLowerCase()) {
+                                isExists = true;
+                            }
+                        }
+                        if (isExists === false) {
+                            alert("上传文件式错误!");
+                            return false;
+                        }
+                        uploadDiv.find(".filehidden").val("");
+                        uploadDiv.find(".filestate").show().text("");
+
+
+                        var dataform = new FormData();
+                        //dataform.append('selectedNode', data.form[0].selectedNode.value);
+                        dataform.append('files', data.files[0]);
+                        //dataform.append('TreeIDPath', TreeIDPath);
+                        //dataform.append('TreePath', TreePath);
+
+                        $.ajax({
+                            url: '@Url.Action("ImportExcel", "Bike")',
+                            type: 'POST',
+                            data: dataform,
+                            processData: false,
+                            contentType: false
+                        }).done(function(ret) {
+                            //bootbox.alert(ret.Message);
+                            if (ret.success) {
+                                CloseImportExcelModal();
+                                oTable.fnDraw();
+                                //window.location.reload(); //刷新当前页面.
+                            } else {
+                                //location = '__URL__';
+                            }
+                        });
+                        @*$.post('@Url.Action("ImportExcel", "CaseTree")', formdata, function (response) {
+                            if (response.ResultType == 0) {
+                                CloseUploadExcelModal();
+                                window.location.reload();//刷新当前页面.
+                            }
+                        });*@
+                        //data.submit();
                         return false;
                     }
-                    uploadDiv.find(".filehidden").val("");
-                    uploadDiv.find(".filestate").show().text("");
+                });
 
-
-                    var dataform = new FormData();
-                    //dataform.append('selectedNode', data.form[0].selectedNode.value);
-                    dataform.append('files', data.files[0]);
-                    //dataform.append('TreeIDPath', TreeIDPath);
-                    //dataform.append('TreePath', TreePath);
-
-                    $.ajax({
-                        url: '@Url.Action("ImportExcel", "Bike")',
-                        type: 'POST',
-                        data: dataform,
-                        processData: false,
-                        contentType: false
-                    }).done(function (ret) {
-                        //bootbox.alert(ret.Message);
-                        if (ret.success) {
-                            CloseImportExcelModal();
-                            oTable.fnDraw();
-                            //window.location.reload(); //刷新当前页面.
-                        } else {
-                            //location = '__URL__';
-                        }
-                    });
-                    @*$.post('@Url.Action("ImportExcel", "CaseTree")', formdata, function (response) {
-                        if (response.ResultType == 0) {
-                            CloseUploadExcelModal();
-                            window.location.reload();//刷新当前页面.
-                        }
-                    });*@
-                    //data.submit();
-                    return false;
-                }
+                $('#search_form').keypress(function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault(); //取消回车原事件
+                        TableManaged.search('@Url.Action("InitDataTable")');
+                    }
+                });
             });
 
-            $('#search_form').keypress(function (e) {
-                if (e.which === 13) {
-                    e.preventDefault();//取消回车原事件
-                    TableManaged.search('@Url.Action("InitDataTable")');
-                }
-            });
-        });
+            //新增
+            function Create(actionUrl) {
+                ShowModal(actionUrl, {}, "新增追踪器");
+            }
 
-        //新增
-        function Create(actionUrl) {
-            ShowModal(actionUrl, {}, "新增追踪器");
-        }
+            //编辑
+            function Edit(actionUrl, id) {
+                var param = { id: id };
+                ShowModal(actionUrl, param, "编辑追踪器");
+            }
 
-        //编辑
-        function Edit(actionUrl, id) {
-            var param = { id: id };
-            ShowModal(actionUrl, param, "编辑追踪器");
-        }
+            //保存
+            function Save() {
+                SaveModal(oTable);
+            }
 
-        //保存
-        function Save() {
-            SaveModal(oTable);
-        }
+            function OpenImport() {
+                $(".modal-title-importexcel").html("导入追踪器");
+                $('#modal-form-importexcel').modal('show');
+                $('#modal-content-importexcel').removeData('validator');
+                $('#modal-content-importexcel').removeData('unobtrusiveValidation');
+                $.validator.unobtrusive.parse('#modal-content-importexcel');
+            }
 
-        function OpenImport() {
-            $(".modal-title-importexcel").html("导入追踪器");
-            $('#modal-form-importexcel').modal('show');
-            $('#modal-content-importexcel').removeData('validator');
-            $('#modal-content-importexcel').removeData('unobtrusiveValidation');
-            $.validator.unobtrusive.parse('#modal-content-importexcel');
-        }
+            function CloseImportExcelModal() {
+                $('#modal-form-importexcel').modal('hide');
+                TableManaged.reset($("#modal-content-uploadexcel"));
+            }
 
-        function CloseImportExcelModal() {
-            $('#modal-form-importexcel').modal('hide');
-            TableManaged.reset($("#modal-content-uploadexcel"));
-        }
+            function DownTemplate() {
+                window.location.href = '@Url.Action("TemplateBike", "Bike")';
+            }
+        </script>
+    }
 
-        function DownTemplate() {
-            window.location.href = '@Url.Action("TemplateBike", "Bike")';
-        }
-    </script>
-}
-
-@section css{
-    <style>
-        /* 上传控件 */
-        .upload {
-            /*margin-top: 10px;*/
-            width: 485px;
-            height: 30px;
-        }
+    @section css{
+        <style>
+            /* 上传控件 */
+            .upload {
+                /*margin-top: 10px;*/
+                width: 485px;
+                height: 30px;
+            }
 
             .upload .uploadbtnBox {
                 float: left;
@@ -328,16 +344,16 @@
                 *zoom: 1;
             }
 
-                .upload .uploadbtnBox .a-upload input {
-                    position: absolute;
-                    width: 70px;
-                    height: 30px;
-                    overflow: hidden;
-                    margin-left: -10px;
-                    opacity: 0;
-                    filter: alpha(opacity=0);
-                    cursor: pointer;
-                }
+            .upload .uploadbtnBox .a-upload input {
+                position: absolute;
+                width: 70px;
+                height: 30px;
+                overflow: hidden;
+                margin-left: -10px;
+                opacity: 0;
+                filter: alpha(opacity=0);
+                cursor: pointer;
+            }
 
             .upload .progress .bar {
                 height: 4px;
@@ -346,20 +362,21 @@
                 *zoom: 1;
             }
 
-        .clearfix:after {
-            content: ".";
-            display: block;
-            height: 0;
-            visibility: hidden;
-            clear: both;
-        }
+            .clearfix:after {
+                content: ".";
+                display: block;
+                height: 0;
+                visibility: hidden;
+                clear: both;
+            }
 
-        .clearfix {
-            _zoom: 1;
-        }
+            .clearfix {
+                _zoom: 1;
+            }
 
-        .clearfix {
-            *zoom: 1;
-        }
-    </style>
+            .clearfix {
+                *zoom: 1;
+            }
+        </style>
+    }
 }

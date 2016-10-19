@@ -1,4 +1,8 @@
-﻿@model isriding.Web.Models.School.VersionUpdateSearchModel
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.School.VersionUpdateSearchModel
+@{
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
+}
 <div class="fluid">
     <div class="row">
         <div class="col-lg-12">
