@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
-using isriding.Entities;
+using isriding.School;
+using isriding.User;
 using isriding.Web.Extension.Fliter;
 using isriding.Web.Models.Chart;
 
@@ -14,10 +13,10 @@ namespace isriding.Web.Controllers.Chart
 {
     public class UserChartController : Controller
     {
-        private readonly IRepository<User> _useRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly IUserReadRepository _useRepository;
+        private readonly ISchoolReadRepository _schoolRepository;
 
-        public UserChartController(IRepository<User> useRepository, IRepository<Entities.School> schoolRepository)
+        public UserChartController(IUserReadRepository useRepository, ISchoolReadRepository schoolRepository)
         {
             _useRepository = useRepository;
             _schoolRepository = schoolRepository;

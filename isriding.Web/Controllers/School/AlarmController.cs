@@ -4,15 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
-using Abp.Runtime.Caching;
 using Abp.Web.Models;
-using isriding;
-using isriding.Web;
-using isriding.Web.Controllers;
+using isriding.Bike;
+using isriding.School;
 using isriding.Web.Extension.Fliter;
-using isriding.Web.Helper;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.School;
 
@@ -20,15 +16,15 @@ namespace isriding.Web.Controllers.School
 {
     public class AlarmController : isridingControllerBase
     {
-        private readonly IRepository<Entities.Bike> _bikeRepository;
-        private readonly ISqlExecuter _sqlExecuter;
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly IBikeReadRepository _bikeReadRepository;
+        private readonly ISqlReadExecuter _sqlReadExecuter;
+        private readonly ISchoolReadRepository _schoolReadRepository;
 
-        public AlarmController(IRepository<Entities.Bike> bikeRepository, ISqlExecuter sqlExecuter, IRepository<Entities.School> schoolRepository)
+        public AlarmController(IBikeReadRepository bikeReadRepository, ISqlReadExecuter sqlReadExecuter, ISchoolReadRepository schoolReadRepository)
         {
-            _bikeRepository = bikeRepository;
-            _sqlExecuter = sqlExecuter;
-            _schoolRepository = schoolRepository;
+            _bikeReadRepository = bikeReadRepository;
+            _sqlReadExecuter = sqlReadExecuter;
+            _schoolReadRepository = schoolReadRepository;
         }
         // GET: Alarm
         public ActionResult Index()
@@ -47,7 +43,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _bikeRepository.GetAll();
+            var temp = _bikeReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -110,7 +106,7 @@ namespace isriding.Web.Controllers.School
             
             var total = temp.Count();
             
-            var filterResult = _sqlExecuter.SqlQuery<BikeModel>(sqlstr.ToString()).ToList();
+            var filterResult = _sqlReadExecuter.SqlQuery<BikeModel>(sqlstr.ToString()).ToList();
 
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -204,7 +200,7 @@ namespace isriding.Web.Controllers.School
         {
             if (model == null)
                 throw new ArgumentNullException("model");
-            var list = _schoolRepository.GetAll();
+            var list = _schoolReadRepository.GetAll();
 
             var sessionschoolids = Session["SchoolIds"] as List<int>;
             if (sessionschoolids != null && sessionschoolids.Count > 0)

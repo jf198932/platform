@@ -1,27 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
-using isriding.Web.Helper;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.School;
 using AutoMapper;
+using isriding.VersionUpdate;
 using isriding.Web.Extension.Fliter;
 
 namespace isriding.Web.Controllers.School
 {
     public class VersionUpdateController : isridingControllerBase
     {
-        private readonly IRepository<Entities.VersionUpdate> _versionUpdateRepository;
+        private readonly IVersionUpdateWriteRepository _versionUpdateRepository;
+        private readonly IVersionUpdateReadRepository _versionUpdateReadRepository;
 
-        public VersionUpdateController(IRepository<Entities.VersionUpdate> versionUpdateRepository)
+        public VersionUpdateController(IVersionUpdateWriteRepository versionUpdateRepository, IVersionUpdateReadRepository versionUpdateReadRepository)
         {
             _versionUpdateRepository = versionUpdateRepository;
+            _versionUpdateReadRepository = versionUpdateReadRepository;
         }
 
         // GET: VersionUpdate
@@ -41,7 +40,7 @@ namespace isriding.Web.Controllers.School
         {
 
             var expr = BuildSearchCriteria();
-            var temp = _versionUpdateRepository.GetAll();
+            var temp = _versionUpdateReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -102,7 +101,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t=> t.CreateMap<Entities.VersionUpdate, VersionUpdateModel>());
-            var model = Mapper.Map<VersionUpdateModel>(_versionUpdateRepository.Get(id));
+            var model = Mapper.Map<VersionUpdateModel>(_versionUpdateReadRepository.Get(id));
             return PartialView(model);
         }
 

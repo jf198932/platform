@@ -44,6 +44,12 @@
                     收费(分/分钟)
                 </th>
                 <th>
+                    押金金额
+                </th>
+                <th>
+                    免费时间(分钟)
+                </th>
+                <th>
                     操作
                 </th>
             </tr>
@@ -64,26 +70,27 @@
                     { "sName": "sort" },
                     { "sName": "name" },
                     { "sName": "areacode" },
-                    {
-                        "sName": "gps_point"
-                        //"fnRender": function (oObj) {
-                        //    var render;
-                        //    if (oObj.aData[oObj.aData.length - 3] == "True") {
-                        //        render = '<i class="fa fa-check "></i>';
-                        //    } else {
-                        //        render = '<i class="fa fa-lock"></i>';
-                        //    }
-                        //    return render;
-                        //}
-                    },
-                    { "sName": "time_charge" },
+                    { "sName": "gps_point" },
                     { "sName": "site_count" },
+                    { "sName": "time_charge" },
+                    { "sName": "deposit" },
+                    { "sName": "free_time" },
                     {
                         "sName": "action",
                         "fnRender": function(oObj) {
                             var editUrl = '@Url.Action("Edit")';
                             var deleteUrl = '@Url.Action("Delete")';
-                            return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
+                            var render = "";
+                            @if (buttonList.Any(t => t.Name.ToLower() == "编辑"))
+                            {
+                                <text>render += TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ';</text>
+                            }
+                            @if (buttonList.Any(t => t.Name.ToLower() == "删除"))
+                            {
+                                <text>render += TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);</text>
+                            }
+                            return render;
+                            //return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
                         }
                     }
                 ];

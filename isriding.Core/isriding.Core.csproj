@@ -86,6 +86,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authen\BackUser\IBackUserReadRepository.cs" />
+    <Compile Include="Authen\BackUser\IBackUserWriteRepository.cs" />
+    <Compile Include="Authen\ModulePermission\IModulePermissionReadRepository.cs" />
+    <Compile Include="Authen\ModulePermission\IModulePermissionWriteRepository.cs" />
+    <Compile Include="Authen\Module\IModuleReadRepository.cs" />
+    <Compile Include="Authen\Module\IModuleWriteRepository.cs" />
+    <Compile Include="Authen\Permission\IPermissionReadRepository.cs" />
+    <Compile Include="Authen\Permission\IPermissionWriteRepository.cs" />
+    <Compile Include="Authen\RoleModulePermission\IRoleModulePermissionReadRepository.cs" />
+    <Compile Include="Authen\RoleModulePermission\IRoleModulePermissionWriteRepository.cs" />
+    <Compile Include="Authen\Role\IRoleReadRepository.cs" />
+    <Compile Include="Authen\Role\IRoleWriteRepository.cs" />
+    <Compile Include="Authen\UserRole\IUserRoleReadRepository.cs" />
+    <Compile Include="Authen\UserRole\IUserRoleWriteRepository.cs" />
+    <Compile Include="Bikesite\IBikesiteReadRepository.cs" />
+    <Compile Include="Bikesite\IBikesiteWriteRepository.cs" />
+    <Compile Include="Bike\IBikeReadRepository.cs" />
+    <Compile Include="Bike\IBikeWriteRepository.cs" />
     <Compile Include="Entities\Authen\BackUser.cs" />
     <Compile Include="Entities\Authen\Module.cs" />
     <Compile Include="Entities\Authen\ModulePermission.cs" />
@@ -98,7 +116,9 @@
     <Compile Include="Entities\Credit.cs" />
     <Compile Include="Entities\Log.cs" />
     <Compile Include="Entities\Message.cs" />
+    <Compile Include="Entities\Parameter.cs" />
     <Compile Include="Entities\Recharge.cs" />
+    <Compile Include="Entities\Recharge_detail.cs" />
     <Compile Include="Entities\Refound.cs" />
     <Compile Include="Entities\School.cs" />
     <Compile Include="Entities\Sitebeacon.cs" />
@@ -109,9 +129,30 @@
     <Compile Include="Helper\DESProvider.cs" />
     <Compile Include="Helper\MD5Provider.cs" />
     <Compile Include="ISqlExecuter.cs" />
+    <Compile Include="ISqlReadExecuter.cs" />
     <Compile Include="isridingConsts.cs" />
     <Compile Include="isridingCoreModule.cs" />
+    <Compile Include="Log\ILogReadRepository.cs" />
+    <Compile Include="Log\ILogWriteRepository.cs" />
+    <Compile Include="Parameter\IParameterReadRepository.cs" />
+    <Compile Include="Parameter\IParameterWriteRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Recharge\IRechargeReadRepository.cs" />
+    <Compile Include="Recharge\IRechargeWriteRepository.cs" />
+    <Compile Include="Recharge_detail\IRecharge_detailReadRepository.cs" />
+    <Compile Include="Recharge_detail\IRecharge_detailWriteRepository.cs" />
+    <Compile Include="Refound\IRefoundReadRepository.cs" />
+    <Compile Include="Refound\IRefoundWriteRepository.cs" />
+    <Compile Include="School\ISchoolReadRepository.cs" />
+    <Compile Include="School\ISchoolWriteRepository.cs" />
+    <Compile Include="Sitemonitor\ISitemonitorReadRepository.cs" />
+    <Compile Include="Sitemonitor\ISitemonitorWriteRepository.cs" />
+    <Compile Include="Track\ITrackReadRepository.cs" />
+    <Compile Include="Track\ITrackWriteRepository.cs" />
+    <Compile Include="User\IUserReadRepository.cs" />
+    <Compile Include="User\IUserWriteRepository.cs" />
+    <Compile Include="VersionUpdate\IVersionUpdateReadRepository.cs" />
+    <Compile Include="VersionUpdate\IVersionUpdateWriteRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -2,30 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
 using isriding.Web.Extension.Fliter;
-using isriding.Web.Helper;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.School;
 using AutoMapper;
+using isriding.Bikesite;
+using isriding.School;
+using isriding.Sitemonitor;
 
 namespace isriding.Web.Controllers.School
 {
     public class SitemonitorController : isridingControllerBase
     {
-        private readonly IRepository<Entities.Sitemonitor> _sitemonitorRepository;
-        private readonly IRepository<Entities.Bikesite> _bikesiteRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly ISitemonitorWriteRepository _sitemonitorRepository;
+        private readonly ISitemonitorReadRepository _sitemonitorReadRepository;
+        private readonly IBikesiteReadRepository _bikesiteReadRepository;
+        private readonly ISchoolReadRepository _schoolReadRepository;
 
-        public SitemonitorController(IRepository<Entities.Sitemonitor> sitemonitorRepository, IRepository<Entities.Bikesite> bikesiteRepository, IRepository<Entities.School> schoolRepository)
+        public SitemonitorController(ISitemonitorWriteRepository sitemonitorRepository
+            , ISitemonitorReadRepository sitemonitorReadRepository
+            , IBikesiteReadRepository bikesiteReadRepository
+            , ISchoolReadRepository schoolReadRepository)
         {
             _sitemonitorRepository = sitemonitorRepository;
-            _bikesiteRepository = bikesiteRepository;
-            _schoolRepository = schoolRepository;
+            _sitemonitorReadRepository = sitemonitorReadRepository;
+            _bikesiteReadRepository = bikesiteReadRepository;
+            _schoolReadRepository = schoolReadRepository;
         }
 
         // GET: Sitemonitor
@@ -46,7 +51,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _sitemonitorRepository.GetAll();
+            var temp = _sitemonitorReadRepository.GetAll();
             if (null != expr)
             {
                 temp = temp.Where(expr);
@@ -104,7 +109,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t=> t.CreateMap<Entities.Sitemonitor, SitemonitorModel>());
-            var model = Mapper.Map<SitemonitorModel>(_sitemonitorRepository.Get(id));
+            var model = Mapper.Map<SitemonitorModel>(_sitemonitorReadRepository.Get(id));
             //var model = role.ToModel();
             PrepareAllUserModel(model);
             return PartialView(model);
@@ -149,14 +154,14 @@ namespace isriding.Web.Controllers.School
                 throw new ArgumentNullException("model");
 
             var list =
-                _bikesiteRepository.GetAll().Select(b => new SelectListItem {Text = b.Name, Value = b.Id.ToString()});
+                _bikesiteReadRepository.GetAll().Select(b => new SelectListItem {Text = b.Name, Value = b.Id.ToString()});
 
             model.BikesiteList.AddRange(list);
             model.BikesiteList.Insert(0, new SelectListItem {Text = "---请选择---", Value = "0"});
             model.Search.BikesiteList.AddRange(list);
             model.Search.BikesiteList.Insert(0, new SelectListItem { Text = "---请选择---", Value = "0" });
 
-            var slist = _schoolRepository.GetAll();
+            var slist = _schoolReadRepository.GetAll();
 
             var sessionschoolids = Session["SchoolIds"] as List<int>;
             if (sessionschoolids != null && sessionschoolids.Count > 0)

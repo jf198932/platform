@@ -1920,6 +1920,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\datatables.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -2276,7 +2277,9 @@
     <Content Include="Scripts\sweetalert\sweet-alert.min.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -2296,6 +2299,7 @@
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SchoolManage\BikesitemanageController.cs" />
+    <Compile Include="Controllers\SchoolManage\RechargeController.cs" />
     <Compile Include="Controllers\SchoolManage\SchooltrackController.cs" />
     <Compile Include="Controllers\SchoolManage\TrackController.cs" />
     <Compile Include="Controllers\School\AlarmController.cs" />
@@ -2336,6 +2340,7 @@
     <Compile Include="Models\Layout\TopMenuViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\SchoolManage\BikesitemanageModel.cs" />
+    <Compile Include="Models\SchoolManage\RechargeModel.cs" />
     <Compile Include="Models\SchoolManage\SchooltrackModel.cs" />
     <Compile Include="Models\SchoolManage\TrackModel.cs" />
     <Compile Include="Models\School\BikeModel.cs" />
@@ -2449,6 +2454,11 @@
     <Content Include="Views\UserChart\UserChartBar.cshtml" />
     <Content Include="Views\TrackChart\TrackChartBar.cshtml" />
     <Content Include="Views\Common\ChangePwd.cshtml" />
+    <Content Include="Views\Recharge\List.cshtml" />
+    <Content Include="Views\Recharge\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\Recharge\_List.cshtml" />
+    <Content Include="Views\Recharge\_Search.cshtml" />
+    <Content Include="Views\Recharge\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

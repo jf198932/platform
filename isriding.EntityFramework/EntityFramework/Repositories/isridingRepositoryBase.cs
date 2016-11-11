@@ -27,4 +27,29 @@ namespace isriding.EntityFramework.Repositories
 
         //do not add any method here, add to the class above (since this inherits it)
     }
+
+
+    public abstract class ReadonlyisridingRepositoryBase<TEntity, TPrimaryKey> : EfRepositoryBase<ReadonlyisridingDbContext, TEntity, TPrimaryKey>
+        where TEntity : class, IEntity<TPrimaryKey>
+    {
+        protected ReadonlyisridingRepositoryBase(IDbContextProvider<ReadonlyisridingDbContext> dbContextProvider)
+            : base(dbContextProvider)
+        {
+
+        }
+
+        //add common methods for all repositories
+    }
+
+    public abstract class ReadonlyisridingRepositoryBase<TEntity> : ReadonlyisridingRepositoryBase<TEntity, int>
+        where TEntity : class, IEntity<int>
+    {
+        protected ReadonlyisridingRepositoryBase(IDbContextProvider<ReadonlyisridingDbContext> dbContextProvider)
+            : base(dbContextProvider)
+        {
+
+        }
+
+        //do not add any method here, add to the class above (since this inherits it)
+    }
 }

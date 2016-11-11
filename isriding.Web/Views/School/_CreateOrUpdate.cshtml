@@ -60,9 +60,27 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">收费(分/分钟)</label>
                     <div class="col-md-6">
-                        @Html.TextBoxFor(t => t.Time_charge, new { @class = "form-control" })
+                        @Html.TextBoxFor(t => t.Time_charge, new {@class = "form-control"})
                         <span class="help-block">
                             @Html.ValidationMessageFor(t => t.Time_charge)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">押金金额</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Deposit, new {@class = "form-control"})
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Deposit)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">免费时间(分钟)</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Free_time, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Free_time)
                         </span>
                     </div>
                 </div>

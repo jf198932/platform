@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
 using isriding.Entities.Authen;
@@ -10,22 +9,36 @@ using isriding.Web.Extension.Fliter;
 using isriding.Web.Models.Authen;
 using isriding.Web.Models.Common;
 using AutoMapper;
+using isriding.Authen.Module;
+using isriding.Authen.ModulePermission;
+using isriding.Authen.Permission;
 
 namespace isriding.Web.Controllers.Authen
 {
     public class ModuleController : isridingControllerBase
     {
-        private readonly IRepository<Module> _moduleRepository;
-        private readonly IRepository<Permission> _permissionRepository;
-        private readonly IRepository<ModulePermission> _modulePermissionRepository;
-        private readonly IRepository<Entities.School> _schoolRepository; 
+        private readonly IModuleWriteRepository _moduleRepository;
+        private readonly IPermissionWriteRepository _permissionRepository;
+        private readonly IModulePermissionWriteRepository _modulePermissionRepository;
+        //private readonly ISchoolWriteRepository _schoolRepository; 
+        private readonly IModuleReadRepository _moduleReadRepository;
+        private readonly IPermissionReadRepository _permissionReadRepository;
+        private readonly IModulePermissionReadRepository _modulePermissionReadRepository;
 
-        public ModuleController(IRepository<Module> moduleRepository, IRepository<Permission> permissionRepository, IRepository<ModulePermission> modulePermissionRepository, IRepository<Entities.School> schoolRepository)
+        public ModuleController(IModuleWriteRepository moduleRepository
+            , IPermissionWriteRepository permissionRepository
+            , IModulePermissionWriteRepository modulePermissionRepository
+            , IModuleReadRepository moduleReadRepository
+            , IPermissionReadRepository permissionReadRepository
+            , IModulePermissionReadRepository modulePermissionReadRepository)
         {
             _moduleRepository = moduleRepository;
             _permissionRepository = permissionRepository;
             _modulePermissionRepository = modulePermissionRepository;
-            _schoolRepository = schoolRepository;
+            //_schoolRepository = schoolRepository;
+            _moduleReadRepository = moduleReadRepository;
+            _permissionReadRepository = permissionReadRepository;
+            _modulePermissionReadRepository = modulePermissionReadRepository;
         }
 
         public ActionResult Index()
@@ -45,7 +58,7 @@ namespace isriding.Web.Controllers.Authen
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _moduleRepository.GetAll();
+            var temp = _moduleReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -125,7 +138,7 @@ namespace isriding.Web.Controllers.Authen
         [UnitOfWork]
         public virtual ActionResult SetButton(int id)
         {
-            var module = _moduleRepository.Get(id);
+            var module = _moduleReadRepository.Get(id);
             var model = new ButtonModel();
             if (module == null)
             {
@@ -135,7 +148,7 @@ namespace isriding.Web.Controllers.Authen
             model.ModuleName = module.Name;
             PrepareAllUserModel(model);
 
-            var modelpermission = _modulePermissionRepository.GetAllList(t => t.ModuleId == id);
+            var modelpermission = _modulePermissionReadRepository.GetAllList(t => t.ModuleId == id);
 
             foreach (var item in modelpermission)
             {
@@ -184,7 +197,7 @@ namespace isriding.Web.Controllers.Authen
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t => t.CreateMap<Module, ModuleModel>());
-            var entity = _moduleRepository.Get(id);
+            var entity = _moduleReadRepository.Get(id);
             var model = Mapper.Map<ModuleModel>(entity);
             //var model = role.ToModel();
             PrepareAllUserModel(model);
@@ -250,7 +263,7 @@ namespace isriding.Web.Controllers.Authen
                 throw new ArgumentNullException(nameof(model));
             //var schoolid = CommonHelper.GetSchoolId();
             model.ParentModuleItems.AddRange(
-                _moduleRepository.GetAll()
+                _moduleReadRepository.GetAll()
                     .Where(m => m.Enabled && m.IsMenu)
                     .OrderBy(m => m.OrderSort)
                     .Select(m => new SelectListItem {Text = m.Name, Value = m.Id.ToString()}));
@@ -274,7 +287,7 @@ namespace isriding.Web.Controllers.Authen
                 throw new ArgumentNullException(nameof(model));
             //var schoolid = CommonHelper.GetSchoolId();
             model.ButtonList =
-                _permissionRepository.GetAll()
+                _permissionReadRepository.GetAll()
                     .Where(r => r.Enabled)
                     .OrderBy(r => r.OrderSort)
                     .Select(r => new KeyValueModel { Text = r.Name, Value = r.Id.ToString() })

@@ -55,9 +55,9 @@ namespace isriding.Web.Models.School
             };
             EnabledList = new List<SelectListItem>
             {
-                new SelectListItem { Text = "--- 请选择 ---", Value = "-1", Selected = true },
+                new SelectListItem { Text = "--- 请选择 ---", Value = "-1"},
                 new SelectListItem {Text = "禁用", Value = "0"},
-                new SelectListItem {Text = "启用", Value = "1"}
+                new SelectListItem {Text = "启用", Value = "1", Selected = true }
             };
         }
         [Display(Name = "学校")]

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.UI;
 using Abp.Web.Models;
@@ -15,23 +14,32 @@ using isriding.Web.Helper;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.School;
 using AutoMapper;
-using isriding.Entities;
+using isriding.Bike;
+using isriding.Bikesite;
+using isriding.School;
+using isriding.User;
 
 namespace isriding.Web.Controllers.School
 {
     public class BikeController : isridingControllerBase
     {
-        private readonly IRepository<Bike> _bikeRepository;
-        private readonly IRepository<User> _userRepository;
-        private readonly IRepository<Bikesite> _bikesiteRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
-
-        public BikeController(IRepository<Bike> bikeRepository, IRepository<User> userRepository, IRepository<Bikesite> bikesiteRepository,IRepository<Entities.School> schoolRepository)
+        private readonly IBikeWriteRepository _bikeRepository;
+        private readonly IBikeReadRepository _bikeReadRepository;
+        private readonly IUserReadRepository _userReadRepository;
+        private readonly IBikesiteReadRepository _bikesiteReadRepository;
+        private readonly ISchoolReadRepository _schoolReadRepository;
+        
+        public BikeController(IBikeWriteRepository bikeRepository
+            , IBikeReadRepository bikeReadRepository
+            , IUserReadRepository userReadRepository
+            , IBikesiteReadRepository bikesiteReadRepository
+            , ISchoolReadRepository schoolReadRepository)
         {
             _bikeRepository = bikeRepository;
-            _userRepository = userRepository;
-            _bikesiteRepository = bikesiteRepository;
-            _schoolRepository = schoolRepository;
+            _bikeReadRepository = bikeReadRepository;
+            _userReadRepository = userReadRepository;
+            _bikesiteReadRepository = bikesiteReadRepository;
+            _schoolReadRepository = schoolReadRepository;
         }
 
         // GET: Bike
@@ -54,7 +62,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _bikeRepository.GetAll();
+            var temp = _bikeReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -133,7 +141,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t => t.CreateMap<Entities.Bike, BikeModel>());
-            var model = Mapper.Map<BikeModel>(_bikeRepository.Get(id));
+            var model = Mapper.Map<BikeModel>(_bikeReadRepository.Get(id));
             //var model = role.ToModel();
             PrepareAllBikeModel(model);
             return PartialView(model);
@@ -267,10 +275,10 @@ namespace isriding.Web.Controllers.School
             if (model == null)
                 throw new ArgumentNullException("model");
             model.UserList.AddRange(
-                _userRepository.GetAll().Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() }));
+                _userReadRepository.GetAll().Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() }));
             model.UserList.Insert(0, new SelectListItem {Text = "--请选择--", Value = ""});
             model.BikesiteList.AddRange(
-                _bikesiteRepository.GetAll().Select(b => new SelectListItem {Text = b.Name, Value = b.Id.ToString()}));
+                _bikesiteReadRepository.GetAll().Select(b => new SelectListItem {Text = b.Name, Value = b.Id.ToString()}));
             model.BikesiteList.Insert(0, new SelectListItem { Text = "--请选择--", Value = "" });
             model.TypeList.AddRange(new List<SelectListItem>
             {
@@ -308,7 +316,7 @@ namespace isriding.Web.Controllers.School
                 new SelectListItem {Text = "离桩", Value = "2"}
             });
 
-            var list = _schoolRepository.GetAll();
+            var list = _schoolReadRepository.GetAll();
 
             var sessionschoolids = Session["SchoolIds"] as List<int>;
             if (sessionschoolids != null && sessionschoolids.Count > 0)

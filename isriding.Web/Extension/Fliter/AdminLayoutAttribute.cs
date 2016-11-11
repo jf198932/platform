@@ -9,15 +9,15 @@ namespace isriding.Web.Extension.Fliter
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
     public class AdminLayoutAttribute : ActionFilterAttribute
     {
-        //private readonly IRepository<Module> _moduleRepository;
-        //private readonly IRepository<UserRole> _userRoleRepository;
-        //private readonly IRepository<RoleModulePermission> _roleModulePermissionRepository;
+        //private readonly IModuleWriteRepository _moduleRepository;
+        //private readonly IUserRoleWriteRepository _userRoleRepository;
+        //private readonly IRoleModulePermissionWriteRepository _roleModulePermissionRepository;
 
         public AdminLayoutAttribute()
         {
-            //_moduleRepository = (((IIocResolver)IocManager.Instance).ResolveAsDisposable<IRepository<Module>>()).Object;
-            //_userRoleRepository = (IocResolverExtensions.ResolveAsDisposable<IRepository<UserRole>>(((IIocResolver)IocManager.Instance))).Object;
-            //_roleModulePermissionRepository = (IocResolverExtensions.ResolveAsDisposable<IRepository<RoleModulePermission>>(((IIocResolver)IocManager.Instance))).Object;
+            //_moduleRepository = (((IIocResolver)IocManager.Instance).ResolveAsDisposable<IModuleWriteRepository>()).Object;
+            //_userRoleRepository = (IocResolverExtensions.ResolveAsDisposable<IUserRoleWriteRepository>(((IIocResolver)IocManager.Instance))).Object;
+            //_roleModulePermissionRepository = (IocResolverExtensions.ResolveAsDisposable<IRoleModulePermissionWriteRepository>(((IIocResolver)IocManager.Instance))).Object;
         }
 
         //在Action执行之前　乱了点，其实只是判断Cookie用户名密码正不正确而已而已。

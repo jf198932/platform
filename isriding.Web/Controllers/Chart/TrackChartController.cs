@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
-using isriding.Entities;
+using isriding.School;
+using isriding.Track;
 using isriding.Web.Extension.Fliter;
 using isriding.Web.Models.Chart;
 
@@ -14,13 +13,13 @@ namespace isriding.Web.Controllers.Chart
 {
     public class TrackChartController : Controller
     {
-        private readonly IRepository<Track> _trackRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly ITrackReadRepository _trackReadRepository;
+        private readonly ISchoolReadRepository _schoolReadRepository;
 
-        public TrackChartController(IRepository<Track> trackRepository, IRepository<Entities.School> schoolRepository)
+        public TrackChartController(ITrackReadRepository trackReadRepository, ISchoolReadRepository schoolReadRepository)
         {
-            _trackRepository = trackRepository;
-            _schoolRepository = schoolRepository;
+            _trackReadRepository = trackReadRepository;
+            _schoolReadRepository = schoolReadRepository;
         }
 
         // GET: TrackChart
@@ -39,7 +38,7 @@ namespace isriding.Web.Controllers.Chart
         [DontWrapResult, UnitOfWork]
         public virtual ActionResult GetTrackChartData(int School_id, int Month)
         {
-            var track = _trackRepository.GetAll();
+            var track = _trackReadRepository.GetAll();
             if (School_id > 0)
             {
                 track = track.Where(t => t.Bike.School_id == School_id);
@@ -102,7 +101,7 @@ namespace isriding.Web.Controllers.Chart
             if (model == null)
                 throw new ArgumentNullException("model");
 
-            var list = _schoolRepository.GetAll();
+            var list = _schoolReadRepository.GetAll();
 
             var sessionschoolids = Session["SchoolIds"] as List<int>;
             if (sessionschoolids != null && sessionschoolids.Count > 0)

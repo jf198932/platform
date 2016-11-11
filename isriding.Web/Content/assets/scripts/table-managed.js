@@ -14,15 +14,20 @@ var TableManaged = {
         }
 
         this.oTable = dataTableObj.dataTable({
-            'bLengthChange': false,
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",//定义DataTable布局的一个强大属性
+            "bInfo": true,
+            "bProcessing": true,
+            "bAutoWidth": false,
+            "bJQueryUI": false,
+            'bLengthChange': true,
             "bFilter": false,
             "bSort": false,
             "bPaginate": true,
             "bServerSide": true,
             "bStateSave": false,
-            "iDisplayLength": this.iDisplayLength,
+            "iDisplayLength": 15,
             "sPaginationType": "bootstrap",
-            "aLengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
+            "aLengthMenu": [[15, 25, 50, 100], [15, 25, 50, 100]],
             "oLanguage": {
                 "sLengthMenu": "每页显示 _MENU_ 条记录",
                 "sZeroRecords": "对不起，查询不到任何相关数据",

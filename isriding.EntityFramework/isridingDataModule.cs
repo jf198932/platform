@@ -18,6 +18,7 @@ namespace isriding
         {
             IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());
             Database.SetInitializer<isridingDbContext>(null);
+            Database.SetInitializer<ReadonlyisridingDbContext>(null);
         }
     }
 }

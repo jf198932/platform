@@ -85,6 +85,7 @@ namespace isriding.Web
                       //全局样式
                       "~/Content/assets/plugins/font-awesome/css/font-awesome.min.css",
                       "~/Content/assets/plugins/bootstrap/css/bootstrap.min.css",
+                      "~/Content/datatables.min.css",
                       //表单美化
                       "~/Content/assets/plugins/uniform/css/uniform.default.css",
                       //主题样式
