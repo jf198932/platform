@@ -2300,6 +2300,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SchoolManage\BikesitemanageController.cs" />
     <Compile Include="Controllers\SchoolManage\RechargeController.cs" />
+    <Compile Include="Controllers\SchoolManage\RefoundController.cs" />
     <Compile Include="Controllers\SchoolManage\SchooltrackController.cs" />
     <Compile Include="Controllers\SchoolManage\TrackController.cs" />
     <Compile Include="Controllers\School\AlarmController.cs" />
@@ -2341,6 +2342,7 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\SchoolManage\BikesitemanageModel.cs" />
     <Compile Include="Models\SchoolManage\RechargeModel.cs" />
+    <Compile Include="Models\SchoolManage\RefoundModel.cs" />
     <Compile Include="Models\SchoolManage\SchooltrackModel.cs" />
     <Compile Include="Models\SchoolManage\TrackModel.cs" />
     <Compile Include="Models\School\BikeModel.cs" />
@@ -2459,6 +2461,11 @@
     <Content Include="Views\Recharge\_List.cshtml" />
     <Content Include="Views\Recharge\_Search.cshtml" />
     <Content Include="Views\Recharge\Edit.cshtml" />
+    <Content Include="Views\Refound\Edit.cshtml" />
+    <Content Include="Views\Refound\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\Refound\_List.cshtml" />
+    <Content Include="Views\Refound\_Search.cshtml" />
+    <Content Include="Views\Refound\List.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

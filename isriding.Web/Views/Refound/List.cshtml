@@ -1,5 +1,5 @@
 ﻿@using isriding.Web.Models.Authen
-@model isriding.Web.Models.SchoolManage.RechargeModel
+@model isriding.Web.Models.SchoolManage.RefoundModel
 @{
     ViewBag.Title = "会员充值";
     var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
@@ -21,8 +21,27 @@
                     { "sName": "sort" },
                     { "sName": "School_name" },
                     { "sName": "User_name" },
-                    { "sName": "Deposit" },
-                    { "sName": "Recharge_count" },                    
+                    { "sName": "Refound_amount" },
+                    {
+                        "sName": "Refound_status",
+                        "fnRender": function(oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 2];
+                            if (t === "1") {
+                                render = '申请中';
+                            } else if (t === "2") {
+                                render = '审核不通过';
+                            } else if (t === "3") {
+                                render = '退款中';
+                            } else if (t === "4") {
+                                render = '退款成功';
+                            } else {
+                                render = '未知';
+                            }
+
+                            return render;
+                        }
+                    },
                     {
                         "sName": "action",
                         "fnRender": function(oObj) {

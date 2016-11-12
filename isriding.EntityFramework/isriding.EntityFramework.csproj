@@ -142,7 +142,7 @@
     <Compile Include="EntityFramework\Repositories\Recharge\RechargeWriteRepository.cs" />
     <Compile Include="EntityFramework\Repositories\Recharge_detail\Recharge_detailReadRepository.cs" />
     <Compile Include="EntityFramework\Repositories\Recharge_detail\Recharge_detailWriteRepository.cs" />
-    <Compile Include="EntityFramework\Repositories\Refound\RefoundReadRepositroy.cs" />
+    <Compile Include="EntityFramework\Repositories\Refound\RefoundReadRepository.cs" />
     <Compile Include="EntityFramework\Repositories\Refound\RefoundWriteRepository.cs" />
     <Compile Include="EntityFramework\Repositories\School\SchoolReadRepository.cs" />
     <Compile Include="EntityFramework\Repositories\School\SchoolWriteRepository.cs" />

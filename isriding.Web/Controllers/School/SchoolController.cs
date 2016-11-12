@@ -118,6 +118,8 @@ namespace isriding.Web.Controllers.School
                 school.Time_charge = model.Time_charge;
                 school.Refresh_date = DateTime.Now;
                 school.Updated_at = DateTime.Now;
+                school.Free_time = model.Free_time;
+                school.Deposit = model.Deposit;
 
                 _schoolRepository.Update(school);
                 //role = model.ToEntity(role);

@@ -1,4 +1,4 @@
-﻿@model isriding.Web.Models.SchoolManage.RechargeModel
+﻿@model isriding.Web.Models.SchoolManage.RefoundModel
 
 @Html.ValidationSummary(false)
 @Html.HiddenFor(model => model.Id)
@@ -15,27 +15,23 @@
                 <div class="form-group">
                     <label class="control-label col-md-3">会员名称</label>
                     <div class="col-md-6">
+                        
                         @Model.User_name
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-3">预充值</label>
+                    <label class="control-label col-md-3">退款金额</label>
                     <div class="col-md-6">
-
-                        @Html.TextBoxFor(t => t.Recharge_count, new {@class = "form-control"})
-
+                        @Html.TextBoxFor(t => t.Refound_amount, new {@class = "form-control"})
                         <span class="help-block">
-                            @Html.ValidationMessageFor(t => t.Recharge_count)
+                            @Html.ValidationMessageFor(t => t.Refound_amount)
                         </span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-3">押金</label>
+                    <label class="control-label col-md-3">退款状态</label>
                     <div class="col-md-6">
-                        @Html.TextBoxFor(t => t.Deposit, new {@class = "form-control"})
-                        <span class="help-block">
-                            @Html.ValidationMessageFor(t => t.Deposit)
-                        </span>
+                        @Html.DropDownListFor(model => model.Refound_status, Model.RefoundStatus, new { @class = "form-control" })
                     </div>
                 </div>
                 @*<div class="form-group">
@@ -44,7 +40,12 @@
                         @Html.DropDownListFor(model => model.School_id, Model.SchoolList, new { @class = "form-control" })
                     </div>
                 </div>*@
-
+                <div class="form-group">
+                    <label class="control-label col-md-3">会员名称</label>
+                    <div class="col-md-6">
+                        @Model.User_name
+                    </div>
+                </div>
                 @*<div class="form-group">
                     <label class="control-label col-md-3">启用</label>
                     <div class="col-md-6">
