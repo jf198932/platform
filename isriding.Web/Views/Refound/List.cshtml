@@ -23,17 +23,65 @@
                     { "sName": "User_name" },
                     { "sName": "Refound_amount" },
                     {
-                        "sName": "Refound_status",
+                        "sName": "Recharge_method",
+                        "fnRender": function (oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 6];
+                            if (t === "1") {
+                                render = '支付宝';
+                            } else if (t === "2") {
+                                render = '微信';
+                            } else if (t === "3") {
+                                render = '银联';
+                            } else {
+                                render = '未知';
+                            }
+
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "Recharge_type",
+                        "fnRender": function (oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 5];
+                            if (t === "1") {
+                                render = '押金';
+                            } else if (t === "2") {
+                                render = '预充值';
+                            } else {
+                                render = '未知';
+                            }
+
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "Type",
+                        "fnRender": function (oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 4];
+                            if (t === "1") {
+                                render = '充值';
+                            } else if (t === "2") {
+                                render = '退款';
+                            } else {
+                                render = '未知';
+                            }
+
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "Status",
                         "fnRender": function(oObj) {
                             var render;
                             var t = oObj.aData[oObj.aData.length - 2];
-                            if (t === "1") {
-                                render = '申请中';
+                            if (t === "0") {
+                                render = '正常';
+                            } else if (t === "1") {
+                                render = '申请退款';
                             } else if (t === "2") {
-                                render = '审核不通过';
-                            } else if (t === "3") {
-                                render = '退款中';
-                            } else if (t === "4") {
                                 render = '退款成功';
                             } else {
                                 render = '未知';
@@ -45,10 +93,10 @@
                     {
                         "sName": "action",
                         "fnRender": function(oObj) {
-                            var editUrl = '@Url.Action("Edit")';
+                            //var editUrl = '@Url.Action("Edit")';
                             var deleteUrl = '@Url.Action("Delete")';
 
-                            var render = "";
+                            //var render = "";
                             @*@if (buttonList.Any(t => t.Name.ToLower() == "设置权限"))
                             {
                                 <text>render += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"SetPermission('@Url.Action("SetPermission")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 授权</a> ";</text>
@@ -64,8 +112,8 @@
                             //return render;
 
                             var btnArray = "";
-                            //btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"SetPermission('@Url.Action("SetPermission")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 授权</a>";
-                            btnArray += " <a href=\"javascript:void(0);\" class=\"btn btn-xs purple\" onclick=\"Edit('" + editUrl + "','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-edit\"></i> 编辑</a>";
+                            btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"Refund('@Url.Action("Refund")','" + oObj.aData[oObj.aData.length - 2] + "')\"><i class=\"fa fa-gears\"></i> 退款</a>";
+                            //btnArray += " <a href=\"javascript:void(0);\" class=\"btn btn-xs purple\" onclick=\"Edit('" + editUrl + "','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-edit\"></i> 编辑</a>";
                             btnArray += " <a href=\"javascript:void(0)\" class=\"btn btn-xs red\" onclick=\"TableManaged.confirmDelete(this, '" + deleteUrl + "')\"><i class=\"fa fa-times\"></i> 删除</a>";
                             return btnArray;
 
@@ -84,91 +132,46 @@
                 });
             });
 
-            //新增
-            function Create(actionUrl) {
-                ShowModal(actionUrl, {}, "新增");
-            }
+            ////新增
+            //function Create(actionUrl) {
+            //    ShowModal(actionUrl, {}, "新增");
+            //}
 
-            //编辑
-            function Edit(actionUrl, id) {
+            ////编辑
+            //function Edit(actionUrl, id) {
+            //    var param = { id: id };
+            //    ShowModal(actionUrl, param, "编辑");
+            //}
+
+            ////保存
+            //function Save() {
+            //    SaveModal(oTable);
+            //}
+
+            //退款
+            function Refund(actionUrl, id) {
+                if (!confirm("确定要退款"))
+                    return;
                 var param = { id: id };
-                ShowModal(actionUrl, param, "编辑");
-            }
-
-            //保存
-            function Save() {
-                SaveModal(oTable);
-            }
-
-            //受权
-            function SetPermission(actionUrl, id) {
-                var url = actionUrl + "/" + id;
-                //表单初始化
-                $.get(url, function(data) {
-                    $("#modal-form-permission").draggable({
-                        cursor: "move",
-                        handle: ".modal-header"
-                    });
-                    $("#modal-content-permission").html(data);
-                    $(".modal-title-permission").html("角色授权");
-                    $('#modal-form-permission').modal('show');
-                    RegisterForm();
-                });
-            }
-
-            //保存授权
-            function SavePermission() {
-                //新模块权限
-                var roleId = $("#RoleId").val();
-                var newModulePermission = new Array();
-                $("input[type = 'checkbox'][name = 'modulectx']").each(function() {
-                    if (this.checked) {
-                        //模块
-                        var moduleId = $(this).val();
-                        //权限列表
-                        var permissionObj = $(".childpermissioncheck-" + $(this).val());
-                        if (permissionObj.length === 0) {
-                            //父模块
-                            var newModulePermissionData = {};
-                            newModulePermissionData["RoleId"] = roleId;
-                            newModulePermissionData["ModuleId"] = moduleId;
-                            newModulePermissionData["PermissionId"] = null;
-                            newModulePermission.push(newModulePermissionData);
-                        } else {
-                            permissionObj.each(function() {
-                                if (this.checked) {
-                                    var newModulePermissionData = {};
-                                    newModulePermissionData["RoleId"] = roleId;
-                                    newModulePermissionData["ModuleId"] = moduleId;
-                                    newModulePermissionData["PermissionId"] = $(this).val();
-                                    //添加到数组
-                                    newModulePermission.push(newModulePermissionData);
-                                }
-                            });
-                        }
-                    }
-                });
-
-                var actionUrl = "@Url.Action("SetPermission")";
-                //var $form = $("#modal-content-permission");
-                var isSet = $("input[name='isSet']").val();
-                var data = { RoleId: roleId, IsSet: isSet, newModulePermission: JSON.stringify(newModulePermission) }
                 $.ajax({
-                    type: "POST",
+                    type: "post",
                     url: actionUrl,
-                    data: data,
-                    success: function(data) {
-                        //bootbox.alert(data.Message);
-                        if (data != null) {
-                            $('#modal-form-permission').modal('hide');
+                    data: param,
+                    beforeSend: function () {
+                        //
+                    },
+                    success: function (result) {
+                        if (result != null) {
+                            oTable.fnDraw();
                         }
+                    },
+                    error: function () {
+                        //
+                    },
+                    complete: function () {
+                        //
                     }
                 });
-            }
-
-            function ClosePermissionModal() {
-                $('#modal-form-permission').modal('hide');
-                TableManaged.reset($("#modal-content-permission"));
             }
         </script>
     }

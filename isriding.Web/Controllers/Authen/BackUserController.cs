@@ -159,6 +159,7 @@ namespace isriding.Web.Controllers.Authen
                 user.Phone = model.Phone;
                 user.Email = model.Email;
                 user.Enabled = model.Enabled;
+                user.LoginName = model.LoginName;
                 
                 foreach (var roleId in model.SelectedRoleList)
                 {

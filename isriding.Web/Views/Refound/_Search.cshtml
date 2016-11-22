@@ -34,20 +34,46 @@
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.Refound_amount)</label>
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.Recharge_amount)</label>
                                 </div>
                                 <div class="col-xs-7">
-                                    @Html.TextBoxFor(s => s.Refound_amount, new {@class = "form-control"})
+                                    @Html.TextBoxFor(s => s.Recharge_amount, new {@class = "form-control"})
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="col-xs-5 text-center">
-                                    <label class="control-label">@Html.DisplayNameFor(t => t.Refound_status)</label>
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.Type)</label>
                                 </div>
                                 <div class="col-xs-7">
-                                    @Html.DropDownListFor(s => s.Refound_status, Model.RefoundStatus, new { @class = "form-control" })
+                                    @Html.DropDownListFor(s => s.Type, Model.Typelist, new {@class = "form-control"})
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="col-xs-5 text-center">
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.Recharge_type)</label>
+                                </div>
+                                <div class="col-xs-7">
+                                    @Html.DropDownListFor(s => s.Recharge_type, Model.Recharge_typelist, new {@class = "form-control"})
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="col-xs-5 text-center">
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.Status)</label>
+                                </div>
+                                <div class="col-xs-7">
+                                    @Html.DropDownListFor(s => s.Status, Model.StatusList, new {@class = "form-control"})
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="col-xs-5 text-center">
+                                    <label class="control-label">@Html.DisplayNameFor(t => t.Recharge_method)</label>
+                                </div>
+                                <div class="col-xs-7">
+                                    @Html.DropDownListFor(s => s.Recharge_method, Model.Recharge_methodlist, new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>

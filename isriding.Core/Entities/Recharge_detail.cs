@@ -14,7 +14,9 @@ namespace isriding.Entities
         public virtual DateTime? Updated_at { get; set; }
 
         public virtual int? User_id { get; set; }
-
+        /// <summary>
+        /// 充值，退款金额
+        /// </summary>
         public virtual double? Recharge_amount { get; set; }
         /// <summary>
         /// 1.充值，2.退款
@@ -36,6 +38,10 @@ namespace isriding.Entities
         /// 支付宝/微信/银联充值单号
         /// </summary>
         public virtual string doc_no { get; set; }
+        /// <summary>
+        /// 0正常 1 退款申请  2 退款成功
+        /// </summary>
+        public virtual int? Status { get; set; }
 
         [ForeignKey("User_id")]
         public virtual User User { get; set; }
