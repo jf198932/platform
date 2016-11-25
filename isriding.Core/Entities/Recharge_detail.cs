@@ -43,6 +43,10 @@ namespace isriding.Entities
         /// </summary>
         public virtual int? Status { get; set; }
 
+        public virtual string source_recharge_docno { get; set; }
+
+        public virtual string source_doc_no { get; set; }
+
         [ForeignKey("User_id")]
         public virtual User User { get; set; }
     }

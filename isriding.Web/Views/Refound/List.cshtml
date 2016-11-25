@@ -76,7 +76,7 @@
                         "sName": "Status",
                         "fnRender": function(oObj) {
                             var render;
-                            var t = oObj.aData[oObj.aData.length - 2];
+                            var t = oObj.aData[oObj.aData.length - 3];
                             if (t === "0") {
                                 render = '正常';
                             } else if (t === "1") {
@@ -95,7 +95,7 @@
                         "fnRender": function(oObj) {
                             //var editUrl = '@Url.Action("Edit")';
                             var deleteUrl = '@Url.Action("Delete")';
-
+                            var t = oObj.aData[oObj.aData.length - 3];
                             //var render = "";
                             @*@if (buttonList.Any(t => t.Name.ToLower() == "设置权限"))
                             {
@@ -112,7 +112,9 @@
                             //return render;
 
                             var btnArray = "";
-                            btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"Refund('@Url.Action("Refund")','" + oObj.aData[oObj.aData.length - 2] + "')\"><i class=\"fa fa-gears\"></i> 退款</a>";
+                            if (t === "申请退款") {
+                                btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"Refund('@Url.Action("Refund")','" + oObj.aData[oObj.aData.length - 2] + "')\"><i class=\"fa fa-gears\"></i> 退款</a>";
+                            }
                             //btnArray += " <a href=\"javascript:void(0);\" class=\"btn btn-xs purple\" onclick=\"Edit('" + editUrl + "','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-edit\"></i> 编辑</a>";
                             btnArray += " <a href=\"javascript:void(0)\" class=\"btn btn-xs red\" onclick=\"TableManaged.confirmDelete(this, '" + deleteUrl + "')\"><i class=\"fa fa-times\"></i> 删除</a>";
                             return btnArray;
@@ -129,6 +131,15 @@
                         e.preventDefault(); //取消回车原事件
                         TableManaged.search('@Url.Action("InitDataTable")');
                     }
+                });
+
+                $('.datepicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    startDate: '-3d',
+                    weekStart: 1,
+                    autoclose: true,
+                    todayBtn: 'linked',
+                    language: 'zh-CN'
                 });
             });
 

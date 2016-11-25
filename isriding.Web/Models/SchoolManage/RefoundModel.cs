@@ -98,8 +98,8 @@ namespace isriding.Web.Models.SchoolManage
                 new SelectListItem {Text = "预充值", Value = "2"}
             };
             Recharge_methodlist = new List<SelectListItem> {
-                new SelectListItem { Text = "--- 请选择 ---", Value = "0" },
-                new SelectListItem {Text = "支付宝", Value = "1", Selected = true},
+                new SelectListItem { Text = "--- 请选择 ---", Value = "0", Selected = true },
+                new SelectListItem {Text = "支付宝", Value = "1"},
                 new SelectListItem {Text = "微信", Value = "2"},
                 new SelectListItem {Text = "银联", Value = "3"}
             };
@@ -132,6 +132,10 @@ namespace isriding.Web.Models.SchoolManage
         /// </summary>
         [Display(Name = "订单状态")]
         public int? Status { get; set; }
+        [Display(Name = "开始时间")]
+        public string StartDate { get; set; }
+        [Display(Name = "结束时间")]
+        public string EndDate { get; set; }
 
         public List<SelectListItem> SchoolList { get; set; }
         public List<SelectListItem> StatusList { get; set; }

@@ -72,6 +72,8 @@ namespace isriding.Entities
         /// 结束桩点GPS
         /// </summary>
         public virtual int? End_site_id { get; set; }
+
+        public virtual DateTime? Pay_time { get; set; }
         [ForeignKey("User_id")]
         public virtual User User { get; set; }
         [ForeignKey("Bike_id")]

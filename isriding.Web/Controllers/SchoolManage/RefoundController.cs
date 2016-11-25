@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 using Abp.Domain.Uow;
+using Abp.Logging;
 using Abp.Web.Models;
 using AutoMapper;
 using isriding.Recharge;
 using isriding.Recharge_detail;
-using isriding.Refound;
 using isriding.School;
 using isriding.Web.Helper;
 using isriding.Web.Helper.Alipay;
@@ -81,7 +78,8 @@ namespace isriding.Web.Controllers.SchoolManage
                 Recharge_method = t.Recharge_method,
                 User_id = t.User_id,
                 User_name = t.User == null ? "" : t.User.Name,
-                School_name = t.User.School.Name
+                School_name = t.User.School.Name,
+                doc_no = t.doc_no
             }).ToList();
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -115,142 +113,10 @@ namespace isriding.Web.Controllers.SchoolManage
         [HttpPost, UnitOfWork]
         public virtual ActionResult Edit(RefoundModel model)
         {
-            var detail = _rechargeDetailWriteRepository.Get(model.Id);
+            //var detail = _rechargeDetailWriteRepository.Get(model.Id);
 
             if (ModelState.IsValid)
             {
-                if (model.Status == 2)//退款
-                {
-
-                    if (detail.Recharge_method == 1)//支付宝
-                    {
-                        //////////////////////////////////////////////请求参数////////////////////////////////////////////
-
-                        ////批次号，必填，格式：当天日期[8位]+序列号[3至24位]，如：201603081000001
-
-                        //string batch_no = DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999);
-
-                        ////退款笔数，必填，参数detail_data的值中，“#”字符出现的数量加1，最大支持1000笔（即“#”字符出现的数量999个）
-
-                        //string batch_num = "1";
-
-                        ////退款详细数据，必填，格式（支付宝交易号^退款金额^备注），多笔请用#隔开
-                        //string detail_data = "2016111821001004570251489448^9.9^正常退款";
-
-
-
-                        //////////////////////////////////////////////////////////////////////////////////////////////////
-
-                        ////把请求参数打包成数组
-                        //SortedDictionary<string, string> sParaTemp = new SortedDictionary<string, string>();
-                        //sParaTemp.Add("service", Config.service);
-                        //sParaTemp.Add("partner", Config.partner);
-                        //sParaTemp.Add("_input_charset", Config.input_charset.ToLower());
-                        ////sParaTemp.Add("notify_url", Config.notify_url);
-                        //sParaTemp.Add("seller_user_id", Config.seller_user_id);
-                        //sParaTemp.Add("refund_date", Config.refund_date);
-                        //sParaTemp.Add("batch_no", batch_no);
-                        //sParaTemp.Add("batch_num", batch_num);
-                        //sParaTemp.Add("detail_data", detail_data);
-
-                        ////建立请求
-                        //string sHtmlText = Submit.BuildRequest(sParaTemp, "get", "确认");
-                        //Response.Write(sHtmlText);
-                    }
-                    else if (detail.Recharge_method == 2) //微信
-                    {
-                        var noncestr = CommonUtil.CreateNoncestr();
-                        //var timespan = ((DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000).ToString();
-
-                        Dictionary<string, string> sPara = new Dictionary<string, string>();
-                        sPara.Add("appid", WxpayConfig.appId);
-                        sPara.Add("mch_id", WxpayConfig.mchid);
-                        sPara.Add("nonce_str", noncestr);
-                        sPara.Add("transaction_id", detail.doc_no);
-                        sPara.Add("out_refund_no", DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999));
-                        sPara.Add("total_fee", (detail.Recharge_amount * 100).ToString());
-                        sPara.Add("refund_fee", (detail.Recharge_amount * 100).ToString());
-                        sPara.Add("op_user_id", WxpayConfig.mchid);
-
-                        var wxpayhelper = new WxPayHelper();
-                        var sign = wxpayhelper.GetBizSign(sPara, false);
-                        sPara.Add("sign", sign);
-
-                        var requestXml = CommonUtil.ArrayToXml(sPara);
-
-                        string cert = @"~/cert/apiclient_cert.p12";
-
-                        //ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
-                        X509Certificate cer = new X509Certificate(cert, WxpayConfig.mchid);
-
-                        var resp = HttpHelper.PostDataToServerForHttps(
-                            "https://api.mch.weixin.qq.com/secapi/pay/refund", requestXml, HttpWebRequestMethod.POST,
-                            cer);
-
-                        var xdoc = new XmlDocument();
-                        xdoc.LoadXml(resp);
-                        XmlNode xn = xdoc.SelectSingleNode("xml");
-                        XmlNodeList xnl = xn.ChildNodes;
-
-                        if (xnl[6].InnerText == "SUCCESS")//退款成功
-                        {
-                            detail.Status = model.Status;
-                            detail.Updated_at = DateTime.Now;
-                            _rechargeDetailWriteRepository.Update(detail);
-
-                            var recharge = _rechargeWriteRepository.FirstOrDefault(t => t.User_id == detail.User_id);
-                            recharge.Deposit = 0;
-                            _rechargeWriteRepository.Update(recharge);
-
-                            _rechargeDetailWriteRepository.Insert(new Entities.Recharge_detail
-                            {
-                                Created_at = DateTime.Now,
-                                Updated_at = DateTime.Now,
-                                User_id = detail.User_id,
-                                Recharge_amount = double.Parse(xnl[12].InnerText)/100,
-                                Recharge_method = 1,
-                                Recharge_type = detail.Recharge_type,
-                                recharge_docno = DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999),
-                                doc_no = xnl[10].InnerText,
-                                Type = 2,
-                                Status = 0
-                            });
-                        }
-                    }
-
-
-                    //detail.Status = model.Status;
-                    //detail.Updated_at = DateTime.Now;
-                    //_rechargeDetailWriteRepository.Update(detail);
-
-                    //var recharge = _rechargeWriteRepository.FirstOrDefault(t => t.User_id == detail.User_id);
-                    //recharge.Deposit = 0;
-                    //_rechargeWriteRepository.Update(recharge);
-
-
-                    //IAopClient client = new DefaultAopClient("https://openapi.alipay.com/gateway.do", AlipayHelper.app_id, AlipayHelper.private_key, "json", "1.0", "RSA", AlipayHelper.alipay_public_key);
-                    //AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
-                    //request.BizContent = "{" +
-                    //"    \"out_trade_no\":\""+detail.recharge_docno+"\"," +
-                    //"    \"trade_no\":\""+detail.doc_no+"\"," +
-                    //"    \"refund_amount\":"+detail.Recharge_amount+"," +
-                    //"    \"refund_reason\":\"正常退款\"," +
-                    //"    \"operator_id\":\"OP001\"," +
-                    //"    \"store_id\":\"NJ_S_001\"," +
-                    //"    \"terminal_id\":\"NJ_T_001\"" +
-                    //"  }";
-                    //AlipayTradeRefundResponse response = client.Execute(request);
-                    //if (response.Msg == "Success")
-                    //{
-                    //    Console.WriteLine("调用成功");
-                    //}
-                    //else
-                    //{
-                    //    Console.WriteLine("调用失败");
-                    //}
-
-                }
-
                 return Json(model);
             }
             return Json(null);
@@ -266,38 +132,56 @@ namespace isriding.Web.Controllers.SchoolManage
 
                 if (detail.Recharge_method == 1) //支付宝
                 {
-                    ////////////////////////////////////////////请求参数////////////////////////////////////////////
-
-                    //批次号，必填，格式：当天日期[8位]+序列号[3至24位]，如：201603081000001
-
-                    string batch_no = DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999);
-
-                    //退款笔数，必填，参数detail_data的值中，“#”字符出现的数量加1，最大支持1000笔（即“#”字符出现的数量999个）
-
-                    string batch_num = "1";
-
                     //退款详细数据，必填，格式（支付宝交易号^退款金额^备注），多笔请用#隔开
-                    string detail_data = "2016111821001004570251489448^9.9^正常退款";
-
-
-
-                    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-                    //把请求参数打包成数组
+                    string detail_data = detail.doc_no + "^" + detail.Recharge_amount + "^" + "正常退款";//"2016111821001004570251489448^9.9^正常退款";
+                                                                                                     //把请求参数打包成数组
                     SortedDictionary<string, string> sParaTemp = new SortedDictionary<string, string>();
-                    sParaTemp.Add("service", Config.service);
                     sParaTemp.Add("partner", Config.partner);
                     sParaTemp.Add("_input_charset", Config.input_charset.ToLower());
-                    //sParaTemp.Add("notify_url", Config.notify_url);
-                    sParaTemp.Add("seller_user_id", Config.seller_user_id);
-                    sParaTemp.Add("refund_date", Config.refund_date);
-                    sParaTemp.Add("batch_no", batch_no);
-                    sParaTemp.Add("batch_num", batch_num);
+                    sParaTemp.Add("service", "refund_fastpay_by_platform_nopwd");
+                    //sParaTemp.Add("notify_url", ConfigurationManager.AppSettings["Alipay_refund_notify_url"]);
+                    sParaTemp.Add("batch_no", DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999));
+                    sParaTemp.Add("refund_date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                    sParaTemp.Add("batch_num", "1");
                     sParaTemp.Add("detail_data", detail_data);
 
                     //建立请求
-                    string sHtmlText = Submit.BuildRequest(sParaTemp, "get", "确认");
-                    Response.Write(sHtmlText);
+                    string sHtmlText = Submit.BuildRequest(sParaTemp);
+                    //todo log
+                    //LogHelper.Logger.Info(sHtmlText);
+
+                    XmlDocument xmlDoc = new XmlDocument();
+
+                    xmlDoc.LoadXml(sHtmlText);
+                    XmlNode xn = xmlDoc.SelectSingleNode("alipay");
+                    XmlNodeList xnl = xn.ChildNodes;
+                    if (xnl[0].InnerText == "T")
+                    {
+                        detail.Status = 2;
+                        detail.Updated_at = DateTime.Now;
+                        _rechargeDetailWriteRepository.Update(detail);
+
+                        var recharge = _rechargeWriteRepository.FirstOrDefault(t => t.User_id == detail.User_id);
+                        recharge.Deposit = 0;
+                        _rechargeWriteRepository.Update(recharge);
+
+                        _rechargeDetailWriteRepository.Insert(new Entities.Recharge_detail
+                        {
+                            Created_at = DateTime.Now,
+                            Updated_at = DateTime.Now,
+                            User_id = detail.User_id,
+                            Recharge_amount = detail.Recharge_amount,
+                            Recharge_method = 1,
+                            Recharge_type = detail.Recharge_type,
+                            recharge_docno = DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999),
+                            doc_no = "",
+                            Type = 2,
+                            Status = 0,
+                            source_recharge_docno = detail.recharge_docno,
+                            source_doc_no = detail.doc_no
+                        });
+                    }
+                    return Json("SUCCESS");
                 }
                 else if (detail.Recharge_method == 2) //微信
                 {
@@ -310,8 +194,8 @@ namespace isriding.Web.Controllers.SchoolManage
                     sPara.Add("nonce_str", noncestr);
                     sPara.Add("transaction_id", detail.doc_no);
                     sPara.Add("out_refund_no", DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999));
-                    sPara.Add("total_fee", (detail.Recharge_amount*100).ToString());
-                    sPara.Add("refund_fee", (detail.Recharge_amount*100).ToString());
+                    sPara.Add("total_fee", (detail.Recharge_amount * 100).ToString());
+                    sPara.Add("refund_fee", (detail.Recharge_amount * 100).ToString());
                     sPara.Add("op_user_id", WxpayConfig.mchid);
 
                     var wxpayhelper = new WxPayHelper();
@@ -320,20 +204,22 @@ namespace isriding.Web.Controllers.SchoolManage
 
                     var requestXml = CommonUtil.ArrayToXml(sPara);
 
-                    string cert = @"~/cert/apiclient_cert.p12";
-
+                    //string cert = @"~/cert/apiclient_cert.p12";
+                    string cert = Server.MapPath("~/cert/apiclient_cert.p12");
                     ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
-                    X509Certificate cer = new X509Certificate(cert, WxpayConfig.mchid);
+                    var cer = new X509Certificate(cert, WxpayConfig.mchid, X509KeyStorageFlags.MachineKeySet);
 
                     var resp = HttpHelper.PostDataToServerForHttps(
-                        "https://api.mch.weixin.qq.com/secapi/pay/refund", requestXml, HttpWebRequestMethod.POST,
-                        cer);
+                        "https://api.mch.weixin.qq.com/secapi/pay/refund", requestXml, HttpWebRequestMethod.POST, cer);
+
+                    //todo log
+                    //LogHelper.Logger.Info(resp);
 
                     var xdoc = new XmlDocument();
                     xdoc.LoadXml(resp);
                     XmlNode xn = xdoc.SelectSingleNode("xml");
                     XmlNodeList xnl = xn.ChildNodes;
-                    
+
                     if (xnl[6].InnerText == "SUCCESS") //退款成功
                     {
                         detail.Status = 2;
@@ -349,19 +235,22 @@ namespace isriding.Web.Controllers.SchoolManage
                             Created_at = DateTime.Now,
                             Updated_at = DateTime.Now,
                             User_id = detail.User_id,
-                            Recharge_amount = double.Parse(xnl[12].InnerText)/100,
+                            Recharge_amount = double.Parse(xnl[12].InnerText) / 100,
                             Recharge_method = 1,
                             Recharge_type = detail.Recharge_type,
                             recharge_docno = DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999),
                             doc_no = xnl[10].InnerText,
                             Type = 2,
-                            Status = 0
+                            Status = 0,
+                            source_recharge_docno = detail.recharge_docno,
+                            source_doc_no = detail.doc_no
                         });
                     }
 
+                    return Json("SUCCESS");
                 }
             }
-            return Json(detail);
+            return Json(null);
         }
 
         [HttpPost, UnitOfWork]
@@ -400,30 +289,56 @@ namespace isriding.Web.Controllers.SchoolManage
         {
             DynamicLambda<Entities.Recharge_detail> bulider = new DynamicLambda<Entities.Recharge_detail>();
             Expression<Func<Entities.Recharge_detail, Boolean>> expr = null;
+            
+            Expression<Func<Entities.Recharge_detail, Boolean>> tm = t => t.doc_no != null;
+            expr = bulider.BuildQueryAnd(expr, tm);
             if (!string.IsNullOrEmpty(Request["User_name"]))
             {
                 var data = Request["User_name"].Trim();
                 Expression<Func<Entities.Recharge_detail, Boolean>> tmp = t => t.User.Name.Contains(data);
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
-            if (!string.IsNullOrEmpty(Request["Type"]))
+            if (!string.IsNullOrEmpty(Request["Type"]) && Convert.ToInt32(Request["Type"].Trim()) > 0)
             {
                 var data = Convert.ToInt32(Request["Type"].Trim());
                 Expression<Func<Entities.Recharge_detail, Boolean>> tmp = t => t.Type == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
-            if (!string.IsNullOrEmpty(Request["Recharge_type"]))
+            if (!string.IsNullOrEmpty(Request["Recharge_type"]) && Convert.ToInt32(Request["Recharge_type"].Trim()) > 0)
             {
                 var data = Convert.ToInt32(Request["Recharge_type"].Trim());
                 Expression<Func<Entities.Recharge_detail, Boolean>> tmp = t => t.Recharge_type == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
-            if (!string.IsNullOrEmpty(Request["Status"]))
+            //Recharge_method
+            if (!string.IsNullOrEmpty(Request["Recharge_method"]) && Convert.ToInt32(Request["Recharge_method"].Trim()) > 0)
+            {
+                var data = Convert.ToInt32(Request["Recharge_method"].Trim());
+                Expression<Func<Entities.Recharge_detail, Boolean>> tmp = t => t.Recharge_method == data;
+                expr = bulider.BuildQueryAnd(expr, tmp);
+            }
+            if (!string.IsNullOrEmpty(Request["Status"]) && Convert.ToInt32(Request["Status"].Trim()) > -1)
             {
                 var data = Convert.ToInt32(Request["Status"].Trim());
                 Expression<Func<Entities.Recharge_detail, Boolean>> tmp = t => t.Status == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
+
+
+            if (!string.IsNullOrEmpty(Request["StartDate"]))
+            {
+                var data = DateTime.Parse(Request["StartDate"].Trim());
+                Expression<Func<Entities.Recharge_detail, Boolean>> tmp = t => t.Created_at >= data;
+                expr = bulider.BuildQueryAnd(expr, tmp);
+            }
+            if (!string.IsNullOrEmpty(Request["EndDate"]))
+            {
+                var data = DateTime.Parse(Request["EndDate"].Trim());
+                Expression<Func<Entities.Recharge_detail, Boolean>> tmp = t => t.Created_at <= data;
+                expr = bulider.BuildQueryAnd(expr, tmp);
+            }
+
+
             if (!string.IsNullOrEmpty(Request["School_id"]))
             {
                 var data = Convert.ToInt32(Request["School_id"].Trim());
@@ -451,6 +366,7 @@ namespace isriding.Web.Controllers.SchoolManage
                     expr = bulider.BuildQueryAnd(expr, tmp);
                 }
             }
+
             return expr;
         }
         #endregion

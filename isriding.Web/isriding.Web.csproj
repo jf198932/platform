@@ -2308,6 +2308,7 @@
     <Compile Include="Controllers\SchoolManage\RefoundController.cs" />
     <Compile Include="Controllers\SchoolManage\SchooltrackController.cs" />
     <Compile Include="Controllers\SchoolManage\TrackController.cs" />
+    <Compile Include="Controllers\SchoolManage\TrackDetailsController.cs" />
     <Compile Include="Controllers\School\AlarmController.cs" />
     <Compile Include="Controllers\School\BikeController.cs" />
     <Compile Include="Controllers\School\BikesiteController.cs" />
@@ -2324,6 +2325,7 @@
     <Compile Include="Helper\Alipay\AlipayCore.cs" />
     <Compile Include="Helper\Alipay\AlipayNotify.cs" />
     <Compile Include="Helper\Alipay\AlipaySubmit.cs" />
+    <Compile Include="Helper\Alipay\MD5.cs" />
     <Compile Include="Helper\Alipay\RSA.cs" />
     <Compile Include="Helper\ExcelHelper.cs" />
     <Compile Include="Helper\HttpHelper.cs" />
@@ -2482,6 +2484,11 @@
     <Content Include="Views\Refound\_List.cshtml" />
     <Content Include="Views\Refound\_Search.cshtml" />
     <Content Include="Views\Refound\List.cshtml" />
+    <Content Include="Views\TrackDetails\_List.cshtml" />
+    <Content Include="Views\TrackDetails\_ModalTrackInfo.cshtml" />
+    <Content Include="Views\TrackDetails\_Search.cshtml" />
+    <Content Include="Views\TrackDetails\GetTrackInfo.cshtml" />
+    <Content Include="Views\TrackDetails\List.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

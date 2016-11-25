@@ -36,6 +36,8 @@ namespace isriding.Web.Models.SchoolManage
         public int? End_site_id { get; set; }
         public string End_site_name { get; set; }
 
+        public DateTime? Pay_time { get; set; }
+
         public string School_name { get; set; }
 
         public TrackSearchModel Search { get; set; }
@@ -71,6 +73,11 @@ namespace isriding.Web.Models.SchoolManage
 
         [Display(Name = "学校")]
         public int School_id { get; set; }
+
+        [Display(Name = "开始时间")]
+        public string StartDate { get; set; }
+        [Display(Name = "结束时间")]
+        public string EndDate { get; set; }
 
         public List<SelectListItem> PayStatusList { get; set; }
         public List<SelectListItem> SchoolList { get; set; }

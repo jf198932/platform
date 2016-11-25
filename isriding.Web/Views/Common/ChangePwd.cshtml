@@ -20,9 +20,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3">原来密码</label>
                                     <div class="col-md-6">
-
-                                        @Html.TextBoxFor(t => t.OldLoginPwd, new {@class = "form-control"})
-
+                                        @Html.PasswordFor(t => t.OldLoginPwd, new {@class = "form-control"})
                                         <span class="help-block">
                                             @Html.ValidationMessageFor(t => t.OldLoginPwd)
                                         </span>
@@ -31,7 +29,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3">新密码</label>
                                     <div class="col-md-6">
-                                        @Html.TextBoxFor(t => t.NewLoginPwd, new {@class = "form-control"})
+                                        @Html.PasswordFor(t => t.NewLoginPwd, new {@class = "form-control"})
                                         <span class="help-block">
                                             @Html.ValidationMessageFor(t => t.NewLoginPwd)
                                         </span>
@@ -40,7 +38,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3">重复新密码</label>
                                     <div class="col-md-6">
-                                        @Html.TextBoxFor(t => t.NewLoginPwdConfirm, new {@class = "form-control"})
+                                        @Html.PasswordFor(t => t.NewLoginPwdConfirm, new {@class = "form-control"})
                                         <span class="help-block">
                                             @Html.ValidationMessageFor(t => t.NewLoginPwdConfirm)
                                         </span>
