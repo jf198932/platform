@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.UI;
 using AutoMapper;
@@ -15,31 +14,35 @@ using isriding.Web.Models.Authen;
 using isriding.Web.Models.Common;
 using Abp.Extensions;
 using Abp.Runtime.Caching;
-using Microsoft.Ajax.Utilities;
+using isriding.Authen.BackUser;
+using isriding.Authen.Module;
+using isriding.Authen.RoleModulePermission;
+using isriding.Authen.UserRole;
+using isriding.School;
 
 namespace isriding.Web.Controllers
 {
     public class HomeController : isridingControllerBase
     {
-        private readonly IRepository<BackUser> _backUserRepository;
-        private readonly IRepository<Module> _moduleUserRepository;
-        private readonly IRepository<UserRole> _userRoleRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
-        private readonly IRepository<RoleModulePermission> _roleModulePermissionRepository;
+        private readonly IBackUserReadRepository _backUserReadRepository;
+        private readonly IModuleReadRepository _moduleUserReadRepository;
+        private readonly IUserRoleReadRepository _userRoleReadRepository;
+        private readonly ISchoolReadRepository _schoolReadRepository;
+        private readonly IRoleModulePermissionReadRepository _roleModulePermissionReadRepository;
         private readonly ICacheManager _cacheManager;
 
-        public HomeController(IRepository<BackUser> backUserRepository,
-            IRepository<Module> moduleUserRepository,
-            IRepository<UserRole> userRoleRepository,
-            IRepository<Entities.School> schoolRepository,
-            IRepository<RoleModulePermission> roleModulePermissionRepository,
+        public HomeController(IBackUserReadRepository backUserReadRepository,
+            IModuleReadRepository moduleUserReadRepository,
+            IUserRoleReadRepository userRoleReadRepository,
+            ISchoolReadRepository schoolReadRepository,
+            IRoleModulePermissionReadRepository roleModulePermissionReadRepository,
             ICacheManager cacheManager)
         {
-            _backUserRepository = backUserRepository;
-            _moduleUserRepository = moduleUserRepository;
-            _userRoleRepository = userRoleRepository;
-            _schoolRepository = schoolRepository;
-            _roleModulePermissionRepository = roleModulePermissionRepository;
+            _backUserReadRepository = backUserReadRepository;
+            _moduleUserReadRepository = moduleUserReadRepository;
+            _userRoleReadRepository = userRoleReadRepository;
+            _schoolReadRepository = schoolReadRepository;
+            _roleModulePermissionReadRepository = roleModulePermissionReadRepository;
             _cacheManager = cacheManager;
         }
 
@@ -69,7 +72,7 @@ namespace isriding.Web.Controllers
                 var now = DateTime.Now.ToLocalTime();
                 var despwd = DESProvider.EncryptString(model.Password);
                 
-                var user = await _backUserRepository.FirstOrDefaultAsync(u =>
+                var user = await _backUserReadRepository.FirstOrDefaultAsync(u =>
                                 u.LoginName.ToLower() == model.UserNameOrEmail.ToLower()
                                 && u.LoginPwd == despwd);
                 if (user == null)
@@ -78,19 +81,19 @@ namespace isriding.Web.Controllers
                 Mapper.Initialize(t=> { t.CreateMap<BackUser, BackLoginModel>(); });
                 var currentUser = Mapper.Map<BackLoginModel>(user);
 
-                var userRole = await _userRoleRepository.GetAllListAsync(ur => ur.UserId == currentUser.Id);
+                var userRole = await _userRoleReadRepository.GetAllListAsync(ur => ur.UserId == currentUser.Id);
 
                 var roleIds = userRole.Select(t => t.RoleId);
 
                 
                 //currentUser.RoleNames = roleNames.ToList();
 
-                var moduleIdList = _roleModulePermissionRepository.GetAll().Where(t => roleIds.Contains(t.RoleId))
+                var moduleIdList = _roleModulePermissionReadRepository.GetAll().Where(t => roleIds.Contains(t.RoleId))
                         .Select(t => t.ModuleId)
                         .Distinct()
                         .ToList();
 
-                var buttons = _roleModulePermissionRepository.GetAll()
+                var buttons = _roleModulePermissionReadRepository.GetAll()
                     .Where(t => roleIds.Contains(t.RoleId) && (t.PermissionId != null || t.PermissionId > 0))
                     .Select(
                         t =>
@@ -106,13 +109,13 @@ namespace isriding.Web.Controllers
 
                 //Logger.Info(System.Web.Helpers.Json.Encode(buttons));
 
-                var moduleList = _moduleUserRepository.GetAll().ToList();
+                var moduleList = _moduleUserReadRepository.GetAll().ToList();
                 //菜单列表
                 SortMenuForTree(null, moduleIdList, moduleList, currentUser.Menus);
 
 
                 var roleNamestr = userRole.Select(t => t.Role.Name).ToList();
-                var schoolIdstr = _schoolRepository.GetAll().Where(t => roleNamestr.Contains(t.Name) || roleNamestr.Contains("admin")).Select(t => t.Id).ToList();
+                var schoolIdstr = _schoolReadRepository.GetAll().Where(t => roleNamestr.Contains(t.Name) || roleNamestr.Contains("admin")).Select(t => t.Id).ToList();
                 //var schoolIds = _cacheManager.GetCache("schoolIds");
                 
                 Session["currentUser"] = currentUser;

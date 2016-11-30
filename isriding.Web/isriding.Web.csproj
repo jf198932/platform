@@ -78,6 +78,10 @@
       <HintPath>..\packages\AutoMapper.5.1.1\lib\net45\AutoMapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
@@ -1920,6 +1924,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\datatables.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -2237,6 +2242,7 @@
     <Content Include="Content\assets\plugins\select2\select2_locale_en.js.template" />
     <Content Include="Content\assets\plugins\uniform\css\uniform.default.scss" />
     <Content Include="Content\assets\plugins\uniform\README.textile" />
+    <Content Include="cert\apiclient_cert.p12" />
     <None Include="Properties\PublishProfiles\isridingplatform.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -2276,7 +2282,9 @@
     <Content Include="Scripts\sweetalert\sweet-alert.min.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -2297,8 +2305,11 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SchoolManage\BikemanageController.cs" />
     <Compile Include="Controllers\SchoolManage\BikesitemanageController.cs" />
+    <Compile Include="Controllers\SchoolManage\RechargeController.cs" />
+    <Compile Include="Controllers\SchoolManage\RefoundController.cs" />
     <Compile Include="Controllers\SchoolManage\SchooltrackController.cs" />
     <Compile Include="Controllers\SchoolManage\TrackController.cs" />
+    <Compile Include="Controllers\SchoolManage\TrackDetailsController.cs" />
     <Compile Include="Controllers\School\AlarmController.cs" />
     <Compile Include="Controllers\School\BikeController.cs" />
     <Compile Include="Controllers\School\BikesiteController.cs" />
@@ -2311,7 +2322,19 @@
     <Compile Include="Extension\Fliter\AdminPermissionAttribute.cs" />
     <Compile Include="Extension\Fliter\SetButton.cs" />
     <Compile Include="Extension\HtmlHelperExtend.cs" />
+    <Compile Include="Helper\Alipay\AlipayConfig.cs" />
+    <Compile Include="Helper\Alipay\AlipayCore.cs" />
+    <Compile Include="Helper\Alipay\AlipayNotify.cs" />
+    <Compile Include="Helper\Alipay\AlipaySubmit.cs" />
+    <Compile Include="Helper\Alipay\MD5.cs" />
+    <Compile Include="Helper\Alipay\RSA.cs" />
     <Compile Include="Helper\ExcelHelper.cs" />
+    <Compile Include="Helper\HttpHelper.cs" />
+    <Compile Include="Helper\Wxpay\CommonUtil.cs" />
+    <Compile Include="Helper\Wxpay\MD5SignUtil.cs" />
+    <Compile Include="Helper\Wxpay\SDKRuntimeException.cs" />
+    <Compile Include="Helper\Wxpay\WxpayConfig.cs" />
+    <Compile Include="Helper\Wxpay\WxPayHelper.cs" />
     <Compile Include="Models\Authen\BackUserModel.cs" />
     <Compile Include="Models\Authen\ModuleModel.cs" />
     <Compile Include="Models\Authen\PermissionModel.cs" />
@@ -2338,6 +2361,8 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\SchoolManage\BikemanageModel.cs" />
     <Compile Include="Models\SchoolManage\BikesitemanageModel.cs" />
+    <Compile Include="Models\SchoolManage\RechargeModel.cs" />
+    <Compile Include="Models\SchoolManage\RefoundModel.cs" />
     <Compile Include="Models\SchoolManage\SchooltrackModel.cs" />
     <Compile Include="Models\SchoolManage\TrackModel.cs" />
     <Compile Include="Models\School\BikeModel.cs" />
@@ -2451,11 +2476,21 @@
     <Content Include="Views\UserChart\UserChartBar.cshtml" />
     <Content Include="Views\TrackChart\TrackChartBar.cshtml" />
     <Content Include="Views\Common\ChangePwd.cshtml" />
-    <Content Include="Views\Bikemanage\_List.cshtml" />
-    <Content Include="Views\Bikemanage\_ModalBikeManageInfo.cshtml" />
-    <Content Include="Views\Bikemanage\_Search.cshtml" />
-    <Content Include="Views\Bikemanage\GetBikemanageInfo.cshtml" />
-    <Content Include="Views\Bikemanage\List.cshtml" />
+    <Content Include="Views\Recharge\List.cshtml" />
+    <Content Include="Views\Recharge\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\Recharge\_List.cshtml" />
+    <Content Include="Views\Recharge\_Search.cshtml" />
+    <Content Include="Views\Recharge\Edit.cshtml" />
+    <Content Include="Views\Refound\Edit.cshtml" />
+    <Content Include="Views\Refound\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\Refound\_List.cshtml" />
+    <Content Include="Views\Refound\_Search.cshtml" />
+    <Content Include="Views\Refound\List.cshtml" />
+    <Content Include="Views\TrackDetails\_List.cshtml" />
+    <Content Include="Views\TrackDetails\_ModalTrackInfo.cshtml" />
+    <Content Include="Views\TrackDetails\_Search.cshtml" />
+    <Content Include="Views\TrackDetails\GetTrackInfo.cshtml" />
+    <Content Include="Views\TrackDetails\List.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

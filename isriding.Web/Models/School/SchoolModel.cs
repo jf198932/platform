@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 
 namespace isriding.Web.Models.School
 {
@@ -24,8 +23,19 @@ namespace isriding.Web.Models.School
         public string Gps_point { get; set; }
         public int? Site_count { get; set; }
         public int? Bike_count { get; set; }
+        /// <summary>
+        /// 公共自行车单价，单位为“RMB分/minute"，每分钟几分钱
+        /// </summary>
         public int? Time_charge { get; set; }
         public DateTime? Refresh_date { get; set; }
+        /// <summary>
+        /// 免费时间（分钟）
+        /// </summary>
+        public int? Free_time { get; set; }
+        /// <summary>
+        /// 押金
+        /// </summary>
+        public double? Deposit { get; set; }
         //[Required(ErrorMessage = "租户名称不能为空")]
         //[Remote("CheckTenancyNameExists", "Tenancy", ErrorMessage = "租户名称不能重复")]
         //public string TenancyName { get; set; }

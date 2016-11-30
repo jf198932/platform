@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.UI;
 using Abp.Web.Models;
-using isriding.Entities;
+using isriding.Bike;
+using isriding.Bikesite;
+using isriding.School;
+using isriding.Track;
 using isriding.Web.Extension.Fliter;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.SchoolManage;
@@ -17,17 +18,23 @@ namespace isriding.Web.Controllers.SchoolManage
 {
     public class TrackController : isridingControllerBase
     {
-        private readonly IRepository<Track> _trackRepository;
-        private readonly IRepository<Bike> _bikeRepository;
-        private readonly IRepository<Bikesite> _bikesiteRepository;
-        private readonly IRepository<Entities.School> _schoolRepository; 
+        private readonly ITrackWriteRepository _trackRepository;
+        private readonly ITrackReadRepository _trackReadRepository;
+        private readonly IBikeWriteRepository _bikeRepository;
+        private readonly IBikesiteWriteRepository _bikesiteRepository;
+        private readonly ISchoolReadRepository _schoolReadRepository; 
 
-        public TrackController(IRepository<Track> trackRepository, IRepository<Bike> bikeRepository, IRepository<Bikesite> bikesiteRepository, IRepository<Entities.School> schoolRepository)
+        public TrackController(ITrackWriteRepository trackRepository
+            , ITrackReadRepository trackReadRepository
+            , IBikeWriteRepository bikeRepository
+            , IBikesiteWriteRepository bikesiteRepository
+            , ISchoolReadRepository schoolReadRepository)
         {
             _trackRepository = trackRepository;
+            _trackReadRepository = trackReadRepository;
             _bikeRepository = bikeRepository;
             _bikesiteRepository = bikesiteRepository;
-            _schoolRepository = schoolRepository;
+            _schoolReadRepository = schoolReadRepository;
         }
 
         // GET: Track
@@ -47,7 +54,7 @@ namespace isriding.Web.Controllers.SchoolManage
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _trackRepository.GetAll();
+            var temp = _trackReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -101,7 +108,7 @@ namespace isriding.Web.Controllers.SchoolManage
         [DontWrapResult, UnitOfWork]
         public virtual ActionResult GetTrackInfo(int id)
         {
-            var track = _trackRepository.GetAll()
+            var track = _trackReadRepository.GetAll()
                 .Where(t => t.Id == id)
                 .Select(t => new TrackModel
                 {
@@ -235,7 +242,7 @@ namespace isriding.Web.Controllers.SchoolManage
             if (model == null)
                 throw new ArgumentNullException("model");
 
-            var list = _schoolRepository.GetAll();
+            var list = _schoolReadRepository.GetAll();
 
             var sessionschoolids = Session["SchoolIds"] as List<int>;
             if (sessionschoolids != null && sessionschoolids.Count > 0)

@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Web;
 using System.Web.Security;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Json;
-using isriding.Entities.Authen;
+using isriding.Authen.Module;
+using isriding.Authen.RoleModulePermission;
+using isriding.Authen.UserRole;
 using isriding.Web.Models.Authen;
 using isriding.Web.Models.Common;
 
@@ -13,10 +14,10 @@ namespace isriding.Web.Extension.Fliter
 {
     public class SetButton
     {
-        private readonly IRepository<Module> _moduleRepository;
-        private readonly IRepository<UserRole> _userRoleRepository;
-        private readonly IRepository<RoleModulePermission> _roleModulePermissionRepository;
-        public SetButton(IRepository<Module> moduleRepository, IRepository<UserRole> userRoleRepository, IRepository<RoleModulePermission> roleModulePermissionRepository)
+        private readonly IModuleWriteRepository _moduleRepository;
+        private readonly IUserRoleWriteRepository _userRoleRepository;
+        private readonly IRoleModulePermissionWriteRepository _roleModulePermissionRepository;
+        public SetButton(IModuleWriteRepository moduleRepository, IUserRoleWriteRepository userRoleRepository, IRoleModulePermissionWriteRepository roleModulePermissionRepository)
         {
             _moduleRepository = moduleRepository;
             _userRoleRepository = userRoleRepository;

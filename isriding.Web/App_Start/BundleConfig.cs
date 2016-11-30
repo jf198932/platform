@@ -85,6 +85,7 @@ namespace isriding.Web
                       //全局样式
                       "~/Content/assets/plugins/font-awesome/css/font-awesome.min.css",
                       "~/Content/assets/plugins/bootstrap/css/bootstrap.min.css",
+                      "~/Content/datatables.min.css",
                       //表单美化
                       "~/Content/assets/plugins/uniform/css/uniform.default.css",
                       //主题样式
@@ -100,7 +101,8 @@ namespace isriding.Web
 
             bundles.Add(new StyleBundle("~/bundles/admin/grid/css").Include(
                       "~/Content/assets/plugins/select2/select2_metro.css",
-                      "~/Content/assets/plugins/data-tables/DT_bootstrap.css"
+                      "~/Content/assets/plugins/data-tables/DT_bootstrap.css",
+                      "~/Content/assets/plugins/bootstrap-datepicker/css/datepicker.css"
                       ));
 
             //JS 脚本
@@ -119,6 +121,8 @@ namespace isriding.Web
 
             bundles.Add(new ScriptBundle("~/bundles/admin/grid/js").Include(
                        "~/Content/assets/plugins/select2/select2.min.js",
+                       "~/Content/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js",
+                       "~/Content/assets/plugins/bootstrap-datepicker/js/locales/bootstrap-datepicker.zh-CN.js",
                        "~/Content/assets/plugins/data-tables/jquery.dataTables.js",
                        "~/Content/assets/plugins/data-tables/jquery.dataTables.AjaxSource.min.js",
                        "~/Content/assets/plugins/data-tables/DT_bootstrap.js",

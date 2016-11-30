@@ -1,30 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
 using isriding.Web.Extension.Fliter;
-using isriding.Web.Helper;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.School;
 using AutoMapper;
-using isriding.Entities;
+using isriding.Bikesite;
+using isriding.School;
 
 namespace isriding.Web.Controllers.School
 {
     public class BikesiteController : isridingControllerBase
     {
-        private readonly IRepository<Bikesite> _bikesiteRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly IBikesiteWriteRepository _bikesiteRepository;
+        private readonly IBikesiteReadRepository _bikesiteReadRepository;
+        private readonly ISchoolReadRepository _schoolReadRepository;
 
-        public BikesiteController(IRepository<Bikesite> bikesiteRepository, IRepository<Entities.School> schoolRepository)
+        public BikesiteController(IBikesiteWriteRepository bikesiteRepository
+            , IBikesiteReadRepository bikesiteReadRepository
+            , ISchoolReadRepository schoolReadRepository)
         {
             _bikesiteRepository = bikesiteRepository;
-            _schoolRepository = schoolRepository;
+            _bikesiteReadRepository = bikesiteReadRepository;
+            _schoolReadRepository = schoolReadRepository;
         }
 
         // GET: Bikesite
@@ -46,7 +48,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _bikesiteRepository.GetAll();
+            var temp = _bikesiteReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -115,7 +117,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t => t.CreateMap<Entities.Bikesite, BikesiteModel>());
-            var model = Mapper.Map<BikesiteModel>(_bikesiteRepository.Get(id));
+            var model = Mapper.Map<BikesiteModel>(_bikesiteReadRepository.Get(id));
             //var model = role.ToModel();
             PrepareAllBikesiteModel(model);
             return PartialView(model);
@@ -176,7 +178,7 @@ namespace isriding.Web.Controllers.School
                 new SelectListItem {Text = "租车", Value = "3"}
             });
 
-            var list = _schoolRepository.GetAll();
+            var list = _schoolReadRepository.GetAll();
 
             var sessionschoolids = Session["SchoolIds"] as List<int>;
             if (sessionschoolids != null && sessionschoolids.Count > 0)

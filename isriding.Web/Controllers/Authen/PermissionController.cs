@@ -1,30 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
 using isriding.Entities.Authen;
 using isriding.Web.Extension.Fliter;
-using isriding.Web.Helper;
 using isriding.Web.Models.Authen;
 using isriding.Web.Models.Common;
 using AutoMapper;
+using isriding.Authen.Permission;
 
 namespace isriding.Web.Controllers.Authen
 {
     public class PermissionController : isridingControllerBase
     {
-        private readonly IRepository<Permission> _permissionRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly IPermissionWriteRepository _permissionRepository;
+        //private readonly ISchoolWriteRepository _schoolRepository;
+        private readonly IPermissionReadRepository _permissionReadRepository;
 
-        public PermissionController(IRepository<Permission> permissionRepository, IRepository<Entities.School> schoolRepository)
+        public PermissionController(IPermissionWriteRepository permissionRepository, IPermissionReadRepository permissionReadRepository)
         {
             _permissionRepository = permissionRepository;
-            _schoolRepository = schoolRepository;
+            //_schoolRepository = schoolRepository;
+            _permissionReadRepository = permissionReadRepository;
         }
         
         public ActionResult Index()
@@ -44,7 +43,7 @@ namespace isriding.Web.Controllers.Authen
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _permissionRepository.GetAll();
+            var temp = _permissionReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -104,7 +103,7 @@ namespace isriding.Web.Controllers.Authen
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t=> t.CreateMap<Permission, PermissionModel>());
-            var model = Mapper.Map<PermissionModel>(_permissionRepository.Get(id));
+            var model = Mapper.Map<PermissionModel>(_permissionReadRepository.Get(id));
             //var model = role.ToModel();
             PrepareAllUserModel(model);
             return PartialView(model);

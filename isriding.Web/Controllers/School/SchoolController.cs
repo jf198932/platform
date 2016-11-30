@@ -1,26 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
 using isriding.Web.Extension.Fliter;
-using isriding.Web.Helper;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.School;
 using AutoMapper;
+using isriding.School;
 
 namespace isriding.Web.Controllers.School
 {
     public class SchoolController : isridingControllerBase
     {
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly ISchoolWriteRepository _schoolRepository;
+        private readonly ISchoolReadRepository _schoolReadRepository;
 
-        public SchoolController(IRepository<Entities.School> schoolRepository)
+        public SchoolController(ISchoolWriteRepository schoolRepository, ISchoolReadRepository schoolReadRepository)
         {
             _schoolRepository = schoolRepository;
+            _schoolReadRepository = schoolReadRepository;
         }
 
         // GET: School
@@ -42,8 +41,8 @@ namespace isriding.Web.Controllers.School
         {
 
             var query =
-                _schoolRepository.GetAll().OrderBy(s => s.Id).Skip(param.iDisplayStart).Take(param.iDisplayLength);
-            var total = _schoolRepository.Count();
+                _schoolReadRepository.GetAll().OrderBy(s => s.Id).Skip(param.iDisplayStart).Take(param.iDisplayLength);
+            var total = _schoolReadRepository.Count();
             var filterResult = query.Select(t => new SchoolModel
             {
                 Id = t.Id,
@@ -52,8 +51,9 @@ namespace isriding.Web.Controllers.School
                 Gps_point = t.Gps_point,
                 Site_count = t.Site_count,
                 Bike_count = t.Bike_count,
-                Time_charge = t.Time_charge
-
+                Time_charge = t.Time_charge,
+                Free_time = t.Free_time,
+                Deposit = t.Deposit
             }).ToList();
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -65,6 +65,8 @@ namespace isriding.Web.Controllers.School
                                 t.Gps_point,
                                 t.Site_count.ToString(),
                                 t.Time_charge.ToString(),
+                                t.Deposit.ToString(),
+                                t.Free_time.ToString(),
                                 t.Id.ToString()
                             };
 
@@ -95,7 +97,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t=> t.CreateMap<Entities.School, SchoolModel>());
-            var model = Mapper.Map<SchoolModel>(_schoolRepository.Get(id));
+            var model = Mapper.Map<SchoolModel>(_schoolReadRepository.Get(id));
             //var model = role.ToModel();
 
             return PartialView(model);
@@ -116,6 +118,8 @@ namespace isriding.Web.Controllers.School
                 school.Time_charge = model.Time_charge;
                 school.Refresh_date = DateTime.Now;
                 school.Updated_at = DateTime.Now;
+                school.Free_time = model.Free_time;
+                school.Deposit = model.Deposit;
 
                 _schoolRepository.Update(school);
                 //role = model.ToEntity(role);
@@ -140,7 +144,7 @@ namespace isriding.Web.Controllers.School
         [UnitOfWork, DontWrapResult]
         public virtual ActionResult CheckTenancyNameExists(string schoolname)
         {
-            var model = _schoolRepository.FirstOrDefault(t => t.TenancyName.ToLower() == schoolname.ToLower());
+            var model = _schoolReadRepository.FirstOrDefault(t => t.TenancyName.ToLower() == schoolname.ToLower());
             if (model != null)
             {
                 return Json(false, JsonRequestBehavior.AllowGet);

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
-using isriding.Entities.Authen;
+using isriding.Authen.BackUser;
+using isriding.Authen.Module;
+using isriding.Authen.RoleModulePermission;
+using isriding.Authen.UserRole;
 using isriding.Helper;
 using isriding.Web.Extension.Fliter;
 using isriding.Web.Models.Common;
@@ -15,12 +14,12 @@ namespace isriding.Web.Controllers
 {
     public class CommonController : isridingControllerBase
     {
-        private readonly IRepository<Module> _moduleUserRepository;
-        private readonly IRepository<UserRole> _userRoleRepository;
-        private readonly IRepository<RoleModulePermission> _roleModulePermissionRepository;
-        private readonly IRepository<BackUser> _backUserRepository; 
+        private readonly IModuleWriteRepository _moduleUserRepository;
+        private readonly IUserRoleWriteRepository _userRoleRepository;
+        private readonly IRoleModulePermissionWriteRepository _roleModulePermissionRepository;
+        private readonly IBackUserWriteRepository _backUserRepository; 
 
-        public CommonController(IRepository<Module> moduleUserRepository, IRepository<UserRole> userRoleRepository, IRepository<RoleModulePermission> roleModulePermissionRepository, IRepository<BackUser> backUserRepository)
+        public CommonController(IModuleWriteRepository moduleUserRepository, IUserRoleWriteRepository userRoleRepository, IRoleModulePermissionWriteRepository roleModulePermissionRepository, IBackUserWriteRepository backUserRepository)
         {
             _moduleUserRepository = moduleUserRepository;
             _userRoleRepository = userRoleRepository;

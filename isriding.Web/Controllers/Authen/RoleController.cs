@@ -3,40 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.UI;
 using Abp.Web.Models;
 using isriding.Entities.Authen;
 using isriding.Web.Extension.Fliter;
-using isriding.Web.Helper;
 using isriding.Web.Models.Authen;
 using isriding.Web.Models.Common;
 using AutoMapper;
-using isriding.Web.Extension;
+using isriding.Authen.Module;
+using isriding.Authen.ModulePermission;
+using isriding.Authen.Permission;
+using isriding.Authen.Role;
+using isriding.Authen.RoleModulePermission;
 using Newtonsoft.Json;
 
 namespace isriding.Web.Controllers.Authen
 {
     public class RoleController : isridingControllerBase
     {
-        private readonly IRepository<Role> _roleRepository;
-        private readonly IRepository<Module> _moduleRepository;
-        private readonly IRepository<Permission> _permissionRepository;
-        private readonly IRepository<ModulePermission> _modulePermissionRepository; 
-        private readonly IRepository<RoleModulePermission> _roleModulePermissionRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly IRoleWriteRepository _roleRepository;
+        private readonly IModuleWriteRepository _moduleRepository;
+        private readonly IPermissionWriteRepository _permissionRepository;
+        private readonly IModulePermissionWriteRepository _modulePermissionRepository; 
+        private readonly IRoleModulePermissionWriteRepository _roleModulePermissionRepository;
+        //private readonly ISchoolWriteRepository _schoolRepository;
+        private readonly IRoleReadRepository _roleReadRepository;
+        private readonly IModuleReadRepository _moduleReadRepository;
+        private readonly IPermissionReadRepository _permissionReadRepository;
+        private readonly IModulePermissionReadRepository _modulePermissionReadRepository;
+        private readonly IRoleModulePermissionReadRepository _roleModulePermissionReadRepository;
 
-        public RoleController(IRepository<Role> roleRepository, IRepository<Module> moduleRepository, IRepository<Permission> permissionRepository,
-            IRepository<ModulePermission> modulePermissionRepository, IRepository<RoleModulePermission> roleModulePermissionRepository,
-            IRepository<Entities.School> schoolRepository)
+        public RoleController(IRoleWriteRepository roleRepository
+            , IModuleWriteRepository moduleRepository
+            , IPermissionWriteRepository permissionRepository
+            , IModulePermissionWriteRepository modulePermissionRepository
+            , IRoleModulePermissionWriteRepository roleModulePermissionRepository
+            , IRoleReadRepository roleReadRepository
+            , IModuleReadRepository moduleReadRepository
+            , IPermissionReadRepository permissionReadRepository
+            , IModulePermissionReadRepository modulePermissionReadRepository
+            , IRoleModulePermissionReadRepository roleModulePermissionReadRepository)
         {
             _roleRepository = roleRepository;
             _moduleRepository = moduleRepository;
             _permissionRepository = permissionRepository;
             _modulePermissionRepository = modulePermissionRepository;
             _roleModulePermissionRepository = roleModulePermissionRepository;
-            _schoolRepository = schoolRepository;
+            //_schoolRepository = schoolRepository;
+            _roleReadRepository = roleReadRepository;
+            _moduleReadRepository = moduleReadRepository;
+            _permissionReadRepository = permissionReadRepository;
+            _modulePermissionReadRepository = modulePermissionReadRepository;
+            _roleModulePermissionReadRepository = roleModulePermissionReadRepository;
         }
         public ActionResult Index()
         {
@@ -55,7 +74,7 @@ namespace isriding.Web.Controllers.Authen
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _roleRepository.GetAll();
+            var temp = _roleReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -111,7 +130,7 @@ namespace isriding.Web.Controllers.Authen
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t=> t.CreateMap<Role, RoleModel>());
-            var model = Mapper.Map<RoleModel>(_roleRepository.Get(id));
+            var model = Mapper.Map<RoleModel>(_roleReadRepository.Get(id));
             //var model = role.ToModel();
             PrepareAllUserModel(model);
             return PartialView(model);
@@ -157,7 +176,7 @@ namespace isriding.Web.Controllers.Authen
             //var schoolid = CommonHelper.GetSchoolId();
             #region 角色
 
-            var role = _roleRepository.Get(id);
+            var role = _roleReadRepository.Get(id);
             model.RoleId = role.Id;
             model.RoleName = role.Name;
 
@@ -166,7 +185,7 @@ namespace isriding.Web.Controllers.Authen
             #region 菜单
             //菜单列表
             model.ModuleDataList =
-                _moduleRepository.GetAll()
+                _moduleReadRepository.GetAll()
                     .Where(m => m.IsMenu && m.Enabled)
                     .Select(m => new ModuleModel1
                     {
@@ -180,7 +199,7 @@ namespace isriding.Web.Controllers.Authen
 
             //选中菜单
             var selectdModule =
-                _roleModulePermissionRepository.GetAll()
+                _roleModulePermissionReadRepository.GetAll()
                     .Where(t => t.RoleId == id)
                     .Select(t => t.ModuleId)
                     .Distinct()
@@ -216,7 +235,7 @@ namespace isriding.Web.Controllers.Authen
             var model = new RoleSelectedPermissionModel();
             //table头
             model.HeaderPermissionList =
-                _permissionRepository.GetAll()
+                _permissionReadRepository.GetAll()
                 .Where(p => p.Enabled)
                 .Select(p => new PermissionModel1
                 {
@@ -226,15 +245,15 @@ namespace isriding.Web.Controllers.Authen
                 }).ToList();
 
             
-            var allModuleList = _moduleRepository.GetAllList();
+            var allModuleList = _moduleReadRepository.GetAllList();
             var selectedModuleList = allModuleList.Where(m => selectedModuleId.Contains(m.Id)).ToList();
 
 
             //模块包含的按钮集合
             var modulePermissionList =
-                _modulePermissionRepository.GetAll().Where(t => selectedModuleId.Contains(t.ModuleId)).ToList();
+                _modulePermissionReadRepository.GetAll().Where(t => selectedModuleId.Contains(t.ModuleId)).ToList();
             var selectedModulePermissionList =
-                _roleModulePermissionRepository.GetAll()
+                _roleModulePermissionReadRepository.GetAll()
                     .Where(t => t.RoleId == roleId && selectedModuleId.Contains(t.ModuleId))
                     .ToList();
 

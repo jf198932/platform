@@ -115,11 +115,50 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntityFramework\isridingDbContext.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\BackUser\BackUserReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\BackUser\BackUserWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\ModulePermission\ModulePermissionReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\ModulePermission\ModulePermissionWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\Module\ModuleReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\Module\ModuleWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\Permission\PermissionReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\Permission\PermissionWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\RoleModulePermission\RoleModulePermissionReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\RoleModulePermission\RoleModulePermissionWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\Role\RoleReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\Role\RoleWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\UserRole\UserRoleReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Authen\UserRole\UserRoleWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Bikesite\BikesiteReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Bikesite\BikesiteWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Bike\BikeReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Bike\BikeWriteRepository.cs" />
     <Compile Include="EntityFramework\Repositories\isridingRepositoryBase.cs" />
+    <Compile Include="EntityFramework\Repositories\Log\LogReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Log\LogWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Parameter\ParameterReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Parameter\ParameterWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Recharge\RechargeReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Recharge\RechargeWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Recharge_detail\Recharge_detailReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Recharge_detail\Recharge_detailWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Refound\RefoundReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Refound\RefoundWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\School\SchoolReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\School\SchoolWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Sitemonitor\SitemonitorReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Sitemonitor\SitemonitorWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Track\TrackReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\Track\TrackWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\User\UserReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\User\UserWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\VersionUpdate\VersionUpdateReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\VersionUpdate\VersionUpdateWriteRepository.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="isridingDataModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlExecuter.cs" />
+    <Compile Include="SqlReadExecuter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -131,6 +170,7 @@
       <Name>isriding.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

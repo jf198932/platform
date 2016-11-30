@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
 using isriding.Entities.Authen;
@@ -10,24 +9,39 @@ using isriding.Web.Extension.Fliter;
 using isriding.Web.Models.Authen;
 using isriding.Web.Models.Common;
 using AutoMapper;
-using isriding.Entities;
+using isriding.Authen.BackUser;
+using isriding.Authen.Role;
+using isriding.Authen.UserRole;
 using isriding.Helper;
 
 namespace isriding.Web.Controllers.Authen
 {
     public class BackUserController : isridingControllerBase
     {
-        private readonly IRepository<BackUser> _backUserRepository;
-        private readonly IRepository<Role> _roleRepository;
-        private readonly IRepository<UserRole> _userRoleRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly IBackUserWriteRepository _backUserRepository;
+        private readonly IRoleWriteRepository _roleRepository;
+        private readonly IUserRoleWriteRepository _userRoleRepository;
 
-        public BackUserController(IRepository<BackUser> backUserrepository, IRepository<Role> roleRepository, IRepository<UserRole> userRoleRepository, IRepository<Entities.School> schoolRepository)
+        private readonly IBackUserReadRepository _backUserReadRepository;
+        private readonly IRoleReadRepository _roleReadRepository;
+        private readonly IUserRoleReadRepository _userRoleReadRepository;
+
+        //private readonly ISchoolWriteRepository _schoolRepository;
+
+        public BackUserController(IBackUserWriteRepository backUserrepository
+            , IRoleWriteRepository roleRepository
+            , IUserRoleWriteRepository userRoleRepository
+            , IBackUserReadRepository backUserReadRepository
+            , IRoleReadRepository roleReadRepository
+            , IUserRoleReadRepository userRoleReadRepository)
         {
             _backUserRepository = backUserrepository;
             _roleRepository = roleRepository;
             _userRoleRepository = userRoleRepository;
-            _schoolRepository = schoolRepository;
+            //_schoolRepository = schoolRepository;
+            _backUserReadRepository = backUserReadRepository;
+            _roleReadRepository = roleReadRepository;
+            _userRoleReadRepository = userRoleReadRepository;
         }
         
         public ActionResult Index()
@@ -47,7 +61,7 @@ namespace isriding.Web.Controllers.Authen
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _backUserRepository.GetAll();
+            var temp = _backUserReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -118,11 +132,11 @@ namespace isriding.Web.Controllers.Authen
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t => t.CreateMap<BackUser, BackUserModel>());
-            var entity = _backUserRepository.Get(id);
+            var entity = _backUserReadRepository.Get(id);
             var model = Mapper.Map<BackUserModel>(entity);
             //var model = role.ToModel();
             PrepareAllUserModel(model);
-            var userrole = _userRoleRepository.GetAll().Where(t => t.UserId == model.Id).ToList();
+            var userrole = _userRoleReadRepository.GetAll().Where(t => t.UserId == model.Id).ToList();
             foreach (var item in userrole)
             {
                 model.SelectedRoleList.Add(item.RoleId);
@@ -145,6 +159,7 @@ namespace isriding.Web.Controllers.Authen
                 user.Phone = model.Phone;
                 user.Email = model.Email;
                 user.Enabled = model.Enabled;
+                user.LoginName = model.LoginName;
                 
                 foreach (var roleId in model.SelectedRoleList)
                 {
@@ -187,7 +202,7 @@ namespace isriding.Web.Controllers.Authen
                 throw new ArgumentNullException(nameof(model));
             //var schoolid = CommonHelper.GetSchoolId();
             model.RoleList =
-                _roleRepository.GetAll()
+                _roleReadRepository.GetAll()
                     .Where(r => r.Enabled)
                     .OrderBy(r => r.OrderSort)
                     .Select(r => new KeyValueModel {Text = r.Name, Value = r.Id.ToString()})

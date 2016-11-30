@@ -28,6 +28,7 @@ namespace isriding.Web.Models.School
         public string Description { get; set; }
         public int? Rent_charge { get; set; }
         public int? Return_charge { get; set; }
+        [Required(ErrorMessage = "必须填写GPS")]
         public string Gps_point { get; set; }
         public int? Radius { get; set; }
         public int? Bike_count { get; set; }

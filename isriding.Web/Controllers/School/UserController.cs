@@ -2,28 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
 using isriding.Web.Extension.Fliter;
-using isriding.Web.Helper;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.School;
 using AutoMapper;
+using isriding.School;
+using isriding.User;
 
 namespace isriding.Web.Controllers.School
 {
     public class UserController : isridingControllerBase
     {
-        private readonly IRepository<Entities.User> _userRepository;
-        private readonly IRepository<Entities.School> _schoolRepository;
+        private readonly IUserWriteRepository _userRepository;
+        private readonly IUserReadRepository _userReadRepository;
+        private readonly ISchoolReadRepository _schoolReadRepository;
 
-        public UserController(IRepository<Entities.User> userRepository, IRepository<Entities.School> schoolRepository)
+        public UserController(IUserWriteRepository userRepository
+            , IUserReadRepository userReadRepository
+            , ISchoolReadRepository schoolReadRepository)
         {
             _userRepository = userRepository;
-            _schoolRepository = schoolRepository;
+            _userReadRepository = userReadRepository;
+            _schoolReadRepository = schoolReadRepository;
         }
         // GET: User
         //[AdminLayout]
@@ -44,7 +47,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult InitDataTable(DataTableParameter param)
         {
             var expr = BuildSearchCriteria();
-            var temp = _userRepository.GetAll();
+            var temp = _userReadRepository.GetAll();
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -110,7 +113,7 @@ namespace isriding.Web.Controllers.School
         public virtual ActionResult Edit(int id)
         {
             Mapper.Initialize(t=> t.CreateMap<Entities.User, UserModel>());
-            var model = Mapper.Map<UserModel>(_userRepository.Get(id));
+            var model = Mapper.Map<UserModel>(_userReadRepository.Get(id));
             //var model = role.ToModel();
             PrepareAllUserModel(model);
             return PartialView(model);
@@ -157,8 +160,10 @@ namespace isriding.Web.Controllers.School
         {
             if (model == null)
                 throw new ArgumentNullException("model");
+            var list = _schoolReadRepository.GetAll();
+
             model.SchoolList.AddRange(
-                _schoolRepository.GetAll().Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() }));
+               list.Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString() }));
             model.CertificationList.AddRange(new List<SelectListItem>
             {
                 new SelectListItem {Text = "未申请", Value = "1"},
@@ -166,7 +171,7 @@ namespace isriding.Web.Controllers.School
                 new SelectListItem {Text = "已认证", Value = "3"},
                 new SelectListItem {Text = "认证失败", Value = "4"}
             });
-            var list = _schoolRepository.GetAll();
+            
             var sessionschoolids = Session["SchoolIds"] as List<int>;
             if (sessionschoolids != null && sessionschoolids.Count > 0)
             {
