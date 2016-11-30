@@ -71,7 +71,7 @@ namespace isriding.Web.Controllers.SchoolManage
                          select new[]
                              {
                                 sortId++.ToString(),
-                                t.Pay_docno,
+                                t.Trade_no,
                                 t.School_name,
                                 t.User_Name,
                                 t.Pay_status.ToString(),

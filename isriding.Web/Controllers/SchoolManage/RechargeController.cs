@@ -10,6 +10,7 @@ using AutoMapper;
 using isriding.Recharge;
 using isriding.Recharge_detail;
 using isriding.School;
+using isriding.Web.Extension.Fliter;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.School;
 using isriding.Web.Models.SchoolManage;
@@ -39,7 +40,7 @@ namespace isriding.Web.Controllers.SchoolManage
         {
             return RedirectToAction("List");
         }
-
+        [AdminLayout]
         public ActionResult List()
         {
             var model = new RechargeModel();

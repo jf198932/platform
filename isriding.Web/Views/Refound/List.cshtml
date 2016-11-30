@@ -5,7 +5,7 @@
     var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
 
-@*@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))*@
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
 {
     @Html.Partial("_Search", Model.Search)
     @Html.Partial("_List")
@@ -24,7 +24,7 @@
                     { "sName": "Refound_amount" },
                     {
                         "sName": "Recharge_method",
-                        "fnRender": function (oObj) {
+                        "fnRender": function(oObj) {
                             var render;
                             var t = oObj.aData[oObj.aData.length - 6];
                             if (t === "1") {
@@ -42,7 +42,7 @@
                     },
                     {
                         "sName": "Recharge_type",
-                        "fnRender": function (oObj) {
+                        "fnRender": function(oObj) {
                             var render;
                             var t = oObj.aData[oObj.aData.length - 5];
                             if (t === "1") {
@@ -58,7 +58,7 @@
                     },
                     {
                         "sName": "Type",
-                        "fnRender": function (oObj) {
+                        "fnRender": function(oObj) {
                             var render;
                             var t = oObj.aData[oObj.aData.length - 4];
                             if (t === "1") {
@@ -90,26 +90,32 @@
                             return render;
                         }
                     },
+                    { "sName": "doc_no" },
                     {
                         "sName": "action",
                         "fnRender": function(oObj) {
                             //var editUrl = '@Url.Action("Edit")';
                             var deleteUrl = '@Url.Action("Delete")';
                             var t = oObj.aData[oObj.aData.length - 3];
-                            //var render = "";
+                            var render = "";
                             @*@if (buttonList.Any(t => t.Name.ToLower() == "设置权限"))
                             {
                                 <text>render += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"SetPermission('@Url.Action("SetPermission")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 授权</a> ";</text>
                             }*@
-                            @*@if (buttonList.Any(t => t.Name.ToLower() == "编辑"))
+                            @if (buttonList.Any(t => t.Name.ToLower() == "编辑"))
                             {
-                                <text>render += TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ';</text>
+                                //<text>render += TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ';</text>
+
+                                <text>if (t === "申请退款") {
+                                    render += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"Refund('@Url.Action("Refund")','" + oObj.aData[oObj.aData.length - 2] + "')\"><i class=\"fa fa-gears\"></i> 退款</a>";
+                                }</text>
+
                             }
                             @if (buttonList.Any(t => t.Name.ToLower() == "删除"))
                             {
                                 <text>render += TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);</text>
-                            }*@
-                            //return render;
+                            }
+                            return render;
 
                             var btnArray = "";
                             if (t === "申请退款") {
@@ -168,18 +174,18 @@
                     type: "post",
                     url: actionUrl,
                     data: param,
-                    beforeSend: function () {
+                    beforeSend: function() {
                         //
                     },
-                    success: function (result) {
+                    success: function(result) {
                         if (result != null) {
                             oTable.fnDraw();
                         }
                     },
-                    error: function () {
+                    error: function() {
                         //
                     },
-                    complete: function () {
+                    complete: function() {
                         //
                     }
                 });

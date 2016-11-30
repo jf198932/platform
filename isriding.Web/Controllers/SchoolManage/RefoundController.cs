@@ -14,6 +14,7 @@ using AutoMapper;
 using isriding.Recharge;
 using isriding.Recharge_detail;
 using isriding.School;
+using isriding.Web.Extension.Fliter;
 using isriding.Web.Helper;
 using isriding.Web.Helper.Alipay;
 using isriding.Web.Helper.Wxpay;
@@ -47,7 +48,7 @@ namespace isriding.Web.Controllers.SchoolManage
         {
             return RedirectToAction("List");
         }
-
+        [AdminLayout]
         public ActionResult List()
         {
             var model = new RefoundModel();

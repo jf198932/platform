@@ -5,7 +5,7 @@
     ViewBag.Title = "租车收支明细";
     var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
-@*@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))*@
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
 {
     @Html.Partial("_Search", Model.Search)
     @Html.Partial("_List")
@@ -18,7 +18,7 @@
                 var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random() + "&" + $("#search_form").serialize();
                 var aoColumns = [
                     { "sName": "sort" },
-                    { "sName": "pay_docno" },
+                    { "sName": "trade_no" },
                     { "sName": "school_name" },
                     { "sName": "user_name" },
                     {

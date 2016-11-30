@@ -5,7 +5,7 @@
     var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
 }
 
-@*@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))*@
+@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))
 {
     @Html.Partial("_Search", Model.Search)
     @Html.Partial("_List")
@@ -34,15 +34,15 @@
                             {
                                 <text>render += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"SetPermission('@Url.Action("SetPermission")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 授权</a> ";</text>
                             }*@
-                            @*@if (buttonList.Any(t => t.Name.ToLower() == "编辑"))
+                            @if (buttonList.Any(t => t.Name.ToLower() == "编辑"))
                             {
                                 <text>render += TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ';</text>
                             }
                             @if (buttonList.Any(t => t.Name.ToLower() == "删除"))
                             {
                                 <text>render += TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);</text>
-                            }*@
-                            //return render;
+                            }
+                            return render;
 
                             var btnArray = "";
                             //btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"SetPermission('@Url.Action("SetPermission")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 授权</a>";
