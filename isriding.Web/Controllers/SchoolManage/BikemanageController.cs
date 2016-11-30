@@ -17,14 +17,12 @@ namespace isriding.Web.Controllers.SchoolManage
 {
     public class BikemanageController : isridingControllerBase
     {
-        private readonly IRepository<Bikesite> _bikesiteRepository;
         private readonly IRepository<Entities.School> _schoolRepository;
         private readonly ISqlExecuter _sqlExecuter;
         private readonly string _sqlStr = @"CALL SP_SelectBikeManage";
 
-        public BikemanageController(IRepository<Bikesite> bikesiteRepository, IRepository<Entities.School> schoolRepository, ISqlExecuter sqlExecuter)
+        public BikemanageController(IRepository<Entities.School> schoolRepository, ISqlExecuter sqlExecuter)
         {
-            _bikesiteRepository = bikesiteRepository;
             _schoolRepository = schoolRepository;
             _sqlExecuter = sqlExecuter;
         }

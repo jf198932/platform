@@ -2491,6 +2491,11 @@
     <Content Include="Views\TrackDetails\_Search.cshtml" />
     <Content Include="Views\TrackDetails\GetTrackInfo.cshtml" />
     <Content Include="Views\TrackDetails\List.cshtml" />
+    <Content Include="Views\Bikemanage\GetBikemanageInfo.cshtml" />
+    <Content Include="Views\Bikemanage\List.cshtml" />
+    <Content Include="Views\Bikemanage\_List.cshtml" />
+    <Content Include="Views\Bikemanage\_ModalBikeManageInfo.cshtml" />
+    <Content Include="Views\Bikemanage\_Search.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
