@@ -1,0 +1,102 @@
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.SchoolManage.BikemanageModel
+
+@{
+    ViewBag.Title = "车辆管理";
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
+}
+
+@*if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))*@
+@if(true)
+{
+    @Html.Partial("_Search", Model.Search)
+    @Html.Partial("_List")
+    @Html.Partial("_ModalBikeManageInfo")
+    @section scripts{
+        <script>
+            var oTable = null;
+            var oTable2 = null;
+            //$(function() {
+            //    $("#ddlSchool").change(function() {
+            //        BindBikesite();
+            //    });
+            //});
+            $(function() {
+                var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random() + "&" + $("#search_form").serialize();
+                var aoColumns = [
+                    { "sName": "sort" },
+                    { "sName": "blename" },
+                    { "sName": "maxrenttime" },
+                    { "sName": "bikever"  },
+                    { "sName": "bletype" },
+                    { "sName": "starttime" },
+                    { "sName": "renttimecnt" },
+                    { "sName": "rentcnt" },
+                    { "sName": "payment" },
+                    { "sName": "bikestatus" },
+                    { "sName": "schoolname" },
+                    {
+                        "sName": "action",
+                        "fnRender": function(oObj) {
+                            var btnArray = "";
+                            btnArray += "<a href=\"javascript:void(0);\" class=\"btn btn-xs green\" onclick=\"OpenBikeManage('@Url.Action("GetBikemanageInfo")','" + oObj.aData[oObj.aData.length - 1] + "')\"><i class=\"fa fa-gears\"></i> 车辆动态</a>";
+                            return btnArray;
+                        }
+                    }
+                ];
+
+                oTable = TableManaged.init($("#table1"), actionUrl, aoColumns);
+
+                $('#search_form').keypress(function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault(); //取消回车原事件
+                        TableManaged.search('@Url.Action("InitDataTable")');
+                    }
+                });
+            });
+
+
+            function OpenBikeManage(actionUrl, id) {
+                $('#modal-form-trackxxx').modal('show');
+                actionUrl += "?rand=" + Math.random() + "&id=" + id;
+                $("#modal-form-trackxxx").draggable({
+                    cursor: "move",
+                    handle: ".modal-header"
+                });
+                var aoColumns = [
+                    { "sName": "sort" },
+                    { "sName": "paydocno" },
+                    { "sName": "bikename" },
+                    { "sName": "username" },
+                    { "sName": "starttime" },
+                    { "sName": "endtime" },
+                    { "sName": "startsite" },
+                    { "sName": "endsite" },
+                    { "sName": "renttimecnt" },
+                    { "sName": "payment" }
+                ];
+                if (oTable2 == null) {
+                    oTable2 = TableManaged.init($("#tblDetail"), actionUrl, aoColumns);
+                } else {
+                    this.oTable2.fnReloadAjax(actionUrl);
+                }
+            }
+
+            function CloseBikeManageModal() {
+                $('#modal-form-trackxxx').modal('hide');
+                TableManaged.reset($("#modal-content-track"));
+            }
+
+
+            function Search(searchUrl, obj) {
+                var filterdata = $("#search_form").serialize();
+                var actionUrl = searchUrl + "?rand=" + Math.random() + "&" + filterdata;
+                if (obj == null) {
+                    this.oTable.fnReloadAjax(actionUrl);
+                } else {
+                    obj.fnReloadAjax(actionUrl);
+                }
+            }
+        </script>
+    }
+}
