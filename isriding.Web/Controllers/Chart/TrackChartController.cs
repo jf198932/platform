@@ -38,7 +38,7 @@ namespace isriding.Web.Controllers.Chart
         [DontWrapResult, UnitOfWork]
         public virtual ActionResult GetTrackChartData(int School_id, int Month)
         {
-            var track = _trackReadRepository.GetAll();
+            var track = _trackReadRepository.GetAll().Where(t => t.Trade_no != null);
             if (School_id > 0)
             {
                 track = track.Where(t => t.Bike.School_id == School_id);

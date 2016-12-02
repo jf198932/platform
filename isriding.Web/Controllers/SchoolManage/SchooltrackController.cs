@@ -91,6 +91,7 @@ namespace isriding.Web.Controllers.SchoolManage
                     UserName = t.UserName
                 });
             var total = track.Count();
+            track = track.OrderBy(s => s.Id).Skip(param.iDisplayStart).Take(param.iDisplayLength);
             int sortId = param.iDisplayStart + 1;
             var filterResult = track.ToList();
             var result = from t in filterResult

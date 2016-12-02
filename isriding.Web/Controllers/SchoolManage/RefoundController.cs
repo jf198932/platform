@@ -80,7 +80,8 @@ namespace isriding.Web.Controllers.SchoolManage
                 User_id = t.User_id,
                 User_name = t.User == null ? "" : t.User.Name,
                 School_name = t.User.School.Name,
-                doc_no = t.doc_no
+                doc_no = t.doc_no,
+                recharge_docno = t.recharge_docno
             }).ToList();
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -94,6 +95,7 @@ namespace isriding.Web.Controllers.SchoolManage
                                 t.Recharge_type.ToString(),
                                 t.Type.ToString(),
                                 t.Status.ToString(),
+                                t.recharge_docno,
                                 t.doc_no,
                                 t.Id.ToString()
                             };
@@ -237,7 +239,7 @@ namespace isriding.Web.Controllers.SchoolManage
                             Updated_at = DateTime.Now,
                             User_id = detail.User_id,
                             Recharge_amount = double.Parse(xnl[12].InnerText) / 100,
-                            Recharge_method = 1,
+                            Recharge_method = 2,
                             Recharge_type = detail.Recharge_type,
                             recharge_docno = DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999),
                             doc_no = xnl[10].InnerText,

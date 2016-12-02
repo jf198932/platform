@@ -118,6 +118,7 @@ LEFT JOIN bikesite AS e ON d.id = a.end_site_id
                     payment = t.payment
                 });
             var total = track.Count();
+            track = track.OrderBy(s => s.Id).Skip(param.iDisplayStart).Take(param.iDisplayLength);
             int sortId = param.iDisplayStart + 1;
             var filterResult = track.ToList();
             var result = from t in filterResult
