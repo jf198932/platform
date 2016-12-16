@@ -57,8 +57,10 @@
                     }
                 }
             ];
-
-            oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+            var fnDrawCallback = function () {
+                //$("[data-toggle='tooltip']").popover();
+            };
+            oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns, fnDrawCallback);
 
             $('#search_form').keypress(function (e) {
                 if (e.which === 13) {

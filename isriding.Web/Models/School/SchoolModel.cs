@@ -36,6 +36,16 @@ namespace isriding.Web.Models.School
         /// 押金
         /// </summary>
         public double? Deposit { get; set; }
+
+        /// <summary>
+        /// 起租金额
+        /// </summary>
+        public double? Fixed_amount { get; set; }
+
+        /// <summary>
+        /// 封顶金额(元)
+        /// </summary>
+        public double? Top_amount { get; set; }
         //[Required(ErrorMessage = "租户名称不能为空")]
         //[Remote("CheckTenancyNameExists", "Tenancy", ErrorMessage = "租户名称不能重复")]
         //public string TenancyName { get; set; }

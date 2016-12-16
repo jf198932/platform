@@ -127,8 +127,10 @@
                         }
                     }
                 ];
-
-                oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+                var fnDrawCallback = function () {
+                    //$("[data-toggle='tooltip']").popover();
+                };
+                oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns, fnDrawCallback);
 
                 $("input[type=file]").fileupload({
                     done: function(e, response) {

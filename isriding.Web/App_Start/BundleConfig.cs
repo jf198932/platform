@@ -46,7 +46,7 @@ namespace isriding.Web
                         "~/Scripts/jquery-2.1.4.min.js",
                         "~/Scripts/jquery-ui-1.11.4.min.js",
 
-                        "~/Scripts/bootstrap.min.js",
+                        //"~/Scripts/bootstrap.min.js",
 
                         //"~/Scripts/moment-with-locales.min.js",
                         "~/Scripts/jquery.validate.min.js",
@@ -109,7 +109,7 @@ namespace isriding.Web
             bundles.Add(new ScriptBundle("~/bundles/admin/js").Include(
                         //IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip
                         "~/Content/assets/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js",
-                        "~/Content/assets/plugins/bootstrap/js/bootstrap.min.js",
+                        "~/Content/assets/plugins/bootstrap/js/bootstrap.js",
                         "~/Content/assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js",
                         "~/Content/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js",
                         "~/Content/assets/plugins/jquery.blockui.min.js",

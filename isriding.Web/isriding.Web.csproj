@@ -2310,6 +2310,7 @@
     <Compile Include="Controllers\SchoolManage\SchooltrackController.cs" />
     <Compile Include="Controllers\SchoolManage\TrackController.cs" />
     <Compile Include="Controllers\SchoolManage\TrackDetailsController.cs" />
+    <Compile Include="Controllers\SchoolManage\TroubleController.cs" />
     <Compile Include="Controllers\School\AlarmController.cs" />
     <Compile Include="Controllers\School\BikeController.cs" />
     <Compile Include="Controllers\School\BikesiteController.cs" />
@@ -2365,6 +2366,7 @@
     <Compile Include="Models\SchoolManage\RefoundModel.cs" />
     <Compile Include="Models\SchoolManage\SchooltrackModel.cs" />
     <Compile Include="Models\SchoolManage\TrackModel.cs" />
+    <Compile Include="Models\SchoolManage\TroubleModel.cs" />
     <Compile Include="Models\School\BikeModel.cs" />
     <Compile Include="Models\School\BikesiteModel.cs" />
     <Compile Include="Models\School\SchoolModel.cs" />
@@ -2496,6 +2498,11 @@
     <Content Include="Views\Bikemanage\_List.cshtml" />
     <Content Include="Views\Bikemanage\_ModalBikeManageInfo.cshtml" />
     <Content Include="Views\Bikemanage\_Search.cshtml" />
+    <Content Include="Views\Trouble\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\Trouble\_List.cshtml" />
+    <Content Include="Views\Trouble\_Search.cshtml" />
+    <Content Include="Views\Trouble\Edit.cshtml" />
+    <Content Include="Views\Trouble\List.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -3,15 +3,15 @@ var TableManaged = {
     oTable: '',
     iDisplayLength : 15,
 
-    init: function (dataTableObj, actionUrl, aoColumns, pageSize) {
+    init: function (dataTableObj, actionUrl, aoColumns, fnDrawCallback) {
         
         if (!jQuery().dataTable) {
             return;
         }
 
-        if (typeof (pageSize) != 'undefined') {
-            this.iDisplayLength = pageSize;
-        }
+        //if (typeof (pageSize) != 'undefined') {
+        //    this.iDisplayLength = pageSize;
+        //}
 
         this.oTable = dataTableObj.dataTable({
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",//定义DataTable布局的一个强大属性
@@ -27,7 +27,7 @@ var TableManaged = {
             "bStateSave": false,
             "iDisplayLength": 15,
             "sPaginationType": "bootstrap",
-            "aLengthMenu": [[15, 25, 50, 100], [15, 25, 50, 100]],
+            "aLengthMenu": [[15, 30, 50, 100, 500], [15, 30, 50, 100, 500]],
             "oLanguage": {
                 "sLengthMenu": "每页显示 _MENU_ 条记录",
                 "sZeroRecords": "对不起，查询不到任何相关数据",
@@ -48,7 +48,8 @@ var TableManaged = {
             "aoColumnDefs": [{
                 'bSortable': false,
                 'aTargets': [0]
-            }]
+            }],
+            "fnDrawCallback": fnDrawCallback
         });
         return this.oTable;        
     },

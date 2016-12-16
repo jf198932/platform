@@ -122,7 +122,7 @@ namespace isriding.Web.Controllers.SchoolManage
         {
             DynamicLambda<Entities.Track> bulider = new DynamicLambda<Entities.Track>();
             Expression<Func<Entities.Track, Boolean>> expr = null;
-            Expression<Func<Entities.Track, Boolean>> tm = t => t.Trade_no != null;
+            Expression<Func<Entities.Track, Boolean>> tm = t => t.Start_site_id != null;
             expr = bulider.BuildQueryAnd(expr, tm);
 
             if (!string.IsNullOrEmpty(Request["User_Name"]))

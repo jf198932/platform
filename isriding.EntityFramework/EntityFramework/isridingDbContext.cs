@@ -22,6 +22,7 @@ namespace isriding.EntityFramework
         public virtual IDbSet<Entities.Sitemonitor> Sitemonitors { get; set; }
         public virtual IDbSet<Entities.VersionUpdate> VersionUpdates { get; set; }
         public virtual IDbSet<Entities.Parameter> Parameters { get; set; }
+        public virtual IDbSet<Entities.Tb_trouble_feedback> TbTroubleFeedbacks { get; set; }
         //权限
         public virtual IDbSet<Entities.Authen.BackUser> BackUsers { get; set; }
         public virtual IDbSet<Entities.Authen.Role> Roles { get; set; }

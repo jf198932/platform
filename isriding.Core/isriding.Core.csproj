@@ -123,6 +123,7 @@
     <Compile Include="Entities\School.cs" />
     <Compile Include="Entities\Sitebeacon.cs" />
     <Compile Include="Entities\Sitemonitor.cs" />
+    <Compile Include="Entities\Tb_trouble_feedback.cs" />
     <Compile Include="Entities\Track.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\VersionUpdate.cs" />
@@ -147,6 +148,8 @@
     <Compile Include="School\ISchoolWriteRepository.cs" />
     <Compile Include="Sitemonitor\ISitemonitorReadRepository.cs" />
     <Compile Include="Sitemonitor\ISitemonitorWriteRepository.cs" />
+    <Compile Include="TbTroubleFeedback\ITbTroubleFeedbackReadRepository.cs" />
+    <Compile Include="TbTroubleFeedback\ITbTroubleFeedbackWriteRepository.cs" />
     <Compile Include="Track\ITrackReadRepository.cs" />
     <Compile Include="Track\ITrackWriteRepository.cs" />
     <Compile Include="User\IUserReadRepository.cs" />

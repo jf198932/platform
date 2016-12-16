@@ -148,6 +148,8 @@
     <Compile Include="EntityFramework\Repositories\School\SchoolWriteRepository.cs" />
     <Compile Include="EntityFramework\Repositories\Sitemonitor\SitemonitorReadRepository.cs" />
     <Compile Include="EntityFramework\Repositories\Sitemonitor\SitemonitorWriteRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\TbTroubleFeedback\TbTroubleFeedbackReadRepository.cs" />
+    <Compile Include="EntityFramework\Repositories\TbTroubleFeedback\TbTroubleFeedbackWriteRepository.cs" />
     <Compile Include="EntityFramework\Repositories\Track\TrackReadRepository.cs" />
     <Compile Include="EntityFramework\Repositories\Track\TrackWriteRepository.cs" />
     <Compile Include="EntityFramework\Repositories\User\UserReadRepository.cs" />

@@ -76,14 +76,32 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-3">免费时间(分钟)</label>
+                    <label class="control-label col-md-3">起租时间(分钟)</label>
                     <div class="col-md-6">
-                        @Html.TextBoxFor(t => t.Free_time, new { @class = "form-control" })
+                        @Html.TextBoxFor(t => t.Free_time, new {@class = "form-control"})
                         <span class="help-block">
                             @Html.ValidationMessageFor(t => t.Free_time)
                         </span>
                     </div>
-                </div> 
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">起租金额</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Fixed_amount, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Fixed_amount)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">单日封顶金额</label>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(t => t.Top_amount, new { @class = "form-control" })
+                        <span class="help-block">
+                            @Html.ValidationMessageFor(t => t.Top_amount)
+                        </span>
+                    </div>
+                </div>  
                 @*<div class="form-group">
                         <label class="control-label col-md-2">启用</label>
                         <div class="col-md-6">

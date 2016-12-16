@@ -59,13 +59,22 @@ namespace isriding.Entities
         /// </summary>
         public virtual DateTime? Refresh_date { get; set; }
         /// <summary>
-        /// 免费时间（分钟）
+        /// 起租时间（分钟）
         /// </summary>
         public virtual int? Free_time { get; set; }
         /// <summary>
         /// 押金
         /// </summary>
         public virtual double? Deposit { get; set; }
+
+        /// <summary>
+        /// 起租金额
+        /// </summary>
+        public virtual double? Fixed_amount { get; set; }
+        /// <summary>
+        /// 封顶金额(元)
+        /// </summary>
+        public virtual double? Top_amount { get; set; }
 
         //public virtual ICollection<Bike> Bikes { get; set; } 
         //public virtual ICollection<Bikesite> Bikesites { get; set; }

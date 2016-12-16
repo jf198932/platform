@@ -47,7 +47,13 @@
                     押金金额
                 </th>
                 <th>
-                    免费时间(分钟)
+                    起租时间(分钟)
+                </th>
+                <th>
+                    起租金额
+                </th>
+                <th>
+                    封顶金额
                 </th>
                 <th>
                     操作
@@ -75,6 +81,8 @@
                     { "sName": "time_charge" },
                     { "sName": "deposit" },
                     { "sName": "free_time" },
+                    { "sName": "fixed_amount" },
+                    { "sName": "top_amount" },
                     {
                         "sName": "action",
                         "fnRender": function(oObj) {
@@ -94,8 +102,10 @@
                         }
                     }
                 ];
-
-                oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns);
+                var fnDrawCallback = function () {
+                    //$("[data-toggle='tooltip']").popover();
+                };
+                oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns, fnDrawCallback);
             });
 
             //新增

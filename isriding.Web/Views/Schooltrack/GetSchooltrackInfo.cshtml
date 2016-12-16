@@ -45,8 +45,10 @@
             { "sName": "status" },
             { "sName": "errorcause" }
         ];
-
-        oTable2 = TableManaged.init($("#tblDetail"), actionUrl, aoColumns);
+        var fnDrawCallback = function () {
+            //$("[data-toggle='tooltip']").popover();
+        };
+        oTable2 = TableManaged.init($("#tblDetail"), actionUrl, aoColumns, fnDrawCallback);
     }
 
     function CloseSchooltrackModal() {

@@ -1,0 +1,189 @@
+﻿@using isriding.Web.Models.Authen
+@model isriding.Web.Models.SchoolManage.TroubleModel
+@{
+    ViewBag.Title = "会员充值";
+    var buttonList = ViewBag.ButtonList as List<PermissionButtonModel>;
+}
+
+@*@if (buttonList != null && buttonList.Any(t => t.Name.ToLower() == "浏览"))*@
+{
+    @Html.Partial("_Search", Model.Search)
+    @Html.Partial("_List")
+    @Html.Partial("Modal")
+
+    @section scripts{
+        <script>
+            var oTable = null;
+
+            $(function () {
+                var actionUrl = "@Url.Action("InitDataTable")?rand=" + Math.random() + "&" + $("#search_form").serialize();
+                var aoColumns = [
+                    { "sName": "sort" },
+                    { "sName": "Id" },
+                    { "sName": "create_time" },
+                    { "sName": "username" },
+                    { "sName": "schoolname" },
+                    { "sName": "phone" },
+                    { "sName": "bike_number" },
+                    {
+                        "sName": "trouble1",
+                        "fnRender": function (oObj) {
+                            var render = "";
+                            var t = oObj.aData[oObj.aData.length - 8];
+                            if (t == null || t === "null" || t === "") {
+                                render = "无";
+                            } else {
+                                render += "<a href=\"javascript:void(0);\" data-html=\"true\" data-toggle=\"tooltip\" data-placement=\"left\" data-content=\"" + t + "\">车辆损坏</a>";
+                            }
+
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "trouble2",
+                        "fnRender": function (oObj) {
+                            var render = "";
+                            var t = oObj.aData[oObj.aData.length - 7];
+                            if (t == null || t === "null" || t === "") {
+                                render = "无";
+                            } else {
+                                render += "<a href=\"javascript:void(0);\" data-html=\"true\" data-toggle=\"tooltip\" data-placement=\"left\" data-content=\"" + t + "\">用车故障</a>";
+                            }
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "trouble3",
+                        "fnRender": function (oObj) {
+                            var render = "";
+                            var t = oObj.aData[oObj.aData.length - 6];
+                            if (t == null || t === "null" || t === "") {
+                                render = "无";
+                            } else {
+                                render += "<a href=\"javascript:void(0);\" data-html=\"true\" data-toggle=\"tooltip\" data-placement=\"left\" data-content=\"" + t + "\">违规用车</a>";
+                            }
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "comments",
+                        "fnRender": function (oObj) {
+                            var render = "";
+                            var t = oObj.aData[oObj.aData.length - 5];
+                            if (t == null || t === "null" || t === "") {
+                                render = "无";
+                            } else {
+                                render += "<a href=\"javascript:void(0);\" data-html=\"true\" data-toggle=\"tooltip\" data-placement=\"left\" data-content=\"" + t + "\">备注</a>";
+                            }
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "img_url",
+                        "fnRender": function (oObj) {
+                            var render = "";
+                            var t = oObj.aData[oObj.aData.length - 4];
+                            if (t == null || t === "null" && t === "") {
+                                render = "无";
+                            } else {
+                                render += "<a href='" + t + "' target='_blank'>查看图片</a>";
+                                
+                            }
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "verify_status",
+                        "fnRender": function (oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 3];
+                            if (t === "1") {
+                                render = '待核实';
+                            } else if (t === "2") {
+                                render = '已核实';
+                            } else if (t === "3") {
+                                render = '非属实';
+                            } else {
+                                render = '未知';
+                            }
+
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "deal_status",
+                        "fnRender": function (oObj) {
+                            var render;
+                            var t = oObj.aData[oObj.aData.length - 2];
+                            if (t === "1") {
+                                render = '用户提交';
+                            } else if (t === "2") {
+                                render = '客服处理中';
+                            } else if (t === "3") {
+                                render = '客服已处理';
+                            } else {
+                                render = '未知';
+                            }
+
+                            return render;
+                        }
+                    },
+                    {
+                        "sName": "action",
+                        "fnRender": function (oObj) {
+                            var editUrl = '@Url.Action("Edit")';
+                            var deleteUrl = '@Url.Action("Delete")';
+                            var render = "";
+                            @*@if (buttonList.Any(t => t.Name.ToLower() == "编辑"))
+                            {
+                                <text>render += TableManaged.btnEdit(deleteUrl, oObj.aData[oObj.aData.length - 1]);</text>
+                            }
+                            @if (buttonList.Any(t => t.Name.ToLower() == "删除"))
+                            {
+                                <text>render += TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);</text>
+                            }
+                            return render;*@
+                            return TableManaged.btnEdit(editUrl, oObj.aData[oObj.aData.length - 1]) + ' ' + TableManaged.btnDelete(deleteUrl, oObj.aData[oObj.aData.length - 1]);
+                        }
+                    }
+                ];
+                var fnDrawCallback = function () {
+                    $("[data-toggle='tooltip']").popover();
+                };
+                oTable = TableManaged.init($(".datatable"), actionUrl, aoColumns, fnDrawCallback);
+
+                $('#search_form').keypress(function (e) {
+                    if (e.which === 13) {
+                        e.preventDefault(); //取消回车原事件
+                        TableManaged.search('@Url.Action("InitDataTable")');
+                    }
+                });
+
+                $('.datepicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    minDate: 0,
+                    weekStart: 1,
+                    autoclose: true,
+                    todayBtn: 'linked',
+                    language: 'zh-CN'
+                });
+            });
+
+            ////新增
+            //function Create(actionUrl) {
+            //    ShowModal(actionUrl, {}, "新增");
+            //}
+
+            //编辑
+            function Edit(actionUrl, id) {
+                var param = { id: id };
+                ShowModal(actionUrl, param, "编辑");
+            }
+
+            //保存
+            function Save() {
+                SaveModal(oTable);
+            }
+        </script>
+    }
+}

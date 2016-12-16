@@ -53,7 +53,9 @@ namespace isriding.Web.Controllers.School
                 Bike_count = t.Bike_count,
                 Time_charge = t.Time_charge,
                 Free_time = t.Free_time,
-                Deposit = t.Deposit
+                Deposit = t.Deposit,
+                Fixed_amount = t.Fixed_amount,
+                Top_amount = t.Top_amount
             }).ToList();
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -67,6 +69,8 @@ namespace isriding.Web.Controllers.School
                                 t.Time_charge.ToString(),
                                 t.Deposit.ToString(),
                                 t.Free_time.ToString(),
+                                t.Fixed_amount.ToString(),
+                                t.Top_amount.ToString(),
                                 t.Id.ToString()
                             };
 
@@ -120,6 +124,8 @@ namespace isriding.Web.Controllers.School
                 school.Updated_at = DateTime.Now;
                 school.Free_time = model.Free_time;
                 school.Deposit = model.Deposit;
+                school.Fixed_amount = model.Fixed_amount;
+                school.Top_amount = model.Top_amount;
 
                 _schoolRepository.Update(school);
                 //role = model.ToEntity(role);

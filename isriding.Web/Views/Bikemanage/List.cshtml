@@ -44,8 +44,10 @@
                         }
                     }
                 ];
-
-                oTable = TableManaged.init($("#table1"), actionUrl, aoColumns);
+                var fnDrawCallback = function () {
+                    //$("[data-toggle='tooltip']").popover();
+                };
+                oTable = TableManaged.init($("#table1"), actionUrl, aoColumns, fnDrawCallback);
 
                 $('#search_form').keypress(function(e) {
                     if (e.which === 13) {
@@ -76,7 +78,10 @@
                     { "sName": "payment" }
                 ];
                 if (oTable2 == null) {
-                    oTable2 = TableManaged.init($("#tblDetail"), actionUrl, aoColumns);
+                    var fnDrawCallback = function () {
+                        //$("[data-toggle='tooltip']").popover();
+                    };
+                    oTable2 = TableManaged.init($("#tblDetail"), actionUrl, aoColumns, fnDrawCallback);
                 } else {
                     this.oTable2.fnReloadAjax(actionUrl);
                 }
