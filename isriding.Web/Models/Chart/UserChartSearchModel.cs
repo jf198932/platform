@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
@@ -25,14 +26,28 @@ namespace isriding.Web.Models.Chart
                 new SelectListItem {Text = "11月", Value = "11"},
                 new SelectListItem {Text = "12月", Value = "12"}
             };
+
+            YearList = new List<SelectListItem>();
+            var index = DateTime.Now.Year - 5;
+            for (int i = 0; i < 10; i++)
+            {
+                YearList.Add(index == DateTime.Now.Year
+                    ? new SelectListItem { Text = index + "年", Value = index.ToString(), Selected = true }
+                    : new SelectListItem { Text = index + "年", Value = index.ToString() });
+                index++;
+            }
+            Year = DateTime.Now.Year;
         }
         [Display(Name = "学校")]
         public int School_id { get; set; }
         [Display(Name = "月份")]
         public int Month { get; set; }
+        [Display(Name = "年份")]
+        public int Year { get; set; }
 
         public List<SelectListItem> SchoolList { get; set; }
 
         public List<SelectListItem> MonthList { get; set; }
+        public List<SelectListItem> YearList { get; set; }
     }
 }

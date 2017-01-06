@@ -32,6 +32,7 @@ namespace isriding.Web.Models.SchoolManage
         public int? User_id { get; set; }
 
         public string User_name { get; set; }
+        public string Phone { get; set; }
 
         public string School_name { get; set; }
 
@@ -50,6 +51,8 @@ namespace isriding.Web.Models.SchoolManage
         public double? Deposit { get; set; }
         [Display(Name = "预充值")]
         public double? Recharge_count { get; set; }
+        [Display(Name = "电话号码")]
+        public string Phone { get; set; }
 
         [Display(Name = "学校")]
         public int? School_id { get; set; }

@@ -53,6 +53,12 @@ namespace isriding.Web.Models.SchoolManage
                 new SelectListItem {Text = "还车未支付", Value = "2"},
                 new SelectListItem {Text = "已支付", Value = "3"}
             };
+            BikeStatusList = new List<SelectListItem> {
+                new SelectListItem { Text = "--- 请选择 ---", Value = "-1", Selected = true },
+                new SelectListItem {Text = "出租中", Value = "0"},
+                new SelectListItem {Text = "待租中", Value = "1"}
+            };
+            Bike_status = -1;
             SchoolList = new List<SelectListItem>();
         }
         
@@ -79,7 +85,13 @@ namespace isriding.Web.Models.SchoolManage
         [Display(Name = "结束时间")]
         public string EndDate { get; set; }
 
+        [Display(Name = "车辆状态")]
+        public int Bike_status { get; set; }
+        [Display(Name = "电话号码")]
+        public string Phone { get; set; }
+
         public List<SelectListItem> PayStatusList { get; set; }
         public List<SelectListItem> SchoolList { get; set; }
+        public List<SelectListItem> BikeStatusList { get; set; }
     }
 }

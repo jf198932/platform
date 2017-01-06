@@ -69,7 +69,7 @@ namespace isriding.Entities
         /// <summary>
         /// 车辆租用类型, 1.可租用 2. 不可租用
         /// </summary>
-        public virtual int? rent_type { get; set; }
+        public virtual int? Rent_type { get; set; }
         /// <summary>
         /// 所属用户
         /// </summary>

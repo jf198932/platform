@@ -40,7 +40,11 @@ namespace isriding.Web.Models.SchoolManage
         public BikemanageSearchModel()
         {
             SchoolList = new List<SelectListItem>();
-            //BikesiteList = new List<SelectListItem>();
+            BikeStatusList = new List<SelectListItem> {
+                new SelectListItem { Text = "--- 请选择 ---", Value = "" },
+                new SelectListItem {Text = "待租", Value = "待租", Selected = true},
+                new SelectListItem {Text = "出租中", Value = "出租中"}
+            };
         }
 
         //[Display(Name = "城市")]
@@ -48,11 +52,14 @@ namespace isriding.Web.Models.SchoolManage
 
         [Display(Name = "学校")]
         public int SchoolId { get; set; }
-
+        [Display(Name = "车牌号")]
+        public string Ble_name { get; set; }
+        [Display(Name = "车辆状态")]
+        public int Bstatus { get; set; }
         //[Display(Name = "停车港")]
         //public int Name { get; set; }
 
-        //public List<SelectListItem> BikesiteList { get; set; }
+        public List<SelectListItem> BikeStatusList { get; set; }
         public List<SelectListItem> SchoolList { get; set; }
     }
     public class BikemanageDetailModel
