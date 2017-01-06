@@ -45,6 +45,47 @@ namespace isriding.Web.Controllers.SchoolManage
         {
             var model = new RechargeModel();
             PrepareAllUserModel(model);
+
+            Expression<Func<Entities.Recharge, Boolean>> expr = null;
+            DynamicLambda<Entities.Recharge> bulider = new DynamicLambda<Entities.Recharge>();
+            if (!string.IsNullOrEmpty(Request["School_id"]))
+            {
+                var data = Convert.ToInt32(Request["School_id"].Trim());
+                if (data > 0)
+                {
+                    Expression<Func<Entities.Recharge, Boolean>> tmp = t => t.User.School_id == data;
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+                else
+                {
+                    var sessionschoolids = Session["SchoolIds"] as List<int>;
+                    if (sessionschoolids != null && sessionschoolids.Count > 0)
+                    {
+                        Expression<Func<Entities.Recharge, Boolean>> tmp = t => sessionschoolids.Contains((int)t.User.School_id);
+                        expr = bulider.BuildQueryAnd(expr, tmp);
+                    }
+                }
+            }
+            else
+            {
+                var sessionschoolids = Session["SchoolIds"] as List<int>;
+                if (sessionschoolids != null && sessionschoolids.Count > 0)
+                {
+                    Expression<Func<Entities.Recharge, Boolean>> tmp = t => sessionschoolids.Contains((int)t.User.School_id);
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+            }
+
+            var temp = _rechargeReadRepository.GetAll();
+            if (expr != null)
+            {
+                ViewBag.allcount = temp.Where(expr).Count(t => t.Deposit > 0);
+            }
+            else
+            {
+                ViewBag.allcount = temp.Count(t => t.Deposit > 0);
+            }
+            
             return View(model);
         }
 
@@ -53,6 +94,8 @@ namespace isriding.Web.Controllers.SchoolManage
         {
             var expr = BuildSearchCriteria();
             var temp = _rechargeReadRepository.GetAll();
+            //var allcount = temp.Count(t => t.Deposit > 0);
+            
             if (expr != null)
             {
                 temp = temp.Where(expr);
@@ -67,6 +110,7 @@ namespace isriding.Web.Controllers.SchoolManage
                 Recharge_count = t.Recharge_count,
                 Updated_at = t.Updated_at,
                 User_id = t.User_id,
+                Phone = t.User == null ? "" : t.User.Phone,
                 User_name = t.User == null ? "": t.User.Name,
                 School_name = t.User.School.Name
             }).ToList();
@@ -77,6 +121,7 @@ namespace isriding.Web.Controllers.SchoolManage
                                 sortId++.ToString(),
                                 t.School_name,
                                 t.User_name,
+                                t.Phone,
                                 t.Deposit.ToString(),
                                 t.Recharge_count.ToString(),
                                 t.Id.ToString()
@@ -167,6 +212,12 @@ namespace isriding.Web.Controllers.SchoolManage
                 Expression<Func<Entities.Recharge, Boolean>> tmp = t => t.Recharge_count == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
+            if (!string.IsNullOrEmpty(Request["Phone"]))
+            {
+                var data = Request["Phone"].Trim();
+                Expression<Func<Entities.Recharge, Boolean>> tmp = t => t.User.Phone.Contains(data);
+                expr = bulider.BuildQueryAnd(expr, tmp);
+            }
             if (!string.IsNullOrEmpty(Request["School_id"]))
             {
                 var data = Convert.ToInt32(Request["School_id"].Trim());
@@ -197,6 +248,31 @@ namespace isriding.Web.Controllers.SchoolManage
             return expr;
         }
         #endregion
+        [DontWrapResult, UnitOfWork]
+        public virtual ActionResult GetUserCount(int schoolid)
+        {
+            var temp = _rechargeReadRepository.GetAll();
+            
+            if (schoolid == 0)
+            {
+                Expression<Func<Entities.Recharge, Boolean>> expr = null;
+                DynamicLambda<Entities.Recharge> bulider = new DynamicLambda<Entities.Recharge>();
+
+                var sessionschoolids = Session["SchoolIds"] as List<int>;
+                if (sessionschoolids != null && sessionschoolids.Count > 0)
+                {
+                    Expression<Func<Entities.Recharge, Boolean>> tmp = t => sessionschoolids.Contains((int)t.User.School_id);
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+                var count = temp.Where(expr).Count(t => t.Deposit > 0);
+                return Json(count);
+            }
+            else
+            {
+                var count = temp.Where(t => t.User.School_id == schoolid).Count(t => t.Deposit > 0);
+                return Json(count);
+            }
+        }
         #endregion
     }
 }

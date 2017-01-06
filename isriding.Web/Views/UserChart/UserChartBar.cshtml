@@ -29,10 +29,18 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-6 col-md-4">
                                     <div class="col-xs-5 text-center">
+                                        <label class="control-label">@Html.DisplayNameFor(t => t.Year)</label>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        @Html.DropDownListFor(s => s.Year, Model.YearList, new {@class = "form-control"})
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="col-xs-5 text-center">
                                         <label class="control-label">@Html.DisplayNameFor(t => t.Month)</label>
                                     </div>
                                     <div class="col-xs-7">
-                                        @Html.DropDownListFor(s => s.Month, Model.MonthList, new {@class = "form-control"})
+                                        @Html.DropDownListFor(s => s.Month, Model.MonthList, new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>

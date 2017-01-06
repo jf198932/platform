@@ -172,6 +172,12 @@ namespace isriding.Web.Controllers.SchoolManage
                 Expression<Func<Entities.Track, Boolean>> tmp = t => t.User.Name.Contains(data);
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
+            if (!string.IsNullOrEmpty(Request["Phone"]))
+            {
+                var data = Request["Phone"].Trim();
+                Expression<Func<Entities.Track, Boolean>> tmp = t => t.User.Phone.Contains(data);
+                expr = bulider.BuildQueryAnd(expr, tmp);
+            }
             if (!string.IsNullOrEmpty(Request["Ble_name"]))
             {
                 var data = Request["Ble_name"].Trim();
@@ -184,6 +190,15 @@ namespace isriding.Web.Controllers.SchoolManage
                 if (data > 0)
                 {
                     Expression<Func<Entities.Track, Boolean>> tmp = t => t.Pay_status == data;
+                    expr = bulider.BuildQueryAnd(expr, tmp);
+                }
+            }
+            if (!string.IsNullOrEmpty(Request["Bike_status"]))
+            {
+                var data = Convert.ToInt32(Request["Bike_status"].Trim());
+                if (data > -1)
+                {
+                    Expression<Func<Entities.Track, Boolean>> tmp = t => t.Bike.Bike_status == data;
                     expr = bulider.BuildQueryAnd(expr, tmp);
                 }
             }

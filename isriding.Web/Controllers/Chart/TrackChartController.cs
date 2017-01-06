@@ -36,7 +36,7 @@ namespace isriding.Web.Controllers.Chart
         }
 
         [DontWrapResult, UnitOfWork]
-        public virtual ActionResult GetTrackChartData(int School_id, int Month)
+        public virtual ActionResult GetTrackChartData(int School_id, int Year, int Month)
         {
             var track = _trackReadRepository.GetAll().Where(t => t.Start_site_id != null);
             if (School_id > 0)
@@ -59,10 +59,10 @@ namespace isriding.Web.Controllers.Chart
             List<decimal> datacs = new List<decimal>();
             if (Month > 0)
             {
-                int days = DateTime.DaysInMonth(now.Year, Month);
+                int days = DateTime.DaysInMonth(Year, Month);
                 for (int i = 1; i <= days; i++)
                 {
-                    var time = new DateTime(now.Year, Month, i);
+                    var time = new DateTime(Year, Month, i);
                     months.Add(time.ToString("MM-dd"));
                     datars.Add(
                         tracklist.Count(
@@ -80,7 +80,7 @@ namespace isriding.Web.Controllers.Chart
             {
                 for (int i = 1; i <= 12; i++)
                 {
-                    var time = new DateTime(now.Year, i, 1);
+                    var time = new DateTime(Year, i, 1);
                     months.Add(i + "月");
                     datars.Add(
                         tracklist.Count(

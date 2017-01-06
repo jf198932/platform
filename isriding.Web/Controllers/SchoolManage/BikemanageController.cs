@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
+using System.Text;
 using System.Web.Mvc;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Web.Models;
-using isriding.Entities;
-using isriding.Web.Extension.Fliter;
 using isriding.Web.Models.Common;
 using isriding.Web.Models.SchoolManage;
-using Newtonsoft.Json;
 
 namespace isriding.Web.Controllers.SchoolManage
 {
@@ -50,7 +47,7 @@ namespace isriding.Web.Controllers.SchoolManage
             {
                 temp = temp.Where(expr);
             }
-            var query = temp.OrderBy(s => s.Id).Skip(param.iDisplayStart).Take(param.iDisplayLength);
+            var query = temp.OrderByDescending(s => s.MaxRentTime).Skip(param.iDisplayStart).Take(param.iDisplayLength);
             var total = temp.Count();
             var filterResult = query.ToList();
             int sortId = param.iDisplayStart + 1;
@@ -91,36 +88,19 @@ namespace isriding.Web.Controllers.SchoolManage
             //    }).FirstOrDefault();
             //track.Type_name = TranslateType(track.Type);
             //return PartialView(track);
-            string sqlStr1 =
-               @"SELECT a.id as 'Id',a.pay_docno AS 'PayDocno',a.bike_id AS 'BikeId',b.ble_name AS 'BikeName',a.user_id AS 'UserId',c.`name` AS 'UserName',a.start_time as 'StartTime',a.end_time as 'EndTime',d.`name` AS 'StartSite',e.`name` AS 'EndSite',
-			 TIMESTAMPDIFF(MINUTE,IFNULL(a.start_time,NOW()),IFNULL(a.end_time,NOW())) AS 'RentTimeCnt',a.payment
-FROM track AS a
-INNER JOIN bike AS b ON b.id = a.bike_id
-INNER JOIN `user` AS c ON c.id = a.user_id
-LEFT JOIN bikesite AS d ON d.id = a.start_site_id
-LEFT JOIN bikesite AS e ON d.id = a.end_site_id
-";
-            var track = _sqlExecuter.SqlQuery<BikemanageDetailModel>(sqlStr1)
-                .Where(t => t.BikeId == id)
-                .Select(t => new BikemanageDetailModel
-                {
-                    Id = t.Id,
-                    PayDocno = t.PayDocno,
-                    BikeId = t.BikeId,
-                    BikeName = t.BikeName,
-                    UserId = t.UserId,
-                    UserName = t.UserName,
-                    StartTime = t.StartTime,
-                    EndTime = t.EndTime,
-                    StartSite = t.StartSite,
-                    EndSite = t.EndSite,
-                    RentTimeCnt = t.RentTimeCnt,
-                    payment = t.payment
-                });
+            StringBuilder sqlStr1 = new StringBuilder();
+            sqlStr1.Append(
+                "SELECT a.id as 'Id',a.pay_docno AS 'PayDocno',a.bike_id AS 'BikeId',b.ble_name AS 'BikeName',a.user_id AS 'UserId',c.`name` AS 'UserName',a.start_time as 'StartTime',a.end_time as 'EndTime',d.`name` AS 'StartSite',e.`name` AS 'EndSite',TIMESTAMPDIFF(MINUTE,IFNULL(a.start_time,NOW()),IFNULL(a.end_time,NOW())) AS 'RentTimeCnt',a.payment");
+            sqlStr1.Append(" FROM track AS a");
+            sqlStr1.Append(" INNER JOIN bike AS b ON b.id = a.bike_id");
+            sqlStr1.Append(" INNER JOIN `user` AS c ON c.id = a.user_id");
+            sqlStr1.Append(" LEFT JOIN bikesite AS d ON d.id = a.start_site_id");
+            sqlStr1.Append(" LEFT JOIN bikesite AS e ON d.id = a.end_site_id");
+            var track = _sqlExecuter.SqlQuery<BikemanageDetailModel>(sqlStr1.ToString()).Where(t=> t.BikeId == id);
             var total = track.Count();
-            track = track.OrderBy(s => s.Id).Skip(param.iDisplayStart).Take(param.iDisplayLength);
+            var temp = track.Skip(param.iDisplayStart).Take(param.iDisplayLength).ToList();
             int sortId = param.iDisplayStart + 1;
-            var filterResult = track.ToList();
+            var filterResult = temp.ToList();
             var result = from t in filterResult
                          select new[]
                              {
@@ -175,15 +155,20 @@ LEFT JOIN bikesite AS e ON d.id = a.end_site_id
                     expr = bulider.BuildQueryAnd(expr, tmp);
                 }
             }
-            //if (!string.IsNullOrEmpty(Request["Name"]))
-            //{
-            //    var data = Convert.ToInt32(Request["Name"].Trim());
-            //    if (data != 0)
-            //    {
-            //        Expression<Func<BikemanageModel, Boolean>> tmp = t => t.Id == data;
-            //        expr = bulider.BuildQueryAnd(expr, tmp);
-            //    }
-            //}
+
+            if (!string.IsNullOrEmpty(Request["Ble_name"]))
+            {
+                var data = Request["Ble_name"].Trim();
+                Expression<Func<BikemanageModel, Boolean>> tmp = t => t.BleName.Contains(data);
+                expr = bulider.BuildQueryAnd(expr, tmp);
+            }
+
+            if (!string.IsNullOrEmpty(Request["Bstatus"]))
+            {
+                var data = Request["Bstatus"].Trim();
+                Expression<Func<BikemanageModel, Boolean>> tmp = t => t.BikeStatus == data;
+                expr = bulider.BuildQueryAnd(expr, tmp);
+            }
             return expr;
         }
 

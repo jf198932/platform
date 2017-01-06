@@ -91,7 +91,7 @@ namespace isriding.Web.Controllers.School
                 Phone = t.User == null ? "" : t.User.Phone,
                 School_id = t.School_id,
                 School_name = t.School.Name,
-                Rent_type = t.rent_type
+                Rent_type = t.Rent_type
             }).ToList();
             int sortId = param.iDisplayStart + 1;
             var result = from t in filterResult
@@ -163,6 +163,7 @@ namespace isriding.Web.Controllers.School
                 bike.Battery = model.Battery;
                 bike.Lock_pwd = model.Lock_pwd;
                 bike.Insite_status = model.Bikesite_id == null ? 2 : 1;
+                bike.Rent_type = model.Rent_type;
                 bike.Updated_at = DateTime.Now;
 
                 bike = _bikeRepository.Update(bike);
@@ -404,7 +405,7 @@ namespace isriding.Web.Controllers.School
             if (!string.IsNullOrEmpty(Request["Rent_type"]) && Request["Rent_type"].Trim() != "-1")
             {
                 var data = Convert.ToInt32(Request["Rent_type"].Trim());
-                Expression<Func<Entities.Bike, Boolean>> tmp = t => t.rent_type == data;
+                Expression<Func<Entities.Bike, Boolean>> tmp = t => t.Rent_type == data;
                 expr = bulider.BuildQueryAnd(expr, tmp);
             }
             if (!string.IsNullOrEmpty(Request["School_id"]))

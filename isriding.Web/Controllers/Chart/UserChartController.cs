@@ -36,7 +36,7 @@ namespace isriding.Web.Controllers.Chart
         }
 
         [DontWrapResult, UnitOfWork]
-        public virtual ActionResult GetUserChartData(int School_id, int Month)
+        public virtual ActionResult GetUserChartData(int School_id, int Year, int Month)
         {
             var user = _useRepository.GetAll();
             if (School_id > 0)
@@ -59,10 +59,10 @@ namespace isriding.Web.Controllers.Chart
             List<int> datacs = new List<int>();
             if (Month > 0)
             {
-                int days = DateTime.DaysInMonth(now.Year, Month);
+                int days = DateTime.DaysInMonth(Year, Month);
                 for (int i = 1; i <= days; i++)
                 {
-                    var time = new DateTime(now.Year, Month, i);
+                    var time = new DateTime(Year, Month, i);
                     months.Add(time.ToString("MM-dd"));
                     datars.Add(userlist.Count(t => DateTime.Parse(t.Created_at.ToString()).ToString("yyyy/MM/dd") == time.ToString("yyyy/MM/dd")));
                     datacs.Add(userlist.Count(t => DateTime.Parse(t.Created_at.ToString()).ToString("yyyy/MM/dd") == time.ToString("yyyy/MM/dd") && t.Certification == 3));
@@ -72,7 +72,7 @@ namespace isriding.Web.Controllers.Chart
             {
                 for (int i = 1; i <= 12; i++)
                 {
-                    var time = new DateTime(now.Year, i, 1);
+                    var time = new DateTime(Year, i, 1);
                     months.Add(i + "月");
                     datars.Add(userlist.Count(t => DateTime.Parse(t.Created_at.ToString()).ToString("yyyy/MM") == time.ToString("yyyy/MM")));
                     datacs.Add(userlist.Count(t => DateTime.Parse(t.Created_at.ToString()).ToString("yyyy/MM") == time.ToString("yyyy/MM") && t.Certification == 3));
